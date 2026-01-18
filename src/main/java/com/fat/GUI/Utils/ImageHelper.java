@@ -14,7 +14,7 @@ public class ImageHelper{
 
     public static String getImagePath(String imageName) {
         String projectDir = System.getProperty("user.dir");
-        String imagePath = projectDir + File.separator + "WaterManagementProject" + File.separator + "product_images" + File.separator + imageName;
+        String imagePath = projectDir + File.separator + "product_images" + File.separator + imageName;
         System.out.println(imagePath);
        return imagePath;
     }

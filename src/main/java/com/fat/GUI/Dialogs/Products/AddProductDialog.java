@@ -267,7 +267,7 @@ public class AddProductDialog extends javax.swing.JDialog {
             if(fileChooser.getSelectedFile() != null) {
                 // 1. Lấy đường dẫn gốc dự án
                 String projectRoot = System.getProperty("user.dir"); // WaterManagementProject
-                String destinationPath = projectRoot + File.separator + "WaterManagementProject" +File.separator + "product_images";
+                String destinationPath = projectRoot +File.separator + "product_images";
                 File destDir = new File(destinationPath);
 
                 // 3. Tạo thư mục nếu chưa có

@@ -31,7 +31,10 @@ public class ReceiptDAO implements IReceiptDAO {
 
     @Override
     public void add(CreateOrUpdateReceiptDTO entity) {
-
+        // TODO Auto-generated method stub
+        // Nhớ thêm đơn hàng thì trừ tồn kho của sản phẩm tương ứng
+        // Nhớ thêm lịch sử nhập xuất kho của từng sản pẩm
+        // Sử dung transaction để đảm bảo tính toàn vẹn dữ liệu
     }
 
     @Override

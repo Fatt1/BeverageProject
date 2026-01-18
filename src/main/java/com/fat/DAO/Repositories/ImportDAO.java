@@ -36,7 +36,9 @@ public class ImportDAO implements IImportDAO {
 
     @Override
     public void update(CreateOrUpdateImportDTO entity) {
-
+        // Nhớ khi update trạng thái thì tăng tồn kho của sản phẩm tương ứng
+        // Nhớ thêm lịch sử nhập xuất kho của từng sản pẩm
+        // Sử dung transaction để đảm bảo tính toàn vẹn dữ liệu
     }
 
     @Override

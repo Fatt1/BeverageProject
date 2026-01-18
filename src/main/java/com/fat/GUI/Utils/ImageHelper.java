@@ -3,7 +3,6 @@ package com.fat.GUI.Utils;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.net.URL;
 
 public class ImageHelper{
     public static ImageIcon resizeImage(ImageIcon icon, int width, int height){

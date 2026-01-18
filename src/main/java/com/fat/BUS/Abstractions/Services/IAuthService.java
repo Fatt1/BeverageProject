@@ -1,4 +1,8 @@
 package com.fat.BUS.Abstractions.Services;
 
-public class IAuthService {
+import com.fat.DTO.Auths.UserSessionDTO;
+
+public interface IAuthService {
+    UserSessionDTO login(String username, String password);
+    void logout(UserSessionDTO session);
 }

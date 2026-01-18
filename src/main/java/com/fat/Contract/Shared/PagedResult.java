@@ -9,6 +9,8 @@ public class PagedResult <T> {
     private int pageIndex;
     private int pageSize;
     private int totalPages;
+    private boolean hasNextPage;
+    private boolean hasPreviousPage;
 
     private PagedResult(List<T> items, int totalItems, int pageIndex, int pageSize) {
         this.items = items;
@@ -16,12 +18,22 @@ public class PagedResult <T> {
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
         this.totalPages = (int) Math.ceil((double) totalItems / pageSize);
+        this.hasNextPage = pageIndex < totalPages;
+        this.hasPreviousPage = pageIndex > 1;
     }
 
     public static <T>PagedResult<T> create(List<T> items, int totalItems, Integer pageIndex, Integer pageSize) {
         int effectivePageIndex = (pageIndex == null || pageIndex < 1) ? 1 : pageIndex;
         int effectivePageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         return new PagedResult<>(items, totalItems, effectivePageIndex, effectivePageSize);
+    }
+
+    public boolean isHasNextPage() {
+        return hasNextPage;
+    }
+
+    public boolean isHasPreviousPage() {
+        return hasPreviousPage;
     }
 
     public int getTotalItems() {

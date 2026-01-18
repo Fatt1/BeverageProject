@@ -1,9 +1,11 @@
 package com.fat.DAO.Abstractions.Repositories;
 
 import com.fat.Contract.Shared.PagedResult;
-import com.fat.DTO.ProductDTO;
+import com.fat.DTO.Products.CreateOrUpdateProductDTO;
+import com.fat.DTO.Products.ProductViewDTO;
 
-public interface IProductDAO extends IDAO<ProductDTO, Integer> {
-    PagedResult<ProductDTO> getAll(int pageIndex, int pageSize);
-    PagedResult<ProductDTO> getProductInventory(int pageIndex, int pageSize);
+public interface IProductDAO extends IDAO<CreateOrUpdateProductDTO, Integer> {
+    PagedResult<ProductViewDTO> getAllPagination(int pageIndex, int pageSize);
+    PagedResult<ProductViewDTO> filter(String searchKey, Integer categoryId, int pageIndex, int pageSize);
+    ProductViewDTO getById(Integer id);
 }

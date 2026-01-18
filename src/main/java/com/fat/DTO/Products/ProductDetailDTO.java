@@ -2,7 +2,8 @@ package com.fat.DTO.Products;
 
 import java.math.BigDecimal;
 
-public class ProductDetailsDTO {
+public class ProductDetailDTO {
+    private Integer id;
     private String name;
     private String image;
     private String unit;
@@ -11,8 +12,13 @@ public class ProductDetailsDTO {
     private int categoryId;
 
 
-    public ProductDetailsDTO(String name, String image, String unit,
-                             BigDecimal price, int stock, int categoryId) {
+    public Integer getId() {
+        return id;
+    }
+
+    public ProductDetailDTO(Integer id, String name, String image, String unit,
+                            BigDecimal price, int stock, int categoryId) {
+        this.id = id;
         this.name = name;
         this.image = image;
         this.unit = unit;

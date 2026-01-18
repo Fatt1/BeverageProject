@@ -6,6 +6,7 @@ package com.fat.GUI;
 
 import com.fat.DI.AppModule;
 import com.fat.GUI.Panels.Products.ProductsPanel;
+import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.google.inject.Guice;
@@ -396,7 +397,7 @@ public class MainForm extends javax.swing.JFrame {
         FlatRobotoFont.install();
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
         FlatLightLaf.setup();
-
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
         // Khởi tạo Guice Injector
         Injector injector = Guice.createInjector(new AppModule());
         /* Create and display the form */

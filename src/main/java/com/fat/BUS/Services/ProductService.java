@@ -4,6 +4,7 @@ import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IProductDAO;
 import com.fat.DTO.Products.CreateOrUpdateProductDTO;
+import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 import com.google.inject.Inject;
 
@@ -42,7 +43,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductViewDTO getProductById(Integer id) {
+    public ProductDetailDTO getProductById(Integer id) {
         return productDAO.getById(id);
     }
 }

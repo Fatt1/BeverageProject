@@ -9,15 +9,14 @@ import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.ValidationException;
 import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Customers.CreateOrUpdateCustomerDTO;
 import com.fat.DTO.Products.CreateOrUpdateProductDTO;
+import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.GUI.Utils.ImageHelper;
 import com.formdev.flatlaf.FlatClientProperties;
 
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -27,30 +26,28 @@ import java.nio.file.StandardCopyOption;
  *
  * @author User
  */
-public class AddProductDialog extends javax.swing.JDialog {
+public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddProductDialog.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateProductDialog.class.getName());
     private IProductService productService;
     private ICategoryService categoryService;
     private JFileChooser fileChooser = new JFileChooser();
+
+
+    private ProductDetailDTO productDetailDTO = null;
     /**
      * Creates new form AddProductDialog
      */
-    public AddProductDialog(java.awt.Frame parent, boolean modal, IProductService productService, ICategoryService categoryService) {
+    public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, IProductService productService, ICategoryService categoryService, ProductDetailDTO productDetailDTO) {
         super(parent, modal);
         this.productService = productService;
         this.categoryService = categoryService;
         initComponents();
         loadCategories();
         setCss();
+        this.productDetailDTO = productDetailDTO;
+        initProductDetail();
 
-        // 1. Lấy đường dẫn gốc của dự án (nơi file chạy)
-//        String currentDir = System.getProperty("user.dir");
-
-//        File initialDir = new File(currentDir + File.separator + "resources" + File.separator + "images");
-//        if(initialDir.exists()) {
-//            fileChooser.setCurrentDirectory(initialDir);
-//        }
 
         FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình ảnh", "jpg", "png", "jpeg");
         fileChooser.setFileFilter(imageFilter);
@@ -264,7 +261,22 @@ public class AddProductDialog extends javax.swing.JDialog {
             CategoryViewDTO selectedCategory = (CategoryViewDTO) cboCategory.getSelectedItem();
             Integer categoryId = selectedCategory.getId();
             String imagePath = null;
-            if(fileChooser.getSelectedFile() != null) {
+            File selectedFile = fileChooser.getSelectedFile();
+            boolean needUpload = true;
+
+            // Kiểm tra trường hợp UPDATE: Nếu đang có sản phẩm cũ và file đang chọn trùng tên với file cũ
+            if (productDetailDTO != null && selectedFile != null) {
+                String oldImageName = productDetailDTO.getImage();
+
+                // Nếu tên file đang chọn == tên file trong DB
+                // Tức là user không thay đổi hình ảnh
+                if (selectedFile.getName().equals(oldImageName)) {
+                    imagePath = oldImageName; // Giữ nguyên tên cũ
+                    needUpload = false;       // Đánh dấu là không cần copy
+                }
+            }
+
+            if(fileChooser.getSelectedFile() != null && needUpload) {
                 // 1. Lấy đường dẫn gốc dự án
                 String projectRoot = System.getProperty("user.dir"); // WaterManagementProject
                 String destinationPath = projectRoot +File.separator + "product_images";
@@ -281,15 +293,31 @@ public class AddProductDialog extends javax.swing.JDialog {
                 Files.copy(fileChooser.getSelectedFile().toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 imagePath = fileName;
             }
-            CreateOrUpdateProductDTO newProduct = new CreateOrUpdateProductDTO(
-                    name,
-                    imagePath,
-                    unit,
-                    price,
-                    categoryId);
-            ValidatorUtil.validate(newProduct);
-            productService.createProduct(newProduct);
-            JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+
+            if(productDetailDTO == null) {
+                CreateOrUpdateProductDTO newProduct = new CreateOrUpdateProductDTO(
+                        name,
+                        imagePath,
+                        unit,
+                        price,
+                        categoryId);
+                ValidatorUtil.validate(newProduct);
+                productService.createProduct(newProduct);
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            }
+            // Cho trường hợp cập nhật
+           else{
+                CreateOrUpdateProductDTO updateProduct = new CreateOrUpdateProductDTO(
+                        productDetailDTO.getId(),
+                        name,
+                        imagePath,
+                        unit,
+                        price,
+                        categoryId);
+                ValidatorUtil.validate(updateProduct);
+                productService.updateProduct(updateProduct);
+                JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            }
             this.dispose();
         }
         catch (ValidationException validationException) {
@@ -304,6 +332,36 @@ public class AddProductDialog extends javax.swing.JDialog {
 
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void initProductDetail() {
+        if(productDetailDTO != null) {
+            setTitle("Cập nhật sản phẩm");
+            txtName.setText(productDetailDTO.getName());
+            txtUnit.setText(productDetailDTO.getUnit());
+            txtPrice.setText(productDetailDTO.getPrice().toString());
+            // Chọn danh mục tương ứng
+            for(int i = 0; i < cboCategory.getItemCount(); i++) {
+                CategoryViewDTO category =  (CategoryViewDTO) cboCategory.getItemAt(i);
+                if(category.getId().equals(productDetailDTO.getCategoryId())) {
+                    cboCategory.setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            if(productDetailDTO.getImage() != null ) {
+                // Lấy đường dẫn gốc dự án
+                String projectRoot = System.getProperty("user.dir"); // WaterManagementProject
+                String fullImagePath = projectRoot + File.separator + "product_images" + File.separator + productDetailDTO.getImage();
+                fileChooser.setSelectedFile(new File(fullImagePath));
+                ImageIcon icon = new ImageIcon(fullImagePath);
+                lblImage.setIcon(ImageHelper.resizeImage(icon, lblImage.getWidth(), lblImage.getHeight()));
+                lblImage.setText(null);
+            }
+        }
+    }
+
+    public void setProductDetailDTO(ProductDetailDTO productDetailDTO) {
+        this.productDetailDTO = productDetailDTO;
+    }
     /**
      * @param args the command line arguments
      */
@@ -336,7 +394,7 @@ public class AddProductDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox<String> cboCategory;
+    private javax.swing.JComboBox<CategoryViewDTO> cboCategory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

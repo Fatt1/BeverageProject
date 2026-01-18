@@ -8,8 +8,9 @@ import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DTO.Categories.CategoryViewDTO;
+import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
-import com.fat.GUI.Dialogs.Products.AddProductDialog;
+import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
 import com.fat.GUI.Utils.FormatterUtil;
 import com.fat.GUI.Utils.ImageHelper;
 import com.fat.GUI.Utils.ImageRenderer;
@@ -20,11 +21,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  *
@@ -371,6 +369,23 @@ public class ProductsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        int selectedRow = tblProduct.getSelectedRow();
+        if(selectedRow == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng chọn sản phẩm để chỉnh sửa.", "Chưa chọn sản phẩm", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Object idObj = tblProduct.getValueAt(selectedRow, 3); // Cột ID
+        int id = Integer.parseInt(idObj.toString());
+        ProductDetailDTO productDetailDTO = productService.getProductById(id);
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, productDetailDTO);
+        updateProductDialog.setLocationRelativeTo(parentFrame);
+        updateProductDialog.setVisible(true);
+
+        // Sau khi đóng dialog, tải lại dữ liệu
+        loadData(1, 10);
+
 
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -388,10 +403,10 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddProductDialog addProductDialog = new AddProductDialog(parentFrame, true, productService, categoryService);
-        addProductDialog.setLocationRelativeTo(parentFrame);
+        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, null);
+        addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
 
-        addProductDialog.setVisible(true);
+        addOrUpdateProductDialog.setVisible(true);
 
         // Sau khi đóng dialog, tải lại dữ liệu
         loadData(1, 10);

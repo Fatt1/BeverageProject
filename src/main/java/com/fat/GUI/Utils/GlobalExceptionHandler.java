@@ -12,11 +12,11 @@ public class GlobalExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         switch (e) {
             case NotFoundException notFoundException ->
-                    JOptionPane.showMessageDialog(null, e.getMessage(), "Không tìm thấy", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Không tìm thấy dữ liệu", JOptionPane.WARNING_MESSAGE);
             case BadRequestException badRequestException ->
                     JOptionPane.showMessageDialog(null, e.getMessage(), "Yêu cầu không hợp lệ", JOptionPane.WARNING_MESSAGE);
             case ValidationException validationException ->
-                    JOptionPane.showMessageDialog(null, e.getMessage(), "Lỗi xác thực", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Lỗi nhập liệu", JOptionPane.WARNING_MESSAGE);
             default ->
                     JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi không xác định: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }

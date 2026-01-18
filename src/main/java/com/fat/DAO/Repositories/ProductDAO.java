@@ -4,6 +4,7 @@ import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IProductDAO;
 import com.fat.DAO.Utils.DbContext;
 import com.fat.DTO.Products.CreateOrUpdateProductDTO;
+import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 
 import java.math.BigDecimal;
@@ -73,8 +74,31 @@ public class ProductDAO implements IProductDAO{
     }
 
     @Override
-    public ProductViewDTO getById(Integer id) {
-        return null;
+    public ProductDetailDTO getById(Integer id) {
+        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.CategoryId " +
+                "FROM [Product] AS P " +
+                "WHERE P.Id = ?;";
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        )
+        {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                Integer productId = rs.getInt("Id");
+                String name = rs.getString("Name");
+                String image = rs.getString("Image");
+                BigDecimal price = rs.getBigDecimal("Price");
+                String unit = rs.getString("Unit");
+                int categoryId = rs.getInt("CategoryId");
+                return new ProductDetailDTO(productId, name, image, unit, price, 0, categoryId);
+            }
+            return null;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -102,7 +126,26 @@ public class ProductDAO implements IProductDAO{
 
     @Override
     public void update(CreateOrUpdateProductDTO entity) {
-
+        String sql = "UPDATE PRODUCT " +
+                "SET Name = ?, Image = ?, Price = ?, Unit = ?, UpdatedAt = ?, CategoryId = ? " +
+                "WHERE Id = ?;";
+        try(Connection conn =  DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        )
+        {
+            ps.setString(1, entity.getName());
+            ps.setString(2, entity.getImage());
+            ps.setBigDecimal(3, entity.getPrice());
+            ps.setString(4, entity.getUnit());
+            ps.setObject(5, entity.getUpdatedAt());
+            ps.setInt(6, entity.getCategoryId());
+            ps.setInt(7, entity.getId());
+            ps.executeUpdate();
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Xảy ra lỗi khi cập nhật sản phẩm", sqlException);
+        }
     }
 
     //Soft Delete

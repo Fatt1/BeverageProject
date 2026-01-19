@@ -6,6 +6,7 @@ import com.fat.DTO.Promotions.PromotionDetailDTO;
 import com.fat.DTO.Promotions.PromotionItemDTO;
 import com.fat.DTO.Promotions.PromotionViewDTO;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface IPromotionService {
     PagedResult<PromotionViewDTO> getAllPromotionsPagination(int pageIndex, int pageSize);
     PagedResult<PromotionViewDTO> filterPromotion(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize);
     PagedResult<PromotionDetailDTO> getPromotionById(Integer id);
+    BigDecimal calculateDiscountPrice(Integer productId, BigDecimal originalPrice);
 
 }
 

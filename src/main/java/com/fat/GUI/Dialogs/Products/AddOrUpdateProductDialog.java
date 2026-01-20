@@ -6,6 +6,8 @@ package com.fat.GUI.Dialogs.Products;
 
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
+import com.fat.BUS.Abstractions.Services.IUploadImageService;
+import com.fat.BUS.Services.UploadImageService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.ValidationException;
 import com.fat.DTO.Categories.CategoryViewDTO;
@@ -19,8 +21,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 /**
  *
@@ -31,6 +31,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateProductDialog.class.getName());
     private IProductService productService;
     private ICategoryService categoryService;
+
     private JFileChooser fileChooser = new JFileChooser();
 
 
@@ -253,14 +254,15 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
             String name =  txtName.getText().trim();
             String unit = txtUnit.getText().trim();
             String priceText = txtPrice.getText().trim();
-
             BigDecimal price = null;
+
             if(!priceText.isEmpty()) {
                 price = new BigDecimal(priceText);
             }
+
             CategoryViewDTO selectedCategory = (CategoryViewDTO) cboCategory.getSelectedItem();
             Integer categoryId = selectedCategory.getId();
-            String imagePath = null;
+            String imageName = null;
             File selectedFile = fileChooser.getSelectedFile();
             boolean needUpload = true;
 
@@ -271,33 +273,21 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 // Nếu tên file đang chọn == tên file trong DB
                 // Tức là user không thay đổi hình ảnh
                 if (selectedFile.getName().equals(oldImageName)) {
-                    imagePath = oldImageName; // Giữ nguyên tên cũ
+                    imageName = oldImageName; // Giữ nguyên tên cũ
                     needUpload = false;       // Đánh dấu là không cần copy
                 }
             }
 
-            if(fileChooser.getSelectedFile() != null && needUpload) {
-                // 1. Lấy đường dẫn gốc dự án
-                String projectRoot = System.getProperty("user.dir"); // WaterManagementProject
-                String destinationPath = projectRoot +File.separator + "product_images";
-                File destDir = new File(destinationPath);
 
-                // 3. Tạo thư mục nếu chưa có
-                if (!destDir.exists()) {
-                    destDir.mkdir();
-                }
-                String fileName = System.currentTimeMillis() + "_" + fileChooser.getSelectedFile().getName();
-
-                File destFile = new File(destDir, fileName);
-                // 5. Copy file
-                Files.copy(fileChooser.getSelectedFile().toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                imagePath = fileName;
+            if(selectedFile != null && needUpload) {
+                IUploadImageService uploadImageService = new UploadImageService();
+                imageName = uploadImageService.uploadImage(selectedFile.getName(), selectedFile.toPath());
             }
 
             if(productDetailDTO == null) {
                 CreateOrUpdateProductDTO newProduct = new CreateOrUpdateProductDTO(
                         name,
-                        imagePath,
+                        imageName,
                         unit,
                         price,
                         categoryId);
@@ -310,7 +300,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 CreateOrUpdateProductDTO updateProduct = new CreateOrUpdateProductDTO(
                         productDetailDTO.getId(),
                         name,
-                        imagePath,
+                        imageName,
                         unit,
                         price,
                         categoryId);

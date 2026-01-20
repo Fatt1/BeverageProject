@@ -6,7 +6,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class FormatterUtil {
-    private  static final NumberFormat VN_CURRENCY_FORMATTER = NumberFormat.getInstance(new Locale("vi", "VN"));
+    private static final NumberFormat VN_CURRENCY_FORMATTER = NumberFormat.getInstance(new Locale("vi", "VN"));
 
     public static String toVND(BigDecimal money) {
         if (money == null) return "0 VND";

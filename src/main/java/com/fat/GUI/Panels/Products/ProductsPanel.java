@@ -7,8 +7,11 @@ package com.fat.GUI.Panels.Products;
 import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
+import com.fat.BUS.Abstractions.Services.IUploadImageService;
+import com.fat.BUS.Services.UploadImageService;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DTO.Categories.CategoryViewDTO;
+import com.fat.DTO.Products.CreateOrUpdateProductDTO;
 import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
@@ -23,6 +26,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,15 +43,14 @@ public class ProductsPanel extends javax.swing.JPanel {
      */
     private IProductService productService;
     private ICategoryService categoryService;
-    private IAuthService authService;
+    private Integer selectedCategoryId = null;
+    private String searchKey = null;
 
-    private ArrayList<ProductViewDTO> products = new ArrayList<>();
 
     @Inject
-    public ProductsPanel(IProductService productService, ICategoryService categoryService, IAuthService authService) {
+    public ProductsPanel(IProductService productService, ICategoryService categoryService) {
         this.categoryService = categoryService;
         this.productService = productService;
-        this.authService = authService;
         initComponents();
         initalTable();
         setCss();
@@ -186,7 +191,15 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void loadData(int pageIndex, int pageSize) {
 
-        PagedResult<ProductViewDTO> result = productService.getAllProductPagination(pageIndex, pageSize);
+        PagedResult<ProductViewDTO> result = null;
+
+        if(searchKey == null && selectedCategoryId == null) {
+            result = productService.getAllProductPagination(pageIndex, pageSize);
+        }
+        else{
+            result = productService.filterProduct(searchKey, selectedCategoryId, pageIndex, pageSize);
+        }
+
 
         // 4. Đổ dữ liệu
         fillTable(result.getItems());
@@ -225,26 +238,26 @@ public class ProductsPanel extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         tblProduct.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
+            new Object [][] {
 
-                },
-                new String[]{
-                        "#", "HÌNH SẢN PHẨM", "TÊN SẢN PHẨM", "ID", "GIÁ BÁN", "ĐƠN VI TÍNH", "TỒN KHO", "DANH MỤC"
-                }
+            },
+            new String [] {
+                "#", "HÌNH SẢN PHẨM", "TÊN SẢN PHẨM", "ID", "GIÁ BÁN", "ĐƠN VI TÍNH", "TỒN KHO", "DANH MỤC"
+            }
         ) {
-            Class[] types = new Class[]{
-                    java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
-            boolean[] canEdit = new boolean[]{
-                    false, false, false, false, false, false, false, false
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types[columnIndex];
+                return types [columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+                return canEdit [columnIndex];
             }
         });
         tblProduct.getTableHeader().setReorderingAllowed(false);
@@ -273,8 +286,14 @@ public class ProductsPanel extends javax.swing.JPanel {
         btnReset.addActionListener(this::btnResetActionPerformed);
 
         txtSearch.addActionListener(this::txtSearchActionPerformed);
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtSearchKeyPressed(evt);
+            }
+        });
 
         cboCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        cboCategory.addActionListener(this::cboCategoryActionPerformed);
 
         jLabel1.setText("Tên sản phẩm");
 
@@ -318,52 +337,52 @@ public class ProductsPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel2)
-                                                        .addComponent(jLabel1))
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(txtSearch)
-                                                        .addComponent(cboCategory, 0, 224, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                                                .addComponent(btnAdd)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(btnDelete)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(btnUpdate)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnReset)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(btnImportExcel)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(btnExportExcel)))
-                                .addContainerGap())
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtSearch)
+                            .addComponent(cboCategory, 0, 224, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addComponent(btnAdd)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnUpdate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnReset)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnImportExcel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnExportExcel)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 12, Short.MAX_VALUE)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(51, 51, 51))
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 12, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51))
         );
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
@@ -416,11 +435,54 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
-        // TODO add your handling code here:
+        var result =  ExcelHelper.readFromExcel();
+        if(!result.isEmpty()) {
+            String defaultImage = "no_image.jpg";
+            IUploadImageService uploadImageService = new UploadImageService();
+            for(var row: result) {
+                try{
+
+                    String name = row.get(0).toString();
+                    BigDecimal price = new BigDecimal(row.get(1).toString());
+                    String unit = row.get(2).toString();
+                    int categoryId = (int)Double.parseDouble(row.get(3).toString());
+                    String image = row.get(4).toString();
+                    File sourceImage = new File(image);
+
+                    if(sourceImage.exists()) {
+                        String uploadedImageName = uploadImageService.uploadImage(sourceImage.getName(), sourceImage.toPath());
+                        // Sử dụng tên file sau khi upload
+                        image = uploadedImageName;
+                    }
+                    else {
+                        image = defaultImage;
+                    }
+
+                    CreateOrUpdateProductDTO product = new CreateOrUpdateProductDTO(name, image, unit, price, categoryId);
+                    productService.createProduct(product);
+                }
+
+
+
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Dữ liệu trong file Excel không hợp lệ. Vui lòng kiểm tra lại.",
+                            "Lỗi dữ liệu", JOptionPane.ERROR_MESSAGE);
+                }
+
+            }
+
+            loadData(1, 10);
+        }
     }//GEN-LAST:event_btnImportExcelActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        // TODO add your handling code here:
+        txtSearch.setText("");
+        cboCategory.setSelectedIndex(0);
+        selectedCategoryId = null;
+        searchKey = null;
+        loadData(1, 10);
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -455,6 +517,25 @@ public class ProductsPanel extends javax.swing.JPanel {
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void cboCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoryActionPerformed
+        CategoryViewDTO selectedCategory = (CategoryViewDTO) cboCategory.getSelectedItem();
+        if(selectedCategory != null && selectedCategory.getId() != 0) {
+            selectedCategoryId = selectedCategory.getId();
+        }
+        else if(selectedCategory != null && selectedCategory.getId() == 0){
+            selectedCategoryId = null;
+        }
+        loadData(1, 10);
+    }//GEN-LAST:event_cboCategoryActionPerformed
+
+    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
+        if(evt.getKeyChar() == KeyEvent.VK_ENTER) {
+            searchKey = txtSearch.getText().trim();
+            loadData(1, 10);
+        }
+
+    }//GEN-LAST:event_txtSearchKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

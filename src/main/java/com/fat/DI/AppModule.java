@@ -3,9 +3,11 @@ package com.fat.DI;
 import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
+import com.fat.BUS.Abstractions.Services.IUploadImageService;
 import com.fat.BUS.Services.AuthService;
 import com.fat.BUS.Services.CategoryService;
 import com.fat.BUS.Services.ProductService;
+import com.fat.BUS.Services.UploadImageService;
 import com.fat.DAO.Abstractions.Repositories.ICategoryDAO;
 import com.fat.DAO.Abstractions.Repositories.IProductDAO;
 import com.fat.DAO.Repositories.CategoryDAO;
@@ -22,6 +24,7 @@ public class AppModule extends AbstractModule {
         bind(IProductService.class).to(ProductService.class);
         bind(ICategoryService.class).to(CategoryService.class);
         bind(IAuthService.class).to(AuthService.class);
+        bind(IUploadImageService.class).to(UploadImageService.class);
 
         // Bind DAO
         bind(ICategoryDAO.class).to(CategoryDAO.class);

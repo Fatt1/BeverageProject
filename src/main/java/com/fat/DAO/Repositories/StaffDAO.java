@@ -31,10 +31,6 @@ public class StaffDAO implements IStaffDAO {
         return null;
     }
 
-    @Override
-    public UserSessionDTO login(String username, String password) {
-        return null;
-    }
 
 
     @Override
@@ -51,6 +47,5 @@ public class StaffDAO implements IStaffDAO {
     public void delete(Integer id) {
 
     }
-
 
 }

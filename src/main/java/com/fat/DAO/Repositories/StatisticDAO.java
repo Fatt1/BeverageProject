@@ -2,51 +2,50 @@ package com.fat.DAO.Repositories;
 
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IStaffDAO;
+import com.fat.DAO.Abstractions.Repositories.IStatisticDAO;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
 import com.fat.DTO.Staffs.StaffDetailDTO;
 import com.fat.DTO.Staffs.StaffViewDTO;
+import com.fat.DTO.Statistics.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
-public class StatisticDAO implements IStaffDAO {
+public class StatisticDAO implements IStatisticDAO {
+
     @Override
-    public PagedResult<StaffViewDTO> getAllPagination(int pageIndex, int pageSize) {
+    public SummaryStatisticDTO getSummaryStatistics() {
         return null;
     }
 
     @Override
-    public List<StaffViewDTO> getAll() {
+    public List<RevenueDTO> getRevenueStatisticsByMonth(int year) {
         return List.of();
     }
 
     @Override
-    public PagedResult<StaffViewDTO> filter(String searchKey, int pageIndex, int pageSize) {
+    public List<RevenueDTO> getRevenueStatisticsByYear(int startYear, int endYear) {
+        return List.of();
+    }
+
+    @Override
+    public List<RevenueDTO> getRevenueStatisticsByDateInMonth(int month, int year) {
+        return List.of();
+    }
+
+    @Override
+    public List<CustomerStatisticDTO> getCustomerStatistic(String searchKey, LocalDate fromDate, LocalDate toDate) {
+        return List.of();
+    }
+
+    @Override
+    public PagedResult<StockStatisticDTO> getStockStatistic(String searchKey, LocalDate fromDate, LocalDate toDate, int pageIndex, int pageSize) {
         return null;
     }
 
     @Override
-    public StaffDetailDTO getById(Integer id) {
-        return null;
-    }
-
-    @Override
-    public UserSessionDTO login(String username, String password) {
-        return null;
-    }
-
-    @Override
-    public void add(CreateOrUpdateStaffDTO entity) {
-
-    }
-
-    @Override
-    public void update(CreateOrUpdateStaffDTO entity) {
-
-    }
-
-    @Override
-    public void delete(Integer id) {
-
+    public List<SupplierStatisticDTO> getSupplierStatistic(String searchKey, LocalDate fromDate, LocalDate toDate) {
+        return List.of();
     }
 }

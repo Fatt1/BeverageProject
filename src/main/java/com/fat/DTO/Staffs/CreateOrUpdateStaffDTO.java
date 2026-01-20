@@ -1,11 +1,13 @@
 package com.fat.DTO.Staffs;
 
 import com.fat.DTO.Abstractions.CreateOrUpdateDTO;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class CreateOrUpdateStaffDTO extends CreateOrUpdateDTO<Integer> {
+    @NotBlank(message = "Tên nhân viên không được để trống")
     private String firstName;
     private String lastName;
     private LocalDateTime birthDate;

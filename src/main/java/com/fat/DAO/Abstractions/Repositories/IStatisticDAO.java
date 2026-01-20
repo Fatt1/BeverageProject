@@ -6,7 +6,7 @@ import com.fat.DTO.Statistics.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface StatisticDAO {
+public interface IStatisticDAO {
     SummaryStatisticDTO getSummaryStatistics();
     List<RevenueDTO> getRevenueStatisticsByMonth(int year);
     List<RevenueDTO> getRevenueStatisticsByYear(int startYear, int endYear);

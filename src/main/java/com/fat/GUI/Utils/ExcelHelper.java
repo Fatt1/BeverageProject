@@ -40,7 +40,7 @@ public class ExcelHelper {
                     cell.setCellStyle(headerStyle);
                 }
 
-                for(int row = 0; row < model.getColumnCount(); row++) {
+                for(int row = 0; row < model.getRowCount(); row++) {
                     Row excelRow = sheet.createRow(row + 1);
                     for(int col = 0; col < model.getColumnCount(); col++) {
                         Cell cell = excelRow.createCell(col);

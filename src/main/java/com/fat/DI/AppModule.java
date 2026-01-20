@@ -1,7 +1,9 @@
 package com.fat.DI;
 
+import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
+import com.fat.BUS.Services.AuthService;
 import com.fat.BUS.Services.CategoryService;
 import com.fat.BUS.Services.ProductService;
 import com.fat.DAO.Abstractions.Repositories.ICategoryDAO;
@@ -19,6 +21,7 @@ public class AppModule extends AbstractModule {
         // Giống: services.AddTransient<IAuthService, AuthService>();
         bind(IProductService.class).to(ProductService.class);
         bind(ICategoryService.class).to(CategoryService.class);
+        bind(IAuthService.class).to(AuthService.class);
 
         // Bind DAO
         bind(ICategoryDAO.class).to(CategoryDAO.class);

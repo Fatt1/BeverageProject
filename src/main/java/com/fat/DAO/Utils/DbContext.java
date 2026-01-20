@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DbContext {
+    private static final String USERNAME = "sa";
     private static final String URL = "jdbc:sqlserver://localhost:1434;"
             + "database=GroceryDB;"
             +"user=sa;"

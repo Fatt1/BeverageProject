@@ -101,6 +101,7 @@ public class MainForm extends javax.swing.JFrame {
         tbtnStaff = new javax.swing.JToggleButton();
         tbtnRole = new javax.swing.JToggleButton();
         tbtnStatistic = new javax.swing.JToggleButton();
+        jButton1 = new javax.swing.JButton();
         mainContentPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -321,6 +322,16 @@ public class MainForm extends javax.swing.JFrame {
         tbtnStatistic.addActionListener(this::tbtnStatisticActionPerformed);
         sidebarPandel.add(tbtnStatistic);
 
+        jButton1.setBackground(new java.awt.Color(134, 134, 134));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Đăng xuất");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setMaximumSize(new java.awt.Dimension(300, 50));
+        jButton1.setPreferredSize(new java.awt.Dimension(100, 50));
+        sidebarPandel.add(jButton1);
+
         getContentPane().add(sidebarPandel, java.awt.BorderLayout.WEST);
 
         mainContentPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -409,6 +420,7 @@ public class MainForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;

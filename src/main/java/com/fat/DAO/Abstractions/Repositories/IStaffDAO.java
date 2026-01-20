@@ -13,5 +13,4 @@ public interface IStaffDAO extends IDAO<CreateOrUpdateStaffDTO, Integer> {
     List<StaffViewDTO> getAll();
     PagedResult<StaffViewDTO> filter(String searchKey, int pageIndex, int pageSize);
     StaffDetailDTO getById(Integer id);
-    UserSessionDTO login(String username, String password);
 }

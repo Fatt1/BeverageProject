@@ -4,6 +4,7 @@
  */
 package com.fat.GUI.Panels.Products;
 
+import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.Contract.Shared.PagedResult;
@@ -11,6 +12,7 @@ import com.fat.DTO.Categories.CategoryViewDTO;
 import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
+import com.fat.GUI.Utils.ExcelHelper;
 import com.fat.GUI.Utils.FormatterUtil;
 import com.fat.GUI.Utils.ImageHelper;
 import com.fat.GUI.Utils.ImageRenderer;
@@ -35,13 +37,15 @@ public class ProductsPanel extends javax.swing.JPanel {
      */
     private IProductService productService;
     private ICategoryService categoryService;
+    private IAuthService authService;
 
     private ArrayList<ProductViewDTO> products = new ArrayList<>();
 
     @Inject
-    public ProductsPanel(IProductService productService, ICategoryService categoryService) {
+    public ProductsPanel(IProductService productService, ICategoryService categoryService, IAuthService authService) {
         this.categoryService = categoryService;
         this.productService = productService;
+        this.authService = authService;
         initComponents();
         initalTable();
         setCss();
@@ -125,7 +129,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void setCss() {
         String styleBtn = "" +
-                "arc: 10;" +
+
                 "borderWidth: 0;";
         btnAdd.putClientProperty(FlatClientProperties.STYLE, styleBtn
         );
@@ -390,7 +394,25 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        // TODO add your handling code here:
+        JTable table = new JTable();
+        List<ProductViewDTO> allProducts = productService.getAllProducts();
+        String[] columns = {"STT","ID", "Tên Sản Phẩm", "Giá Bán", "Đơn Vị Tính", "Tồn Kho", "Danh Mục"};
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setColumnIdentifiers(columns);
+        int counter = 1;
+        for (ProductViewDTO p : allProducts) {
+            Object[] row = new Object[]{
+                    counter++,
+                    p.getId(),
+                    p.getName(),
+                    FormatterUtil.toVND(p.getPrice()),
+                    p.getUnit(),
+                    p.getStock(),
+                    p.getCategoryName()
+            };
+            model.addRow(row);
+        }
+        ExcelHelper.exportToExcel(table, "Danh_sach_san_pham.xlsx", "Danh sách sản phẩm");
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
@@ -413,7 +435,21 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+       int choose = JOptionPane.showConfirmDialog(this, "Bạn có chăc muốn xóa sản phẩm này", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+       if(choose != JOptionPane.YES_OPTION) {
+           return;
+       }
+
+       int selectedRow = tblProduct.getSelectedRow();
+       if(selectedRow == -1) {
+           JOptionPane.showConfirmDialog(this, "Vui lòng chọn sản phẩm để xóa", "Chưa chọn sản phẩm", JOptionPane.WARNING_MESSAGE);
+           return;
+       }
+       Object idObj = tblProduct.getValueAt(selectedRow, 3);
+       int id = Integer.parseInt(idObj.toString());
+       productService.deleteProduct(id);
+       loadData(1, 10);
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed

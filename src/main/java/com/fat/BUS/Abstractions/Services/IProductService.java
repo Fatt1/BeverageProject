@@ -5,6 +5,8 @@ import com.fat.DTO.Products.CreateOrUpdateProductDTO;
 import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 
+import java.util.List;
+
 public interface IProductService {
     void createProduct(CreateOrUpdateProductDTO dto);
     void updateProduct(CreateOrUpdateProductDTO dto);
@@ -12,4 +14,5 @@ public interface IProductService {
     PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize);
     PagedResult<ProductViewDTO> filterProduct(String searchKey, Integer categoryId, int pageIndex, int pageSize);
     ProductDetailDTO getProductById(Integer id);
+    List<ProductViewDTO> getAllProducts();
 }

@@ -22,7 +22,7 @@ public class ProductDAO implements IProductDAO{
         String sql = "SELECT P.[Image], P.Name, P.Id, P.Price, P.Unit, P.Stock, P.CategoryId, C.Name AS CategoryName " +
                 "FROM [Product] AS P " +
                 "JOIN Category AS C " +
-                "ON P.CategoryId = C.Id ORDER BY P.UpdatedAt DESC " +
+                "ON P.CategoryId = C.Id WHERE P.IsDeleted = 0 ORDER BY P.UpdatedAt DESC " +
                 "OFFSET ? ROWS " +
                 "FETCH NEXT ? ROWS ONLY;";
         String countSql = "SELECT COUNT(*) AS TotalCount FROM [Product];";
@@ -77,7 +77,7 @@ public class ProductDAO implements IProductDAO{
     public ProductDetailDTO getById(Integer id) {
         String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.CategoryId " +
                 "FROM [Product] AS P " +
-                "WHERE P.Id = ?;";
+                "WHERE P.Id = ? AND P.IsDeleted = 0;";
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
         )
@@ -99,6 +99,44 @@ public class ProductDAO implements IProductDAO{
             sqlException.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public List<ProductViewDTO> getAll() {
+        String sql = "SELECT P.[Image], P.Name, P.Id, P.Price, P.Unit, P.Stock, P.CategoryId, C.Name AS CategoryName " +
+                "FROM [Product] AS P " +
+                "JOIN Category AS C " +
+                "ON P.CategoryId = C.Id WHERE P.IsDeleted = 0 ORDER BY P.UpdatedAt DESC ";
+
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        )
+        {
+            ResultSet rs = null;
+            rs = ps.executeQuery();
+            if(rs != null) {
+                List<ProductViewDTO> products = new ArrayList<>();
+                while(rs.next()) {
+                    Integer id = rs.getInt("Id");
+                    String name = rs.getString("Name");
+                    String image = rs.getString("Image");
+                    BigDecimal price = rs.getBigDecimal("Price");
+                    String unit = rs.getString("Unit");
+                    int stock = rs.getInt("Stock");
+                    int categoryId = rs.getInt("CategoryId");
+                    String categoryName = rs.getString("CategoryName");
+                    ProductViewDTO product = new ProductViewDTO(id, categoryName, categoryId, stock, price, name, image, unit);
+                    products.add(product);
+                }
+                return products;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
 
@@ -151,6 +189,19 @@ public class ProductDAO implements IProductDAO{
     //Soft Delete
     @Override
     public void delete(Integer id) {
+        String sql = "UPDATE PRODUCT " +
+                "SET IsDeleted = 1" +
+                "WHERE Id= ?;";
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
 
     }
 

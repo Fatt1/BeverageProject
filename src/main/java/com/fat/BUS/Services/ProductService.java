@@ -8,6 +8,8 @@ import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 import com.google.inject.Inject;
 
+import java.util.List;
+
 
 public class ProductService implements IProductService {
     private final IProductDAO productDAO;
@@ -45,6 +47,11 @@ public class ProductService implements IProductService {
     @Override
     public ProductDetailDTO getProductById(Integer id) {
         return productDAO.getById(id);
+    }
+
+    @Override
+    public List<ProductViewDTO> getAllProducts() {
+        return productDAO.getAll();
     }
 }
 

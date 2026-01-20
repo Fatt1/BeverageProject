@@ -1,3 +1,6 @@
 ﻿# BeverageProject
 
-docker-compose docker-compose.yml up -d
+```bash
+docker-compose -f docker-compose.yml up -d
+```
+

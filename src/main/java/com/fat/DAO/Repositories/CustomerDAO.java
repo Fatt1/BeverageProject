@@ -8,34 +8,32 @@ import com.fat.DTO.Customers.CustomerViewDTO;
 import java.util.List;
 
 public class CustomerDAO implements ICustomerDAO {
+    private static CustomerDAO instance;
+
+    private CustomerDAO() {
+    }
+
+    public static CustomerDAO getInstance() {
+        if (instance == null) {
+            instance = new CustomerDAO();
+        }
+        return instance;
+    }
+
     @Override
-    public List<CustomerViewDTO> filterNoPagination(String keyword) {
+    public List<CustomerViewDTO> getAll() {
         return List.of();
     }
 
     @Override
-    public PagedResult<CustomerViewDTO> getAllPagination(int pageIndex, int pageSize) {
+    public CustomerViewDTO getById(Integer id) {
         return null;
     }
 
+
     @Override
-    public PagedResult<CustomerViewDTO> filter(String keyword, int pageIndex, int pageSize) {
+    public Integer add(CreateOrUpdateCustomerDTO entity) {
         return null;
-    }
-
-    @Override
-    public CustomerViewDTO getCustomerById(Integer id) {
-        return null;
-    }
-
-    @Override
-    public boolean isPhoneNumberExists(String phoneNumber) {
-        return false;
-    }
-
-    @Override
-    public void add(CreateOrUpdateCustomerDTO entity) {
-
     }
 
     @Override
@@ -47,6 +45,4 @@ public class CustomerDAO implements ICustomerDAO {
     public void delete(Integer id) {
 
     }
-
-
 }

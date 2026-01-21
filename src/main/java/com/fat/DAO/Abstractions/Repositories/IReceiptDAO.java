@@ -9,12 +9,9 @@ import com.fat.DTO.Receipts.ReceptDetailDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface IReceiptDAO extends IDAO<CreateOrUpdateReceiptDTO, Integer> {
-    PagedResult<ReceiptViewDTO> getAllPagination(int pageIndex, int pageSize);
-    PagedResult<ReceiptViewDTO> filter(String keyword, LocalDateTime from, LocalDateTime to,
-                                       Integer staffId, BigDecimal totalAmount,
-                                       int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy);
+    List<ReceiptViewDTO> getAll();
     ReceptDetailDTO getById(Integer id);
-
 }

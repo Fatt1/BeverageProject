@@ -10,11 +10,9 @@ import com.fat.DTO.Receipts.ReceiptViewDTO;
 import com.fat.DTO.Receipts.ReceptDetailDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface IImportDAO extends IDAO<CreateOrUpdateImportDTO, Integer> {
-    PagedResult<ImportViewDTO> getAllPagination(int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy);
-    PagedResult<ImportViewDTO> filter(String keyword, LocalDateTime from , LocalDateTime to,
-                                      ImportStatus status, Integer staffId, Integer supplierId,
-                                      int pageIndex, int pageSize);
+    List<ImportViewDTO> getAll();
     ReceptDetailDTO getById(Integer id);
 }

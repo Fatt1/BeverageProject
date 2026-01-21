@@ -9,6 +9,7 @@ import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.IUploadImageService;
 import com.fat.BUS.Services.UploadImageService;
 import com.fat.BUS.Utils.ValidatorUtil;
+import com.fat.Contract.Exceptions.DuplicateProductNameException;
 import com.fat.Contract.Exceptions.ValidationException;
 import com.fat.DTO.Categories.CategoryViewDTO;
 import com.fat.DTO.Products.CreateOrUpdateProductDTO;
@@ -31,10 +32,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateProductDialog.class.getName());
     private IProductService productService;
     private ICategoryService categoryService;
-
     private JFileChooser fileChooser = new JFileChooser();
-
-
     private ProductDetailDTO productDetailDTO = null;
     /**
      * Creates new form AddProductDialog
@@ -278,7 +276,6 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 }
             }
 
-
             if(selectedFile != null && needUpload) {
                 IUploadImageService uploadImageService = new UploadImageService();
                 imageName = uploadImageService.uploadImage(selectedFile.getName(), selectedFile.toPath());
@@ -313,6 +310,9 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
         catch (ValidationException validationException) {
             JOptionPane.showMessageDialog(this, validationException.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+        catch (DuplicateProductNameException duplicateEx) {
+            JOptionPane.showMessageDialog(this, duplicateEx.getMessage(), "Lỗi trùng tên sản phẩm", JOptionPane.ERROR_MESSAGE);
+        }
         catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Đã có lỗi xảy ra khi thêm sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             logger.severe("Lỗi khi thêm sản phẩm: " + ex);
@@ -339,8 +339,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
 
             if(productDetailDTO.getImage() != null ) {
                 // Lấy đường dẫn gốc dự án
-                String projectRoot = System.getProperty("user.dir"); // WaterManagementProject
-                String fullImagePath = projectRoot + File.separator + "product_images" + File.separator + productDetailDTO.getImage();
+                String fullImagePath = ImageHelper.getImagePath(productDetailDTO.getImage());
                 fileChooser.setSelectedFile(new File(fullImagePath));
                 ImageIcon icon = new ImageIcon(fullImagePath);
                 lblImage.setIcon(ImageHelper.resizeImage(icon, lblImage.getWidth(), lblImage.getHeight()));

@@ -11,9 +11,21 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class PromotionDAO implements IPromotionDAO {
+    private static PromotionDAO instance;
+
+    private PromotionDAO() {
+    }
+
+    public static PromotionDAO getInstance() {
+        if (instance == null) {
+            instance = new PromotionDAO();
+        }
+        return instance;
+    }
+
     @Override
-    public PagedResult<PromotionViewDTO> getAllPagination(int pageIndex, int pageSize) {
-        return null;
+    public List<PromotionViewDTO> getAll() {
+        return List.of();
     }
 
     @Override
@@ -32,8 +44,8 @@ public class PromotionDAO implements IPromotionDAO {
     }
 
     @Override
-    public void add(CreateOrUpdatePromotionDTO entity) {
-
+    public Integer add(CreateOrUpdatePromotionDTO entity) {
+        return null;
     }
 
     @Override

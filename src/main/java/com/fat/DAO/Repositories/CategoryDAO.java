@@ -83,7 +83,22 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public boolean isExistAnyProductInCategory(Integer categoryId) {
-        return false;
+        String sql = "SELECT COUNT(*) AS Total FROM Product WHERE CategoryId = ? AND IsDeleted = 0";
+        try(
+            Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ){
+            ps.setInt(1, categoryId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                int count = rs.getInt("Total");
+                return count > 0;
+            }
+            return false;
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

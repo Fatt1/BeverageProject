@@ -12,4 +12,5 @@ public interface IProductDAO extends IDAO<CreateOrUpdateProductDTO, Integer> {
     ProductDetailDTO getById(Integer id);
     List<ProductViewDTO> getAll();
     boolean isExistByName(String name, Integer excludeId);
+
 }

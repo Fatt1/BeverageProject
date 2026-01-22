@@ -71,6 +71,12 @@ public class MainForm extends javax.swing.JFrame {
         UIManager.put("Table.cellNoFocusBorder", new EmptyBorder(0, 10, 0, 10));
         UIManager.put("Table.focusCellHighlightBorder", new EmptyBorder(0, 10, 0, 10));
 
+
+        UIManager.put("Button.arc", 10);
+        UIManager.put("Component.arc", 10); // Áp dụng cho TextField, ComboBox, Spinner...
+        UIManager.put("ProgressBar.arc", 10);
+        UIManager.put("TextComponent.arc", 10);
+
         this.setLocationRelativeTo(null);
     }
 

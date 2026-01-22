@@ -136,7 +136,6 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void setCss() {
         String styleBtn = "" +
-
                 "borderWidth: 0;";
         btnAdd.putClientProperty(FlatClientProperties.STYLE, styleBtn
         );
@@ -153,8 +152,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
 
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tên sản phẩm");
-        txtSearch.putClientProperty(FlatClientProperties.STYLE, "arc: 10;");
-        cboCategory.putClientProperty(FlatClientProperties.STYLE, "arc: 10;");
+
 
 
         TableColumnModel col = tblProduct.getColumnModel();

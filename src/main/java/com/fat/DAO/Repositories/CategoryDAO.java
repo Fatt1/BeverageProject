@@ -88,7 +88,23 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public Integer add(CreateOrUpdateCategoryDTO entity) {
-        return null;
+        String sql = "INSERT INTO Category (Name) VALUES (?)";
+        try(
+            Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)        ){
+            ps.setString(1, entity.getName());
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                return rs.getInt(1);
+            } else {
+                return null;
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

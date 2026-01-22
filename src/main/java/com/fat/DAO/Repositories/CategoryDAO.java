@@ -78,7 +78,27 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public List<CategoryViewDTO> filter(String keyword) {
-        return List.of();
+        String sql = "SELECT Id, Name FROM Category WHERE Name LIKE ?";
+        try(
+            Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ){
+            String pattern = "%" + keyword + "%";
+            ps.setString(1, pattern);
+            ResultSet rs = ps.executeQuery();
+            List<CategoryViewDTO> categories = new ArrayList<>();
+            while(rs.next()){
+                Integer id = rs.getInt("Id");
+                String name = rs.getString("Name");
+                CategoryViewDTO category = new CategoryViewDTO(id, name);
+                categories.add(category);
+
+            }
+            return categories;          
+        }catch(SQLException e){
+            e.printStackTrace();
+            return new ArrayList<>(); //return list rong neu err
+        }
     }
 
     @Override

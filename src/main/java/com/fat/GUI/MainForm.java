@@ -115,6 +115,7 @@ public class MainForm extends javax.swing.JFrame {
         setTitle("Phần mềm quản lý bán tạp hóa");
         setBackground(new java.awt.Color(255, 255, 255));
         setLocation(new java.awt.Point(0, 0));
+        setPreferredSize(new java.awt.Dimension(1210, 900));
         getContentPane().setLayout(new java.awt.BorderLayout(10, 0));
 
         sidebarPandel.setBackground(new java.awt.Color(217, 217, 217));

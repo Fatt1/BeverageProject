@@ -39,11 +39,10 @@
         <Component class="javax.swing.JTable" name="tblProduct">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="8" rowCount="0">
-                <Column editable="false" title="#" type="java.lang.Object"/>
+              <Table columnCount="7" rowCount="0">
+                <Column editable="false" title="ID" type="java.lang.String"/>
                 <Column editable="false" title="H&#xcc;NH S&#x1ea2;N PH&#x1ea8;M" type="java.lang.Object"/>
                 <Column editable="false" title="T&#xca;N S&#x1ea2;N PH&#x1ea8;M" type="java.lang.String"/>
-                <Column editable="false" title="ID" type="java.lang.String"/>
                 <Column editable="false" title="GI&#xc1; B&#xc1;N" type="java.lang.String"/>
                 <Column editable="false" title="&#x110;&#x1a0;N VI T&#xcd;NH" type="java.lang.String"/>
                 <Column editable="false" title="T&#x1ed2;N KHO" type="java.lang.Object"/>
@@ -63,11 +62,6 @@
                   <Renderer/>
                 </Column>
                 <Column maxWidth="-1" minWidth="100" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="10" resizable="false">
                   <Title/>
                   <Editor/>
                   <Renderer/>

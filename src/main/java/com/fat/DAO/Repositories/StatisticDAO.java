@@ -13,6 +13,17 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class StatisticDAO implements IStatisticDAO {
+    private static StatisticDAO instance;
+
+    private StatisticDAO() {
+    }
+
+    public static StatisticDAO getInstance() {
+        if (instance == null) {
+            instance = new StatisticDAO();
+        }
+        return instance;
+    }
 
     @Override
     public SummaryStatisticDTO getSummaryStatistics() {

@@ -1,6 +1,5 @@
 package com.fat.DAO.Repositories;
 
-import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.ICategoryDAO;
 import com.fat.DAO.Utils.DbContext;
 import com.fat.DTO.Categories.CategoryViewDTO;
@@ -13,6 +12,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CategoryDAO implements ICategoryDAO {
+    private static CategoryDAO instance;
+
+    private CategoryDAO() {
+    }
+
+    public static CategoryDAO getInstance() {
+        if (instance == null) {
+            instance = new CategoryDAO();
+        }
+        return instance;
+    }
+
     @Override
     public List<CategoryViewDTO> getAll() {
         String sql = "SELECT Id, Name FROM Category;";
@@ -41,23 +52,43 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public PagedResult<CategoryViewDTO> getAllPagination(int pageIndex, int pageSize) {
-        return null;
-    }
-
-    @Override
     public CategoryViewDTO getById(Integer id) {
-        return null;
+
+        String sql = "SELECT Id, Name FROM Category WHERE Id = ?;";
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        )
+        {
+           ps.setInt(1, id);
+           ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                Integer categoryId = rs.getInt("Id");
+                String name = rs.getString("Name");
+                return new CategoryViewDTO(categoryId, name);
+            }
+            return null;
+
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override
-    public PagedResult<CategoryViewDTO> filter(String keyword, int pageIndex, int pageSize) {
-        return null;
+    public List<CategoryViewDTO> filter(String keyword) {
+        return List.of();
     }
 
     @Override
-    public void add(CreateOrUpdateCategoryDTO entity) {
+    public boolean isExistAnyProductInCategory(Integer categoryId) {
+        return false;
+    }
 
+    @Override
+    public Integer add(CreateOrUpdateCategoryDTO entity) {
+        return null;
     }
 
     @Override

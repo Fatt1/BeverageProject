@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IPromotionDAO extends IDAO<CreateOrUpdatePromotionDTO, Integer> {
-    PagedResult<PromotionViewDTO> getAllPagination(int pageIndex, int pageSize);
+    List<PromotionViewDTO> getAll();
     PagedResult<PromotionViewDTO> filter(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize);
     PagedResult<PromotionDetailDTO> getById(Integer id);
     List<PromotionItemDTO> getPromotionItemsByProductId(LocalDate date, Integer productId);

@@ -8,10 +8,18 @@ import com.fat.DTO.Roles.RoleClaimViewDTO;
 import java.util.List;
 
 public class RoleClaimService implements IRoleClaimService {
+    private static RoleClaimService instance;
     private final IRoleClaimDAO roleClaimDAO;
 
-    public RoleClaimService(IRoleClaimDAO roleClaimDAO) {
+    private RoleClaimService(IRoleClaimDAO roleClaimDAO) {
         this.roleClaimDAO = roleClaimDAO;
+    }
+
+    public static RoleClaimService getInstance(IRoleClaimDAO roleClaimDAO) {
+        if (instance == null) {
+            instance = new RoleClaimService(roleClaimDAO);
+        }
+        return instance;
     }
 
     @Override

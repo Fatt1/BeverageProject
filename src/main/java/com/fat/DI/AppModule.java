@@ -21,14 +21,14 @@ public class AppModule extends AbstractModule {
     protected void configure() {
         // Bind your services
         // Giống: services.AddTransient<IAuthService, AuthService>();
-        bind(IProductService.class).to(ProductService.class);
-        bind(ICategoryService.class).to(CategoryService.class);
-        bind(IAuthService.class).to(AuthService.class);
-        bind(IUploadImageService.class).to(UploadImageService.class);
-
-        // Bind DAO
-        bind(ICategoryDAO.class).to(CategoryDAO.class);
-        bind(IProductDAO.class).to(ProductDAO.class);
+//        bind(IProductService.class).to(ProductService.class);
+//        bind(ICategoryService.class).to(CategoryService.class);
+//        bind(IAuthService.class).to(AuthService.class);
+//        bind(IUploadImageService.class).to(UploadImageService.class);
+//
+//        // Bind DAO
+//        bind(ICategoryDAO.class).to(CategoryDAO.class);
+//        bind(IProductDAO.class).to(ProductDAO.class);
 
         bind(MainForm.class).in(Singleton.class);
     }

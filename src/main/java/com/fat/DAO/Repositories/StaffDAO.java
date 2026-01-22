@@ -1,8 +1,6 @@
 package com.fat.DAO.Repositories;
 
-import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IStaffDAO;
-import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
 import com.fat.DTO.Staffs.StaffDetailDTO;
 import com.fat.DTO.Staffs.StaffViewDTO;
@@ -10,10 +8,16 @@ import com.fat.DTO.Staffs.StaffViewDTO;
 import java.util.List;
 
 public class StaffDAO implements IStaffDAO {
-    @Override
-    public PagedResult<StaffViewDTO> getAllPagination(int pageIndex, int pageSize) {
-        // Sắp xếp theo ten nhân viên A-Z
-        return null;
+    private static StaffDAO instance;
+
+    private StaffDAO() {
+    }
+
+    public static StaffDAO getInstance() {
+        if (instance == null) {
+            instance = new StaffDAO();
+        }
+        return instance;
     }
 
     @Override
@@ -22,8 +26,8 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
-    public PagedResult<StaffViewDTO> filter(String searchKey, int pageIndex, int pageSize) {
-        return null;
+    public List<StaffViewDTO> filter(String searchKey) {
+        return List.of();
     }
 
     @Override
@@ -31,11 +35,9 @@ public class StaffDAO implements IStaffDAO {
         return null;
     }
 
-
-
     @Override
-    public void add(CreateOrUpdateStaffDTO entity) {
-
+    public Integer add(CreateOrUpdateStaffDTO entity) {
+        return null;
     }
 
     @Override

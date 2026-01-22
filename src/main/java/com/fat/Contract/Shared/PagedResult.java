@@ -1,6 +1,7 @@
 package com.fat.Contract.Shared;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PagedResult <T> {
 
@@ -12,20 +13,25 @@ public class PagedResult <T> {
     private boolean hasNextPage;
     private boolean hasPreviousPage;
 
-    private PagedResult(List<T> items, int totalItems, int pageIndex, int pageSize) {
+    private PagedResult(List<T> items , int totalItems, int pageIndex, int pageSize) {
         this.items = items;
-        this.totalItems = totalItems;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
+        this.totalItems = totalItems;
         this.totalPages = (int) Math.ceil((double) totalItems / pageSize);
         this.hasNextPage = pageIndex < totalPages;
         this.hasPreviousPage = pageIndex > 1;
     }
 
-    public static <T>PagedResult<T> create(List<T> items, int totalItems, Integer pageIndex, Integer pageSize) {
+    public static <T>PagedResult<T> create(Stream<T> stream,int totalItems, Integer pageIndex, Integer pageSize) {
         int effectivePageIndex = (pageIndex == null || pageIndex < 1) ? 1 : pageIndex;
         int effectivePageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
-        return new PagedResult<>(items, totalItems, effectivePageIndex, effectivePageSize);
+        int skipPage = (effectivePageIndex - 1) * effectivePageSize;
+        List<T> items = stream
+                .skip(skipPage)
+                .limit(effectivePageSize)
+                .toList();
+        return new PagedResult<>(items, totalItems,effectivePageIndex, effectivePageSize);
     }
 
     public boolean isHasNextPage() {

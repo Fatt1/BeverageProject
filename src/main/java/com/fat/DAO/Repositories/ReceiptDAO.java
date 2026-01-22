@@ -10,19 +10,26 @@ import com.fat.DTO.Receipts.ReceptDetailDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReceiptDAO implements IReceiptDAO {
-    @Override
-    public PagedResult<ReceiptViewDTO> getAllPagination(int pageIndex, int pageSize) {
-        return null;
+    private static ReceiptDAO instance;
+
+    private ReceiptDAO() {
+    }
+
+    public static ReceiptDAO getInstance() {
+        if (instance == null) {
+            instance = new ReceiptDAO();
+        }
+        return instance;
     }
 
     @Override
-    public PagedResult<ReceiptViewDTO> filter(String keyword, LocalDateTime from, LocalDateTime to,
-                                              Integer staffId, BigDecimal totalAmount,
-                                              int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy) {
-        return null;
+    public List<ReceiptViewDTO> getAll() {
+        return List.of();
     }
+
 
     @Override
     public ReceptDetailDTO getById(Integer id) {
@@ -30,11 +37,12 @@ public class ReceiptDAO implements IReceiptDAO {
     }
 
     @Override
-    public void add(CreateOrUpdateReceiptDTO entity) {
+    public Integer add(CreateOrUpdateReceiptDTO entity) {
         // TODO Auto-generated method stub
         // Nhớ thêm đơn hàng thì trừ tồn kho của sản phẩm tương ứng
         // Nhớ thêm lịch sử nhập xuất kho của từng sản pẩm
         // Sử dung transaction để đảm bảo tính toàn vẹn dữ liệu
+        return null;
     }
 
     @Override

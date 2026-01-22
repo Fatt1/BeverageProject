@@ -6,6 +6,7 @@ package com.fat.GUI;
 
 import com.fat.DI.AppModule;
 import com.fat.GUI.Panels.Products.ProductsPanel;
+import com.fat.GUI.Panels.Staffs.StaffsPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
@@ -70,6 +71,12 @@ public class MainForm extends javax.swing.JFrame {
         // Padding (Khoảng cách) nội dung trong ô cho đỡ dính lề
         UIManager.put("Table.cellNoFocusBorder", new EmptyBorder(0, 10, 0, 10));
         UIManager.put("Table.focusCellHighlightBorder", new EmptyBorder(0, 10, 0, 10));
+
+
+        UIManager.put("Button.arc", 10);
+        UIManager.put("Component.arc", 10); // Áp dụng cho TextField, ComboBox, Spinner...
+        UIManager.put("ProgressBar.arc", 10);
+        UIManager.put("TextComponent.arc", 10);
 
         this.setLocationRelativeTo(null);
     }
@@ -389,7 +396,16 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnCustomerActionPerformed
 
     private void tbtnStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStaffActionPerformed
-        // TODO add your handling code here:
+        if (mainContentPanel.getComponentCount() > 0 &&
+            mainContentPanel.getComponent(0) instanceof StaffsPanel) {
+            return; // Không làm gì cả, thoát hàm
+        }
+        StaffsPanel pPanel = new StaffsPanel();
+        mainContentPanel.removeAll();
+        mainContentPanel.add(pPanel);
+
+        mainContentPanel.revalidate(); // Tính toán lại bố cục (Layout)
+        mainContentPanel.repaint();
     }//GEN-LAST:event_tbtnStaffActionPerformed
 
     private void tbtnRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnRoleActionPerformed

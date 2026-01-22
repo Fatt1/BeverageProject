@@ -1,18 +1,29 @@
 package com.fat.BUS.Services;
 
 import com.fat.BUS.Abstractions.Services.IRoleService;
-import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IRoleDAO;
+import com.fat.DAO.Repositories.RoleDAO;
 import com.fat.DTO.Roles.CreateOrUpdateRoleDTO;
 import com.fat.DTO.Roles.RoleViewDTO;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RoleService implements IRoleService {
+    private static RoleService instance;
     private final IRoleDAO roleDAO;
+    private final ArrayList<RoleViewDTO> rolesCache = new ArrayList<>();
 
-    public RoleService(IRoleDAO roleDAO) {
-        this.roleDAO = roleDAO;
+    private RoleService() {
+        this.roleDAO = RoleDAO.getInstance();
+    }
+
+    public static RoleService getInstance() {
+        if (instance == null) {
+            instance = new RoleService();
+        }
+        return instance;
     }
 
     @Override
@@ -31,13 +42,14 @@ public class RoleService implements IRoleService {
     }
 
     @Override
-    public PagedResult<RoleViewDTO> getAllRolesPagination(int pageIndex, int pageSize) {
-        return roleDAO.getAllPagination(pageIndex, pageSize);
+    public List<RoleViewDTO> getAllRoles() {
+        return roleDAO.getAll();
     }
 
     @Override
-    public List<RoleViewDTO> getAllRoles() {
-        return roleDAO.getAll();
+    public List<RoleViewDTO> filterRoleByList(String searchKey) {
+        // TODO: Implement filter from ArrayList
+        return null;
     }
 }
 

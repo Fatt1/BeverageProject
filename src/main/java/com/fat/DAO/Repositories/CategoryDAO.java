@@ -126,7 +126,17 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public void delete(Integer id) {
-        
+        String sql = "DELETE FROM Category WHERE Id = ?";
+        try(
+            Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }catch (SQLException e) {
+            e.printStackTrace();
+            // KHÔNG throw exception (giống ProductDAO)
+        }
     }
 
 }

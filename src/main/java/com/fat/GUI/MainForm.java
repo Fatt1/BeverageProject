@@ -6,6 +6,7 @@ package com.fat.GUI;
 
 import com.fat.DI.AppModule;
 import com.fat.GUI.Panels.Products.ProductsPanel;
+import com.fat.GUI.Panels.Staffs.StaffsPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
@@ -114,7 +115,6 @@ public class MainForm extends javax.swing.JFrame {
         setTitle("Phần mềm quản lý bán tạp hóa");
         setBackground(new java.awt.Color(255, 255, 255));
         setLocation(new java.awt.Point(0, 0));
-        setPreferredSize(new java.awt.Dimension(1400, 900));
         getContentPane().setLayout(new java.awt.BorderLayout(10, 0));
 
         sidebarPandel.setBackground(new java.awt.Color(217, 217, 217));
@@ -396,7 +396,16 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnCustomerActionPerformed
 
     private void tbtnStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStaffActionPerformed
-        // TODO add your handling code here:
+        if (mainContentPanel.getComponentCount() > 0 &&
+            mainContentPanel.getComponent(0) instanceof StaffsPanel) {
+            return; // Không làm gì cả, thoát hàm
+        }
+        StaffsPanel pPanel = new StaffsPanel();
+        mainContentPanel.removeAll();
+        mainContentPanel.add(pPanel);
+
+        mainContentPanel.revalidate(); // Tính toán lại bố cục (Layout)
+        mainContentPanel.repaint();
     }//GEN-LAST:event_tbtnStaffActionPerformed
 
     private void tbtnRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnRoleActionPerformed

@@ -36,7 +36,7 @@ public class ProductService implements IProductService {
 
     @Override
     public void createProduct(CreateOrUpdateProductDTO dto) {
-        boolean isExists = productsCache.stream().anyMatch(p -> p.getName().equalsIgnoreCase(dto.getName()));
+        boolean isExists = productDAO.isExistByName(dto.getName(), null);
         if(isExists) {
             throw new DuplicateProductNameException("Tên sản phầm đã tồn tại: " + dto.getName());
         }
@@ -52,7 +52,7 @@ public class ProductService implements IProductService {
 
     @Override
     public void updateProduct(CreateOrUpdateProductDTO dto) {
-        boolean isExists = productsCache.stream().anyMatch(p -> p.getName().equalsIgnoreCase(dto.getName()) & p.getId() != dto.getId());
+        boolean isExists = productDAO.isExistByName(dto.getName(), dto.getId());
         if(isExists) {
             throw new DuplicateProductNameException("Tên sản phầm đã tồn tại: " + dto.getName());
         }

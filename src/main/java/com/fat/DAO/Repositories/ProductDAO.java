@@ -211,6 +211,32 @@ public class ProductDAO implements IProductDAO {
 
     }
 
+    @Override
+    public boolean isExistByName(String name, Integer excludeId) {
+        String sql = "SELECT COUNT(*) AS TotalCount FROM [Product] " +
+                "WHERE Name = ? ";
+        if (excludeId != null)
+            sql += " AND Id <> ?;";
+
+            try (Connection conn = DbContext.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql);
+            ) {
+                ps.setString(1, name);
+                if (excludeId != null) {
+                    ps.setInt(2, excludeId);
+                }
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    int count = rs.getInt("TotalCount");
+                    return count > 0;
+                }
+                return false;
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+                return false;
+            }
+        }
+
 
     @Override
     public Integer add(CreateOrUpdateProductDTO entity) {

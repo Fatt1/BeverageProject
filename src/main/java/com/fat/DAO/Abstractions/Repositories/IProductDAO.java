@@ -11,4 +11,5 @@ public interface IProductDAO extends IDAO<CreateOrUpdateProductDTO, Integer> {
    // PagedResult<ProductViewDTO> filter(String searchKey, Integer categoryId, int pageIndex, int pageSize);
     ProductDetailDTO getById(Integer id);
     List<ProductViewDTO> getAll();
+    boolean isExistByName(String name, Integer excludeId);
 }

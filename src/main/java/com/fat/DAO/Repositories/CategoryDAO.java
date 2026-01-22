@@ -82,6 +82,11 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
+    public boolean isExistAnyProductInCategory(Integer categoryId) {
+        return false;
+    }
+
+    @Override
     public Integer add(CreateOrUpdateCategoryDTO entity) {
         return null;
     }

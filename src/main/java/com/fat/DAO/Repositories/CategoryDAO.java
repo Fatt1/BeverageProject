@@ -109,12 +109,24 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public void update(CreateOrUpdateCategoryDTO entity) {
-
+        String sql = "UPDATE CATEGORY " + 
+        "SET NAME = ? WHERE Id = ?";
+        try(
+            Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setString(1, entity.getName());
+            ps.setInt(2, entity.getId());
+            ps.executeUpdate(); 
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Xảy ra lỗi khi cập nhật danh mục", e);
+        }
     }
 
     @Override
     public void delete(Integer id) {
-
+        
     }
 
 }

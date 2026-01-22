@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface ISupplierDAO extends IDAO<CreateOrUpdateSupplierDTO, Integer> {
     List<SupplierViewDTO> getAll();
-    List<SupplierViewDTO> filter(String searchKey);
     SupplierViewDTO getById(Integer id);
 }

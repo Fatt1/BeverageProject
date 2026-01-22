@@ -43,8 +43,8 @@ public class ProductService implements IProductService {
 
        Integer id =  productDAO.add(dto);
        if(id != null) {
-           String categoryName = categoryDAO.getById(dto.getCategoryId()).getName();
-              ProductViewDTO newProduct = new ProductViewDTO(id, categoryName ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
+           ProductDetailDTO productDetailDTO = productDAO.getById(id);
+              ProductViewDTO newProduct = new ProductViewDTO(id, productDetailDTO.getCategoryName() ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
               productsCache.addFirst(newProduct);
        }
 
@@ -104,9 +104,5 @@ public class ProductService implements IProductService {
 
     }
 
-    @Override
-    public boolean hasProductInCategoryId(Integer categoryId) {
-        return productsCache.stream().anyMatch(p -> p.getCategoryId() == categoryId);
-    }
 }
 

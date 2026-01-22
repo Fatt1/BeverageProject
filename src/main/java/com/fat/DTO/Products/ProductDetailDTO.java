@@ -10,6 +10,7 @@ public class ProductDetailDTO {
     private BigDecimal price;
     private int stock;
     private int categoryId;
+    private String categoryName;
 
 
     public Integer getId() {
@@ -17,8 +18,9 @@ public class ProductDetailDTO {
     }
 
     public ProductDetailDTO(Integer id, String name, String image, String unit,
-                            BigDecimal price, int stock, int categoryId) {
+                            BigDecimal price, int stock, int categoryId, String categoryName) {
         this.id = id;
+        this.categoryName = categoryName;
         this.name = name;
         this.image = image;
         this.unit = unit;
@@ -29,6 +31,10 @@ public class ProductDetailDTO {
 
     public String getName() {
         return name;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public int getCategoryId() {

@@ -4,7 +4,6 @@
  */
 package com.fat.GUI.Panels.Products;
 
-import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.IUploadImageService;
@@ -17,7 +16,7 @@ import com.fat.DTO.Products.CreateOrUpdateProductDTO;
 import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
-import com.fat.GUI.Utils.ExcelHelper;
+import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.GUI.Utils.FormatterUtil;
 import com.fat.GUI.Utils.ImageHelper;
 import com.fat.GUI.Utils.ImageRenderer;
@@ -31,7 +30,6 @@ import javax.swing.table.TableColumnModel;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -24,10 +24,6 @@ public class SupplierDAO implements ISupplierDAO {
         return List.of();
     }
 
-    @Override
-    public List<SupplierViewDTO> filter(String searchKey) {
-        return List.of();
-    }
 
     @Override
     public SupplierViewDTO getById(Integer id) {

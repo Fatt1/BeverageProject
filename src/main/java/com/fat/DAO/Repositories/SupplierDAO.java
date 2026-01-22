@@ -4,25 +4,19 @@ import java.util.List;
 import com.fat.DTO.Suppliers.SupplierViewDTO;
 import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
 import com.fat.DAO.Abstractions.Repositories.ISupplierDAO;
-import com.fat.Contract.Shared.PagedResult;
 
 
 public class SupplierDAO implements ISupplierDAO {
+    private static SupplierDAO instance;
 
-
-    @Override
-    public PagedResult<SupplierViewDTO> getAllPagination(int pageIndex, int pageSize) {
-        return null;
+    private SupplierDAO() {
     }
 
-    @Override
-    public PagedResult<SupplierViewDTO> filter(String searchKey, int pageIndex, int pageSize) {
-        return null;
-    }
-
-    @Override
-    public SupplierViewDTO getById(Integer id) {
-        return null;
+    public static SupplierDAO getInstance() {
+        if (instance == null) {
+            instance = new SupplierDAO();
+        }
+        return instance;
     }
 
     @Override
@@ -31,8 +25,18 @@ public class SupplierDAO implements ISupplierDAO {
     }
 
     @Override
-    public void add(CreateOrUpdateSupplierDTO entity) {
+    public List<SupplierViewDTO> filter(String searchKey) {
+        return List.of();
+    }
 
+    @Override
+    public SupplierViewDTO getById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public Integer add(CreateOrUpdateSupplierDTO entity) {
+        return null;
     }
 
     @Override

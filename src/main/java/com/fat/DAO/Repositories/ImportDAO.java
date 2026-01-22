@@ -10,19 +10,26 @@ import com.fat.DTO.Imports.ImportViewDTO;
 import com.fat.DTO.Receipts.ReceptDetailDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ImportDAO implements IImportDAO {
-    @Override
-    public PagedResult<ImportViewDTO> getAllPagination(int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy) {
-        return null;
+    private static ImportDAO instance;
+
+    private ImportDAO() {
+    }
+
+    public static ImportDAO getInstance() {
+        if (instance == null) {
+            instance = new ImportDAO();
+        }
+        return instance;
     }
 
     @Override
-    public PagedResult<ImportViewDTO> filter(String keyword, LocalDateTime from, LocalDateTime to,
-                                             ImportStatus status, Integer staffId, Integer supplierId,
-                                             int pageIndex, int pageSize) {
-        return null;
+    public List<ImportViewDTO> getAll() {
+        return List.of();
     }
+
 
     @Override
     public ReceptDetailDTO getById(Integer id) {
@@ -30,8 +37,8 @@ public class ImportDAO implements IImportDAO {
     }
 
     @Override
-    public void add(CreateOrUpdateImportDTO entity) {
-
+    public Integer add(CreateOrUpdateImportDTO entity) {
+        return null;
     }
 
     @Override

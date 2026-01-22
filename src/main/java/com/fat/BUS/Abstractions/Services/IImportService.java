@@ -9,15 +9,16 @@ import com.fat.DTO.Imports.ImportViewDTO;
 import com.fat.DTO.Receipts.ReceptDetailDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface IImportService {
     void createImport(CreateOrUpdateImportDTO dto);
     void updateImport(CreateOrUpdateImportDTO dto);
     void deleteImport(Integer id);
-    PagedResult<ImportViewDTO> getAllImportsPagination(int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy);
-    PagedResult<ImportViewDTO> filterImport(String keyword, LocalDateTime from, LocalDateTime to,
+    List<ImportViewDTO> getAllImports();
+    PagedResult<ImportViewDTO> filterImportByList(String keyword, LocalDateTime from, LocalDateTime to,
                                             ImportStatus status, Integer staffId, Integer supplierId,
-                                            int pageIndex, int pageSize);
+                                            int pageIndex, int pageSize); // Filter từ ArrayList
     ReceptDetailDTO getImportById(Integer id);
 }
 

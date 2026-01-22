@@ -11,8 +11,11 @@ public interface IProductService {
     void createProduct(CreateOrUpdateProductDTO dto);
     void updateProduct(CreateOrUpdateProductDTO dto);
     void deleteProduct(Integer id);
-    PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize);
-    PagedResult<ProductViewDTO> filterProduct(String searchKey, Integer categoryId, int pageIndex, int pageSize);
+//    PagedResult<ProductViewDTO> filterProduct(String searchKey, Integer categoryId, int pageIndex, int pageSize);
+    PagedResult<ProductViewDTO> filterProductByList(String searchKey, Integer categoryId, int pageIndex, int pageSize); // Filter từ ArrayList
     ProductDetailDTO getProductById(Integer id);
     List<ProductViewDTO> getAllProducts();
+    PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize);
+    boolean hasProductInCategoryId(Integer categoryId);
+
 }

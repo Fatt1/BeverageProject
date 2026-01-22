@@ -9,15 +9,16 @@ import com.fat.DTO.Receipts.ReceptDetailDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface IReceiptService {
     void createReceipt(CreateOrUpdateReceiptDTO dto);
     void updateReceipt(CreateOrUpdateReceiptDTO dto);
     void deleteReceipt(Integer id);
-    PagedResult<ReceiptViewDTO> getAllReceiptsPagination(int pageIndex, int pageSize);
-    PagedResult<ReceiptViewDTO> filterReceipt(String keyword, LocalDateTime from, LocalDateTime to,
+    List<ReceiptViewDTO> getAllReceipts();
+    PagedResult<ReceiptViewDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
                                               Integer staffId, BigDecimal totalAmount,
-                                              int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy);
+                                              int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy); // Filter từ ArrayList
     ReceptDetailDTO getReceiptById(Integer id);
 }
 

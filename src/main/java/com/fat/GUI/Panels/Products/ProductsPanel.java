@@ -8,6 +8,8 @@ import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.IUploadImageService;
+import com.fat.BUS.Services.CategoryService;
+import com.fat.BUS.Services.ProductService;
 import com.fat.BUS.Services.UploadImageService;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DTO.Categories.CategoryViewDTO;
@@ -48,9 +50,9 @@ public class ProductsPanel extends javax.swing.JPanel {
 
 
     @Inject
-    public ProductsPanel(IProductService productService, ICategoryService categoryService) {
-        this.categoryService = categoryService;
-        this.productService = productService;
+    public ProductsPanel() {
+        this.categoryService = CategoryService.getInstance();
+        this.productService = ProductService.getInstance();
         initComponents();
         initalTable();
         setCss();
@@ -197,9 +199,8 @@ public class ProductsPanel extends javax.swing.JPanel {
             result = productService.getAllProductPagination(pageIndex, pageSize);
         }
         else{
-            result = productService.filterProduct(searchKey, selectedCategoryId, pageIndex, pageSize);
+            result = productService.filterProductByList(searchKey, selectedCategoryId, pageIndex, pageSize);
         }
-
 
         // 4. Đổ dữ liệu
         fillTable(result.getItems());
@@ -461,8 +462,6 @@ public class ProductsPanel extends javax.swing.JPanel {
                     CreateOrUpdateProductDTO product = new CreateOrUpdateProductDTO(name, image, unit, price, categoryId);
                     productService.createProduct(product);
                 }
-
-
 
                 catch (Exception ex) {
                     ex.printStackTrace();

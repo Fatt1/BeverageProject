@@ -14,8 +14,8 @@ public interface IPromotionService {
     void createPromotion(CreateOrUpdatePromotionDTO dto);
     void updatePromotion(CreateOrUpdatePromotionDTO dto);
     void deletePromotion(Integer id);
-    PagedResult<PromotionViewDTO> getAllPromotionsPagination(int pageIndex, int pageSize);
-    PagedResult<PromotionViewDTO> filterPromotion(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize);
+    List<PromotionViewDTO> getAllPromotions();
+    PagedResult<PromotionViewDTO> filterPromotionByList(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize); // Filter từ ArrayList
     PagedResult<PromotionDetailDTO> getPromotionById(Integer id);
     BigDecimal calculateDiscountPrice(Integer productId, BigDecimal originalPrice);
 

@@ -3,6 +3,7 @@ package com.fat.BUS.Services;
 import com.fat.BUS.Abstractions.Services.IPromotionService;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IPromotionDAO;
+import com.fat.DAO.Repositories.PromotionDAO;
 import com.fat.DTO.Promotions.CreateOrUpdatePromotionDTO;
 import com.fat.DTO.Promotions.PromotionDetailDTO;
 import com.fat.DTO.Promotions.PromotionItemDTO;
@@ -10,13 +11,23 @@ import com.fat.DTO.Promotions.PromotionViewDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PromotionService implements IPromotionService {
+    private static PromotionService instance;
     private final IPromotionDAO promotionDAO;
+    private final ArrayList<PromotionViewDTO> promotionsCache = new ArrayList<>();
 
-    public PromotionService(IPromotionDAO promotionDAO) {
-        this.promotionDAO = promotionDAO;
+    private PromotionService() {
+        this.promotionDAO = PromotionDAO.getInstance();
+    }
+
+    public static PromotionService getInstance() {
+        if (instance == null) {
+            instance = new PromotionService();
+        }
+        return instance;
     }
 
     @Override
@@ -35,13 +46,16 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public PagedResult<PromotionViewDTO> getAllPromotionsPagination(int pageIndex, int pageSize) {
-        return promotionDAO.getAllPagination(pageIndex, pageSize);
+    public List<PromotionViewDTO> getAllPromotions() {
+        // TODO: Implement getAll
+        return null;
     }
 
+
     @Override
-    public PagedResult<PromotionViewDTO> filterPromotion(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize) {
-        return promotionDAO.filter(searchKey, from, to, pageIndex, pageSize);
+    public PagedResult<PromotionViewDTO> filterPromotionByList(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize) {
+        // TODO: Implement filter from ArrayList
+        return null;
     }
 
     @Override

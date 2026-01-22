@@ -5,18 +5,30 @@ import com.fat.Contract.Enumerations.ReceiptSort;
 import com.fat.Contract.Enumerations.SortOrder;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IReceiptDAO;
+import com.fat.DAO.Repositories.ReceiptDAO;
 import com.fat.DTO.Receipts.CreateOrUpdateReceiptDTO;
 import com.fat.DTO.Receipts.ReceiptViewDTO;
 import com.fat.DTO.Receipts.ReceptDetailDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReceiptService implements IReceiptService {
+    private static ReceiptService instance;
     private final IReceiptDAO receiptDAO;
+    private final ArrayList<ReceiptViewDTO> receiptsCache = new ArrayList<>();
 
-    public ReceiptService(IReceiptDAO receiptDAO) {
-        this.receiptDAO = receiptDAO;
+    private ReceiptService() {
+        this.receiptDAO = ReceiptDAO.getInstance();
+    }
+
+    public static ReceiptService getInstance() {
+        if (instance == null) {
+            instance = new ReceiptService();
+        }
+        return instance;
     }
 
     @Override
@@ -35,15 +47,18 @@ public class ReceiptService implements IReceiptService {
     }
 
     @Override
-    public PagedResult<ReceiptViewDTO> getAllReceiptsPagination(int pageIndex, int pageSize) {
-        return receiptDAO.getAllPagination(pageIndex, pageSize);
+    public List<ReceiptViewDTO> getAllReceipts() {
+        // TODO: Implement getAll
+        return null;
     }
 
+
     @Override
-    public PagedResult<ReceiptViewDTO> filterReceipt(String keyword, LocalDateTime from, LocalDateTime to,
+    public PagedResult<ReceiptViewDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
                                                      Integer staffId, BigDecimal totalAmount,
                                                      int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy) {
-        return receiptDAO.filter(keyword, from, to, staffId, totalAmount, pageIndex, pageSize, sortOrder, sortBy);
+        // TODO: Implement filter from ArrayList
+        return null;
     }
 
     @Override

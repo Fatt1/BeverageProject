@@ -16,7 +16,7 @@ import java.util.List;
 public class ImportService implements IImportService {
     private static ImportService instance;
     private final IImportDAO importDAO;
-    private final ArrayList<ImportViewDTO> importsCache = new ArrayList<>();
+    private List<ImportViewDTO> importsCache = new ArrayList<>();
 
     private ImportService() {
         this.importDAO = ImportDAO.getInstance();
@@ -62,6 +62,12 @@ public class ImportService implements IImportService {
     @Override
     public ReceptDetailDTO getImportById(Integer id) {
         return importDAO.getById(id);
+    }
+
+    @Override
+    public void refreshCache() {
+        this.importsCache = importDAO.getAll();
+
     }
 }
 

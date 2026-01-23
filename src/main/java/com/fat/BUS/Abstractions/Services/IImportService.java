@@ -20,5 +20,6 @@ public interface IImportService {
                                             ImportStatus status, Integer staffId, Integer supplierId,
                                             int pageIndex, int pageSize); // Filter từ ArrayList
     ReceptDetailDTO getImportById(Integer id);
+    void refreshCache();
 }
 

@@ -18,7 +18,7 @@ import java.util.List;
 public class ReceiptService implements IReceiptService {
     private static ReceiptService instance;
     private final IReceiptDAO receiptDAO;
-    private final ArrayList<ReceiptViewDTO> receiptsCache = new ArrayList<>();
+    private  List<ReceiptViewDTO> receiptsCache = new ArrayList<>();
 
     private ReceiptService() {
         this.receiptDAO = ReceiptDAO.getInstance();
@@ -64,6 +64,11 @@ public class ReceiptService implements IReceiptService {
     @Override
     public ReceptDetailDTO getReceiptById(Integer id) {
         return receiptDAO.getById(id);
+    }
+
+    @Override
+    public void refreshCache() {
+        this.receiptsCache = receiptDAO.getAll();
     }
 }
 

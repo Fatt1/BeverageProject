@@ -27,6 +27,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
@@ -54,24 +57,46 @@ public class ProductsPanel extends javax.swing.JPanel {
         initComponents();
         initalTable();
         setCss();
-        loadCategories();
-
         // 1. Gọi DAO lấy dữ liệu phân trang
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                updateDataOnShow();
+            }
+        });
+
 
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
             loadData(pageIndex, pageSize);
         });
 
+
+
         // Load dữ liệu trang đầu tiên
         loadData(1, 10);
     }
 
-    private void loadCategories() {
-        DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
+    private void updateDataOnShow() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        new Thread(() -> {
+            categoryService.refreshCategoryCache();
+            productService.refreshProductList();
+            var categoriesFromDB = categoryService.getAllCategories();
+            SwingUtilities.invokeLater(() -> {
+                loadCategories(categoriesFromDB);
+                loadData(1, 10);
+                setCursor(Cursor.getDefaultCursor());
+            });
 
+        }).start();
+    }
+
+
+    private void loadCategories(List<CategoryViewDTO> categories) {
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
+        model.removeAllElements();
         CategoryViewDTO allCategory = new CategoryViewDTO(0, "Tất cả");
         model.addElement(allCategory);
-        var categories = categoryService.getAllCategories();
 
         for (var c : categories) {
             model.addElement(c);
@@ -80,6 +105,8 @@ public class ProductsPanel extends javax.swing.JPanel {
         cboCategory.setSelectedIndex(0);
 
     }
+
+
 
     private void fillTable(List<ProductViewDTO> products) {
 
@@ -146,7 +173,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
 
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tên sản phẩm");
-
+        txtSearch.putClientProperty(FlatClientProperties.STYLE, "arc: 10");
 
 
         TableColumnModel col = tblProduct.getColumnModel();

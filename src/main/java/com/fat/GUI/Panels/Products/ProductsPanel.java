@@ -156,29 +156,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void setCss() {
-        String styleBtn = "" +
-                "borderWidth: 0;";
-        btnAdd.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnDelete.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnUpdate.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnImportExcel.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnExportExcel.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnReset.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-
 
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tên sản phẩm");
-        txtSearch.putClientProperty(FlatClientProperties.STYLE, "arc: 10");
-
 
         TableColumnModel col = tblProduct.getColumnModel();
         col.getColumn(1).setCellRenderer(new ImageRenderer());
-        tblProduct.setRowHeight(70);
 
 
         col.getColumn(0).setPreferredWidth(50);

@@ -10,4 +10,6 @@ public interface IStaffDAO extends IDAO<CreateOrUpdateStaffDTO, Integer> {
     List<StaffViewDTO> getAll();
     List<StaffViewDTO> filter(String searchKey);
     StaffDetailDTO getById(Integer id);
+    boolean hasTransaction(Integer staffId);
+    boolean isExistByUserName(String userName, Integer excludeId);
 }

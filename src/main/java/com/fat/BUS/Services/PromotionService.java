@@ -17,7 +17,7 @@ import java.util.List;
 public class PromotionService implements IPromotionService {
     private static PromotionService instance;
     private final IPromotionDAO promotionDAO;
-    private final ArrayList<PromotionViewDTO> promotionsCache = new ArrayList<>();
+    private  List<PromotionViewDTO> promotionsCache = new ArrayList<>();
 
     private PromotionService() {
         this.promotionDAO = PromotionDAO.getInstance();
@@ -66,6 +66,11 @@ public class PromotionService implements IPromotionService {
     @Override
     public BigDecimal calculateDiscountPrice(Integer productId, BigDecimal originalPrice) {
         return null;
+    }
+
+    @Override
+    public void refreshCache() {
+        this.promotionsCache = promotionDAO.getAll();
     }
 }
 

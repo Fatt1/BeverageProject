@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class StaffService implements IStaffService {
     private static StaffService instance;
     private final IStaffDAO staffDAO;
-    private final ArrayList<StaffViewDTO> staffsCache = new ArrayList<>();
+    private List<StaffViewDTO> staffsCache = new ArrayList<>();
 
     private StaffService() {
         this.staffDAO = StaffDAO.getInstance();
@@ -45,14 +45,26 @@ public class StaffService implements IStaffService {
 
     @Override
     public List<StaffViewDTO> getAllStaffs() {
-        return staffDAO.getAll();
+        if(staffsCache.isEmpty()){
+           staffsCache = staffDAO.getAll();
+        }
+        return staffsCache;
     }
 
 
     @Override
     public List<StaffViewDTO> filterStaffByList(String searchKey) {
-        // TODO: Implement filter from ArrayList
-        return null;
+        if(searchKey == null || searchKey.trim().isEmpty()){
+            return staffsCache;
+        }
+        String sk = searchKey.toLowerCase();
+
+        
+        return staffsCache.stream().filter(staff ->{
+            String fullName = staff.getFullName().toLowerCase();
+            return fullName.contains(sk) ;
+        })
+        .collect(Collectors.toList());
     }
 
     @Override
@@ -60,5 +72,9 @@ public class StaffService implements IStaffService {
         return staffDAO.getById(id);
     }
 
+    @Override
+    public void refreshCache() {
+        this.staffsCache = staffDAO.getAll();
+    }
 }
 

@@ -150,8 +150,8 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public ProductDetailDTO getById(Integer id) {
-        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.CategoryId " +
-                "FROM [Product] AS P " +
+        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.CategoryId, C.Name AS CategoryName " +
+                "FROM [Product] AS P JOIN Category AS C ON P.CategoryId = C.Id " +
                 "WHERE P.Id = ? AND P.IsDeleted = 0;";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)
@@ -165,7 +165,8 @@ public class ProductDAO implements IProductDAO {
                 BigDecimal price = rs.getBigDecimal("Price");
                 String unit = rs.getString("Unit");
                 int categoryId = rs.getInt("CategoryId");
-                return new ProductDetailDTO(productId, name, image, unit, price, 0, categoryId);
+                String categoryName = rs.getString("CategoryName");
+                return new ProductDetailDTO(productId, name, image, unit, price, 0, categoryId, categoryName);
             }
             return null;
         } catch (SQLException sqlException) {

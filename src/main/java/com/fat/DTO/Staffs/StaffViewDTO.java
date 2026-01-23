@@ -1,13 +1,14 @@
 package com.fat.DTO.Staffs;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 public class StaffViewDTO {
     private Integer id;
     private String firstName;
     private String lastName;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     private BigDecimal salary;
     private String phoneNumber;
     private String userName;
@@ -16,7 +17,7 @@ public class StaffViewDTO {
 
 
     public StaffViewDTO(Integer id, String firstName,
-                        String lastName, LocalDateTime birthDate, String phoneNumber,
+                        String lastName, LocalDate birthDate, String phoneNumber,
                         BigDecimal salary, Integer roleId, String userName, String roleName) {
         this.id = id;
         this.firstName = firstName;
@@ -41,11 +42,15 @@ public class StaffViewDTO {
         return lastName;
     }
 
+    public String getFullName() {
+        return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+    }
+
     public BigDecimal getSalary() {
         return salary;
     }
 
-    public LocalDateTime getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 

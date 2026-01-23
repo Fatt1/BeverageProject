@@ -6,6 +6,7 @@ package com.fat.GUI;
 
 import com.fat.DI.AppModule;
 import com.fat.GUI.Panels.Products.ProductsPanel;
+import com.fat.GUI.Panels.Staffs.StaffsPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
@@ -27,15 +28,14 @@ import java.math.BigDecimal;
 public class MainForm extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainForm.class.getName());
-    private final Provider<ProductsPanel> productsPanelProvider;
+    private CardLayout cardLayout;
     /**
      * Creates new form MainForm
      */
     @Inject
-    public MainForm(Provider<ProductsPanel> productsPanelProvider) {
-        this.productsPanelProvider = productsPanelProvider;
+    public MainForm() {
         initComponents();
-        
+        setupCardLayout();
 //        tbtnTrangChu.putClientProperty("JButton.buttonType", "toolBarButton");
         UIManager.put("ToggleButton.selectedBackground", new Color(0, 120, 215)); // Màu xanh dương
         UIManager.put("ToggleButton.selectedForeground", Color.WHITE); // Chữ trắng
@@ -344,7 +344,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainContentPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
         mainContentPanel.setPreferredSize(new java.awt.Dimension(1000, 723));
-        mainContentPanel.setLayout(new java.awt.BorderLayout());
+        mainContentPanel.setLayout(new java.awt.CardLayout());
         getContentPane().add(mainContentPanel, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -363,18 +363,19 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnReceiptActionPerformed
 
     private void tbtnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnProductActionPerformed
-
-        if (mainContentPanel.getComponentCount() > 0 &&
-            mainContentPanel.getComponent(0) instanceof ProductsPanel) {
-            return; // Không làm gì cả, thoát hàm
-        }
-        ProductsPanel pPanel = productsPanelProvider.get();
-        mainContentPanel.removeAll();
-        mainContentPanel.add(pPanel);
-
-        mainContentPanel.revalidate(); // Tính toán lại bố cục (Layout)
-        mainContentPanel.repaint();
+        cardLayout.show(mainContentPanel, "PRODUCTS");
     }//GEN-LAST:event_tbtnProductActionPerformed
+
+    private void setupCardLayout() {
+        cardLayout = new CardLayout();
+        mainContentPanel.setLayout(cardLayout);
+
+        // Khởi tạo tất cả panels 1 lần
+       var productsPanel = new ProductsPanel();
+        // Add vào CardLayout
+        mainContentPanel.add(productsPanel, "PRODUCTS");
+        mainContentPanel.add(new StaffsPanel(), "STAFFS");
+    }
 
     private void tbtnSellingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSellingActionPerformed
         // TODO add your handling code here:
@@ -397,7 +398,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnCustomerActionPerformed
 
     private void tbtnStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStaffActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "STAFFS");
     }//GEN-LAST:event_tbtnStaffActionPerformed
 
     private void tbtnRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnRoleActionPerformed

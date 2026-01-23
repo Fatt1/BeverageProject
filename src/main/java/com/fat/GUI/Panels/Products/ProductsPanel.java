@@ -4,7 +4,6 @@
  */
 package com.fat.GUI.Panels.Products;
 
-import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.IUploadImageService;
@@ -17,7 +16,7 @@ import com.fat.DTO.Products.CreateOrUpdateProductDTO;
 import com.fat.DTO.Products.ProductDetailDTO;
 import com.fat.DTO.Products.ProductViewDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
-import com.fat.GUI.Utils.ExcelHelper;
+import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.GUI.Utils.FormatterUtil;
 import com.fat.GUI.Utils.ImageHelper;
 import com.fat.GUI.Utils.ImageRenderer;
@@ -28,10 +27,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,24 +57,46 @@ public class ProductsPanel extends javax.swing.JPanel {
         initComponents();
         initalTable();
         setCss();
-        loadCategories();
-
         // 1. Gọi DAO lấy dữ liệu phân trang
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                updateDataOnShow();
+            }
+        });
+
 
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
             loadData(pageIndex, pageSize);
         });
 
+
+
         // Load dữ liệu trang đầu tiên
         loadData(1, 10);
     }
 
-    private void loadCategories() {
-        DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
+    private void updateDataOnShow() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        new Thread(() -> {
+            categoryService.refreshCategoryCache();
+            productService.refreshProductList();
+            var categoriesFromDB = categoryService.getAllCategories();
+            SwingUtilities.invokeLater(() -> {
+                loadCategories(categoriesFromDB);
+                loadData(1, 10);
+                setCursor(Cursor.getDefaultCursor());
+            });
 
+        }).start();
+    }
+
+
+    private void loadCategories(List<CategoryViewDTO> categories) {
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
+        model.removeAllElements();
         CategoryViewDTO allCategory = new CategoryViewDTO(0, "Tất cả");
         model.addElement(allCategory);
-        var categories = categoryService.getAllCategories();
 
         for (var c : categories) {
             model.addElement(c);
@@ -83,20 +106,19 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     }
 
+
+
     private void fillTable(List<ProductViewDTO> products) {
 
         DefaultTableModel model = (DefaultTableModel) tblProduct.getModel();
         model.setRowCount(0);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        int index = 1;
         for (ProductViewDTO p : products) {
-            int i = 0;
             Object[] row = new Object[]{
-                    index++,
+                    p.getId(),
                     ImageHelper.resizeImage(new ImageIcon(ImageHelper.getImagePath(p.getImage())), 60, 60),
                     p.getName(),
-                    p.getId(),
                     FormatterUtil.toVND(p.getPrice()),
                     p.getUnit(),
                     p.getStock(),
@@ -121,10 +143,9 @@ public class ProductsPanel extends javax.swing.JPanel {
 
         // Dùng mảng String cho tiêu đề
         String[] headers = {
-                "#",
+                "ID",
                 "HÌNH SẢN PHẨM",
                 "TÊN SẢN PHẨM",
-                "ID",
                 "GIÁ BÁN",
                 "ĐƠN VỊ TÍNH",
                 "TỒN KHO",
@@ -152,17 +173,16 @@ public class ProductsPanel extends javax.swing.JPanel {
 
 
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tên sản phẩm");
-
+        txtSearch.putClientProperty(FlatClientProperties.STYLE, "arc: 10");
 
 
         TableColumnModel col = tblProduct.getColumnModel();
         col.getColumn(1).setCellRenderer(new ImageRenderer());
         tblProduct.setRowHeight(70);
 
-        // STT
+
         col.getColumn(0).setPreferredWidth(50);
         col.getColumn(0).setMaxWidth(60);
-
         // Hình
         col.getColumn(1).setPreferredWidth(170);
         col.getColumn(1).setMaxWidth(200);
@@ -170,21 +190,18 @@ public class ProductsPanel extends javax.swing.JPanel {
         // Tên Sản Phẩm (Quan trọng: set số to và KHÔNG set MaxWidth)
         col.getColumn(2).setPreferredWidth(200);
 
-        // ID
-        col.getColumn(3).setPreferredWidth(50);
-        col.getColumn(3).setMaxWidth(60);
 
         // Giá Bán
-        col.getColumn(4).setPreferredWidth(150);
-        col.getColumn(4).setMaxWidth(180);
+        col.getColumn(3).setPreferredWidth(150);
+        col.getColumn(3).setMaxWidth(180);
 
         // Đơn Vị Tính
-        col.getColumn(5).setPreferredWidth(100);
-        col.getColumn(5).setMaxWidth(150);
+        col.getColumn(4).setPreferredWidth(100);
+        col.getColumn(4).setMaxWidth(150);
 
         // Tồn Kho
-        col.getColumn(6).setPreferredWidth(120);
-        col.getColumn(6).setMaxWidth(150);
+        col.getColumn(5).setPreferredWidth(120);
+        col.getColumn(5).setMaxWidth(150);
 
 
     }
@@ -241,14 +258,14 @@ public class ProductsPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "#", "HÌNH SẢN PHẨM", "TÊN SẢN PHẨM", "ID", "GIÁ BÁN", "ĐƠN VI TÍNH", "TỒN KHO", "DANH MỤC"
+                "ID", "HÌNH SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ BÁN", "ĐƠN VI TÍNH", "TỒN KHO", "DANH MỤC"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -265,12 +282,10 @@ public class ProductsPanel extends javax.swing.JPanel {
             tblProduct.getColumnModel().getColumn(0).setResizable(false);
             tblProduct.getColumnModel().getColumn(0).setPreferredWidth(10);
             tblProduct.getColumnModel().getColumn(2).setMinWidth(100);
-            tblProduct.getColumnModel().getColumn(3).setResizable(false);
-            tblProduct.getColumnModel().getColumn(3).setPreferredWidth(10);
+            tblProduct.getColumnModel().getColumn(4).setResizable(false);
+            tblProduct.getColumnModel().getColumn(4).setPreferredWidth(10);
             tblProduct.getColumnModel().getColumn(5).setResizable(false);
-            tblProduct.getColumnModel().getColumn(5).setPreferredWidth(10);
-            tblProduct.getColumnModel().getColumn(6).setResizable(false);
-            tblProduct.getColumnModel().getColumn(6).setPreferredWidth(30);
+            tblProduct.getColumnModel().getColumn(5).setPreferredWidth(30);
         }
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -397,7 +412,7 @@ public class ProductsPanel extends javax.swing.JPanel {
                     "Vui lòng chọn sản phẩm để chỉnh sửa.", "Chưa chọn sản phẩm", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        Object idObj = tblProduct.getValueAt(selectedRow, 3); // Cột ID
+        Object idObj = tblProduct.getValueAt(selectedRow, 0); // Cột ID
         int id = Integer.parseInt(idObj.toString());
         ProductDetailDTO productDetailDTO = productService.getProductById(id);
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -417,10 +432,8 @@ public class ProductsPanel extends javax.swing.JPanel {
         String[] columns = {"STT","ID", "Tên Sản Phẩm", "Giá Bán", "Đơn Vị Tính", "Tồn Kho", "Danh Mục"};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setColumnIdentifiers(columns);
-        int counter = 1;
         for (ProductViewDTO p : allProducts) {
             Object[] row = new Object[]{
-                    counter++,
                     p.getId(),
                     p.getName(),
                     FormatterUtil.toVND(p.getPrice()),
@@ -494,17 +507,19 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-       int choose = JOptionPane.showConfirmDialog(this, "Bạn có chăc muốn xóa sản phẩm này", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-       if(choose != JOptionPane.YES_OPTION) {
-           return;
-       }
+
 
        int selectedRow = tblProduct.getSelectedRow();
        if(selectedRow == -1) {
            JOptionPane.showConfirmDialog(this, "Vui lòng chọn sản phẩm để xóa", "Chưa chọn sản phẩm", JOptionPane.WARNING_MESSAGE);
            return;
        }
-       Object idObj = tblProduct.getValueAt(selectedRow, 3);
+
+        int choose = JOptionPane.showConfirmDialog(this, "Bạn có chăc muốn xóa sản phẩm này", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if(choose != JOptionPane.YES_OPTION) {
+            return;
+        }
+       Object idObj = tblProduct.getValueAt(selectedRow, 0);
        int id = Integer.parseInt(idObj.toString());
        productService.deleteProduct(id);
        loadData(1, 10);

@@ -21,10 +21,10 @@ public class ProductService implements IProductService {
     private final IProductDAO productDAO = ProductDAO.getInstance();
     private final ICategoryDAO categoryDAO = CategoryDAO.getInstance();
 
-    private final List<ProductViewDTO> productsCache;
+    private List<ProductViewDTO> productsCache;
     @Inject
     private ProductService() {
-        productsCache = productDAO.getAll();
+        productsCache = new ArrayList<>();
     }
 
     public static ProductService getInstance() {
@@ -33,6 +33,7 @@ public class ProductService implements IProductService {
         }
         return instance;
     }
+
 
     @Override
     public void createProduct(CreateOrUpdateProductDTO dto) {
@@ -43,8 +44,8 @@ public class ProductService implements IProductService {
 
        Integer id =  productDAO.add(dto);
        if(id != null) {
-           String categoryName = categoryDAO.getById(dto.getCategoryId()).getName();
-              ProductViewDTO newProduct = new ProductViewDTO(id, categoryName ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
+           ProductDetailDTO productDetailDTO = productDAO.getById(id);
+              ProductViewDTO newProduct = new ProductViewDTO(id, productDetailDTO.getCategoryName() ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
               productsCache.addFirst(newProduct);
        }
 
@@ -105,8 +106,9 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public boolean hasProductInCategoryId(Integer categoryId) {
-        return productsCache.stream().anyMatch(p -> p.getCategoryId() == categoryId);
+    public void refreshProductList() {
+        this.productsCache = productDAO.getAll();
     }
+
 }
 

@@ -14,4 +14,9 @@ public class CreateOrUpdateCategoryDTO extends CreateOrUpdateDTO<Integer> {
         this.id = id;
         this.name = name;
     }
+
+    public String getName(){
+        return this.name;
+    }
+    
 }

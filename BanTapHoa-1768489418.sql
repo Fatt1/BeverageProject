@@ -1,5 +1,8 @@
 --Create database GroceryDB
 --Use GroceryDB;
+
+ALTER TABLE [Staff]
+ALTER COLUMN [Birthday] DATE NOT NULL;
 CREATE TABLE [Product] (
 	[Id] int IDENTITY(1,1) NOT NULL UNIQUE,
 	[Name] nvarchar(100) NOT NULL UNIQUE,

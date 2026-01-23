@@ -16,6 +16,7 @@ public interface IProductService {
     ProductDetailDTO getProductById(Integer id);
     List<ProductViewDTO> getAllProducts();
     PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize);
-    boolean hasProductInCategoryId(Integer categoryId);
+    public void refreshProductList();
+
 
 }

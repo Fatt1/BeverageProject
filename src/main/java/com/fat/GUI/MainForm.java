@@ -328,7 +328,7 @@ public class MainForm extends javax.swing.JFrame {
         tbtnStatistic.addActionListener(this::tbtnStatisticActionPerformed);
         sidebarPandel.add(tbtnStatistic);
 
-        jButton1.setBackground(new java.awt.Color(134, 134, 134));
+        jButton1.setBackground(new java.awt.Color(255, 51, 0));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Đăng xuất");
@@ -336,6 +336,7 @@ public class MainForm extends javax.swing.JFrame {
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setMaximumSize(new java.awt.Dimension(300, 50));
         jButton1.setPreferredSize(new java.awt.Dimension(100, 50));
+        jButton1.addActionListener(this::jButton1ActionPerformed);
         sidebarPandel.add(jButton1);
 
         getContentPane().add(sidebarPandel, java.awt.BorderLayout.WEST);
@@ -406,6 +407,10 @@ public class MainForm extends javax.swing.JFrame {
     private void tbtnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStatisticActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tbtnStatisticActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

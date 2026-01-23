@@ -50,7 +50,7 @@ public class StaffsPanel extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "#", "HỌ VÀ TÊN", "NGÀY SINH", "MỨC LƯƠNG", "SỐ ĐIỆN THOẠI", "TÊN ĐĂNG NHẬP", "VAI TRÒ"
+                "ID", "HỌ VÀ TÊN", "NGÀY SINH", "MỨC LƯƠNG", "SỐ ĐIỆN THOẠI", "TÊN ĐĂNG NHẬP", "VAI TRÒ"
             }
         ));
         jScrollPane1.setViewportView(jTable1);

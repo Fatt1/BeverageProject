@@ -4,13 +4,15 @@ import com.fat.DTO.Abstractions.CreateOrUpdateDTO;
 import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 public class CreateOrUpdateStaffDTO extends CreateOrUpdateDTO<Integer> {
     @NotBlank(message = "Tên nhân viên không được để trống")
     private String firstName;
     private String lastName;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     private BigDecimal salary;
     private String phoneNumber;
     private LocalDateTime createdAt;
@@ -27,7 +29,7 @@ public class CreateOrUpdateStaffDTO extends CreateOrUpdateDTO<Integer> {
         return firstName;
     }
 
-    public LocalDateTime getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
@@ -61,7 +63,7 @@ public class CreateOrUpdateStaffDTO extends CreateOrUpdateDTO<Integer> {
 
     // Constructor without id for create operations
     public CreateOrUpdateStaffDTO(String firstName, String lastName,
-                                  LocalDateTime birthDate, BigDecimal salary, String phoneNumber,
+                                  LocalDate birthDate, BigDecimal salary, String phoneNumber,
                                   String userName, String password, Integer roleId) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -77,7 +79,7 @@ public class CreateOrUpdateStaffDTO extends CreateOrUpdateDTO<Integer> {
 
 
     // Constructor with id for update operations
-    public CreateOrUpdateStaffDTO(Integer id,String firstName, String lastName, LocalDateTime birthDate, String phoneNumber,
+    public CreateOrUpdateStaffDTO(Integer id,String firstName, String lastName, LocalDate birthDate, String phoneNumber,
                                   BigDecimal salary, LocalDateTime updatedAt,
                                   String userName, Integer roleId, String password) {
         this.id = id;

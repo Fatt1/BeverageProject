@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class RoleService implements IRoleService {
     private static RoleService instance;
     private final IRoleDAO roleDAO;
-    private final ArrayList<RoleViewDTO> rolesCache = new ArrayList<>();
+    private  List<RoleViewDTO> rolesCache = new ArrayList<>();
 
     private RoleService() {
         this.roleDAO = RoleDAO.getInstance();
@@ -50,6 +50,11 @@ public class RoleService implements IRoleService {
     public List<RoleViewDTO> filterRoleByList(String searchKey) {
         // TODO: Implement filter from ArrayList
         return null;
+    }
+
+    @Override
+    public void refreshCache() {
+        this.rolesCache = roleDAO.getAll();
     }
 }
 

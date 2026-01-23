@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class SupplierService implements ISupplierService {
     private static SupplierService instance;
     private final ISupplierDAO supplierDAO;
-    private final ArrayList<SupplierViewDTO> suppliersCache = new ArrayList<>();
+    private  List<SupplierViewDTO> suppliersCache = new ArrayList<>();
 
     private SupplierService() {
         this.supplierDAO = SupplierDAO.getInstance();
@@ -55,5 +55,10 @@ public class SupplierService implements ISupplierService {
     @Override
     public SupplierViewDTO getSupplierById(Integer id) {
         return null;
+    }
+
+    @Override
+    public void refreshCache() {
+        suppliersCache = supplierDAO.getAll();
     }
 }

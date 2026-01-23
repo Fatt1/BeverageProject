@@ -11,5 +11,6 @@ public interface IRoleService {
     void deleteRole(Integer id);
     List<RoleViewDTO> getAllRoles();
     List<RoleViewDTO> filterRoleByList(String searchKey); // Filter từ ArrayList
+    void refreshCache();
 }
 

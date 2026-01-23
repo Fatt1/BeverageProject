@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class StaffService implements IStaffService {
     private static StaffService instance;
     private final IStaffDAO staffDAO;
-    private final ArrayList<StaffViewDTO> staffsCache = new ArrayList<>();
+    private List<StaffViewDTO> staffsCache = new ArrayList<>();
 
     private StaffService() {
         this.staffDAO = StaffDAO.getInstance();
@@ -46,8 +46,7 @@ public class StaffService implements IStaffService {
     @Override
     public List<StaffViewDTO> getAllStaffs() {
         if(staffsCache.isEmpty()){
-            List<StaffViewDTO> data = staffDAO.getAll();
-            staffsCache.addAll(data);
+           staffsCache = staffDAO.getAll();
         }
         return staffsCache;
     }
@@ -73,5 +72,9 @@ public class StaffService implements IStaffService {
         return staffDAO.getById(id);
     }
 
+    @Override
+    public void refreshCache() {
+        this.staffsCache = staffDAO.getAll();
+    }
 }
 

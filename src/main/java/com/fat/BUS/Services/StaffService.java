@@ -45,14 +45,27 @@ public class StaffService implements IStaffService {
 
     @Override
     public List<StaffViewDTO> getAllStaffs() {
-        return staffDAO.getAll();
+        if(staffsCache.isEmpty()){
+            List<StaffViewDTO> data = staffDAO.getAll();
+            staffsCache.addAll(data);
+        }
+        return staffsCache;
     }
 
 
     @Override
     public List<StaffViewDTO> filterStaffByList(String searchKey) {
-        // TODO: Implement filter from ArrayList
-        return null;
+        if(searchKey == null || searchKey.trim().isEmpty()){
+            return staffsCache;
+        }
+        String sk = searchKey.toLowerCase();
+
+        
+        return staffsCache.stream().filter(staff ->{
+            String fullName = staff.getFullName().toLowerCase();
+            return fullName.contains(sk) ;
+        })
+        .collect(Collectors.toList());
     }
 
     @Override

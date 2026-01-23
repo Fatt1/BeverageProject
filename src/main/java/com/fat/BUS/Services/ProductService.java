@@ -21,10 +21,10 @@ public class ProductService implements IProductService {
     private final IProductDAO productDAO = ProductDAO.getInstance();
     private final ICategoryDAO categoryDAO = CategoryDAO.getInstance();
 
-    private final List<ProductViewDTO> productsCache;
+    private List<ProductViewDTO> productsCache;
     @Inject
     private ProductService() {
-        productsCache = productDAO.getAll();
+        productsCache = new ArrayList<>();
     }
 
     public static ProductService getInstance() {
@@ -33,6 +33,7 @@ public class ProductService implements IProductService {
         }
         return instance;
     }
+
 
     @Override
     public void createProduct(CreateOrUpdateProductDTO dto) {
@@ -102,6 +103,11 @@ public class ProductService implements IProductService {
     public PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize) {
         return PagedResult.create(this.productsCache.stream(), productsCache.size() ,pageIndex, pageSize);
 
+    }
+
+    @Override
+    public void refreshProductList() {
+        this.productsCache = productDAO.getAll();
     }
 
 }

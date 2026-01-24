@@ -28,12 +28,9 @@ public class ConfirmDialog extends javax.swing.JDialog {
 
         contentPanel.setBackground(Color.WHITE);
 
-       
-
         // Style bo góc 20px và viền xám nhạt cho Dialog
 
         contentPanel.putClientProperty("FlatLaf.style", "arc: 50; border: 1,1,1,1,#E0E0E0");
-
 
 
         // 1. Header (Tiêu đề lớn)

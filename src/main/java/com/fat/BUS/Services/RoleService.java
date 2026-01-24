@@ -1,6 +1,7 @@
 package com.fat.BUS.Services;
 
 import com.fat.BUS.Abstractions.Services.IRoleService;
+import com.fat.Contract.Constants.Action;
 import com.fat.Contract.Constants.Permission;
 import com.fat.Contract.Exceptions.Roles.AdminRoleException;
 import com.fat.Contract.Exceptions.Roles.DuplicateRoleNameException;
@@ -171,6 +172,8 @@ public class RoleService implements IRoleService {
        }
     }
 
+
+
     @Override
     public List<RoleViewDTO> filterRoleByList(String searchKey) {
         return rolesCache.stream()
@@ -188,6 +191,30 @@ public class RoleService implements IRoleService {
     @Override
     public void refreshCache() {
         this.rolesCache = roleDAO.getAll();
+    }
+
+    @Override
+    public boolean checkPermission(int roleId, String permission, int action) {
+        var roleClaimOption = roleClaimsCache.stream()
+                .filter(rc -> rc.getRoleId() == roleId && rc.getClaimType().equalsIgnoreCase(permission))
+                .findFirst();
+        if(roleClaimOption.isPresent()) {
+            var roleClaim = roleClaimOption.get();
+            int value = roleClaim.getValue();
+            switch (action) {
+                case Action.READ:
+                    return (value & Action.READ) != 0;
+                case Action.CREATE:
+                    return (value & Action.CREATE) != 0;
+                case Action.UPDATE:
+                    return (value & Action.UPDATE) != 0;
+                case Action.DELETE:
+                    return (value & Action.DELETE) != 0;
+                default:
+                    return false;
+            }
+        }
+        return false;
     }
 
 }

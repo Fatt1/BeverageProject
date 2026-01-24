@@ -173,6 +173,12 @@ VALUES (N'Đồ uống'); -- Sẽ có Id = 1
 INSERT INTO [Category] ([Name]) 
 VALUES (N'Thực phẩm khô'); -- Sẽ có Id = 2
 
+SET IDENTITY_INSERT [dbo].[Role] ON
+INSERT INTO [dbo].[Role] ([Id], [Name]) VALUES (1, N'Admin')
+INSERT INTO [dbo].[Role] ([Id], [Name]) VALUES (5, N'Nhân viên')
+SET IDENTITY_INSERT [dbo].[Role] OFF
+
+
 SET IDENTITY_INSERT [dbo].[Product] ON
 INSERT INTO [dbo].[Product] ([Id], [Name], [Image], [Price], [Unit], [CreatedAt], [UpdatedAt], [IsDeleted], [CategoryId], [Stock]) VALUES (1, N'Nước giải khát Coca Cola', N'image1.png', CAST(10000 AS Decimal(18, 0)), N'Lon', N'2026-01-18 08:30:43', N'2026-01-18 08:30:43', 0, 1, 0)
 INSERT INTO [dbo].[Product] ([Id], [Name], [Image], [Price], [Unit], [CreatedAt], [UpdatedAt], [IsDeleted], [CategoryId], [Stock]) VALUES (2, N'Mì tôm Hảo Hảo chua cay', N'image1.png', CAST(4500 AS Decimal(18, 0)), N'Gói', N'2026-01-18 08:30:43', N'2026-01-18 08:30:43', 0, 2, 0)

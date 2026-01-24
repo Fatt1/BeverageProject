@@ -6,6 +6,7 @@ package com.fat.GUI;
 
 import com.fat.DI.AppModule;
 import com.fat.GUI.Panels.Products.ProductsPanel;
+import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -37,45 +38,7 @@ public class MainForm extends javax.swing.JFrame {
         initComponents();
         setupCardLayout();
 //        tbtnTrangChu.putClientProperty("JButton.buttonType", "toolBarButton");
-        UIManager.put("ToggleButton.selectedBackground", new Color(0, 120, 215)); // Màu xanh dương
-        UIManager.put("ToggleButton.selectedForeground", Color.WHITE); // Chữ trắng
 
-
-        // 2. CẤU HÌNH TOÀN CỤC CHO JTABLE (Và các thành phần khác)
-        // ---------------------------------------------------
-
-        // Chỉnh chiều cao hàng (Mặc định 16 rất bé, 30-35 là đẹp)
-        UIManager.put("Table.rowHeight", 35);
-        // Chỉnh Font chữ mặc định cho nội dung bảng
-        UIManager.put("Table.font", new Font("Segoe UI", Font.PLAIN, 14));
-
-        // Chỉnh Font chữ cho tiêu đề cột (Header) - Cần to và đậm hơn
-        UIManager.put("TableHeader.font", new Font("Segoe UI", Font.BOLD, 14));
-        UIManager.put("TableHeader.height", 40); // Chiều cao header
-        UIManager.put("TableHeader.bottomSeparatorColor", new Color(220, 220, 220)); // Màu đường kẻ dưới header
-        UIManager.put("TableHeader.foreground", new Color(121,121,121));
-
-        // Hiệu ứng Zebra (Sọc vằn): Dòng chẵn lẻ khác màu nhau cho dễ nhìn
-        UIManager.put("Table.alternateRowColor", new Color(242, 242, 242));
-
-        // Ẩn đường kẻ dọc, chỉ hiện đường kẻ ngang (Style hiện đại)
-        UIManager.put("Table.showVerticalLines", false);
-        UIManager.put("Table.showHorizontalLines", true);
-        UIManager.put("Table.gridColor", new Color(230, 230, 230)); // Màu đường kẻ nhạt thôi
-
-        // Màu nền khi chọn 1 dòng (Selection)
-        UIManager.put("Table.selectionBackground", new Color(50, 150, 255)); // Xanh dương
-        UIManager.put("Table.selectionForeground", Color.WHITE); // Chữ trắng
-
-        // Padding (Khoảng cách) nội dung trong ô cho đỡ dính lề
-        UIManager.put("Table.cellNoFocusBorder", new EmptyBorder(0, 10, 0, 10));
-        UIManager.put("Table.focusCellHighlightBorder", new EmptyBorder(0, 10, 0, 10));
-
-
-        UIManager.put("Button.arc", 10);
-        UIManager.put("Component.arc", 10); // Áp dụng cho TextField, ComboBox, Spinner...
-        UIManager.put("ProgressBar.arc", 10);
-        UIManager.put("TextComponent.arc", 10);
 
         this.setLocationRelativeTo(null);
     }
@@ -375,6 +338,7 @@ public class MainForm extends javax.swing.JFrame {
         // Add vào CardLayout
         mainContentPanel.add(productsPanel, "PRODUCTS");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
+        mainContentPanel.add(new RolesPanel(), "ROLES");
     }
 
     private void tbtnSellingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSellingActionPerformed
@@ -402,7 +366,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnStaffActionPerformed
 
     private void tbtnRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnRoleActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "ROLES");
     }//GEN-LAST:event_tbtnRoleActionPerformed
 
     private void tbtnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStatisticActionPerformed
@@ -416,9 +380,57 @@ public class MainForm extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+
+    private static void setCss() {
+        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
+        UIManager.put("ToggleButton.selectedBackground", new Color(0, 120, 215)); // Màu xanh dương
+        UIManager.put("ToggleButton.selectedForeground", Color.WHITE); // Chữ trắng
+
+        // 2. CẤU HÌNH TOÀN CỤC CHO JTABLE (Và các thành phần khác)
+        // ---------------------------------------------------
+
+        // Chỉnh chiều cao hàng (Mặc định 16 rất bé, 30-35 là đẹp)
+        UIManager.put("Table.rowHeight", 35);
+        // Chỉnh Font chữ mặc định cho nội dung bảng
+        UIManager.put("Table.font", new Font("Segoe UI", Font.PLAIN, 14));
+
+        // Chỉnh Font chữ cho tiêu đề cột (Header) - Cần to và đậm hơn
+        UIManager.put("TableHeader.font", new Font("Segoe UI", Font.BOLD, 14));
+        UIManager.put("TableHeader.height", 40); // Chiều cao header
+        UIManager.put("TableHeader.bottomSeparatorColor", new Color(220, 220, 220)); // Màu đường kẻ dưới header
+        UIManager.put("TableHeader.foreground", new Color(121,121,121));
+
+        // Hiệu ứng Zebra (Sọc vằn): Dòng chẵn lẻ khác màu nhau cho dễ nhìn
+        UIManager.put("Table.alternateRowColor", new Color(242, 242, 242));
+
+        // Ẩn đường kẻ dọc, chỉ hiện đường kẻ ngang (Style hiện đại)
+        UIManager.put("Table.showVerticalLines", false);
+        UIManager.put("Table.showHorizontalLines", true);
+        UIManager.put("Table.gridColor", new Color(230, 230, 230)); // Màu đường kẻ nhạt thôi
+
+        // Màu nền khi chọn 1 dòng (Selection)
+        UIManager.put("Table.selectionBackground", new Color(50, 150, 255)); // Xanh dương
+        UIManager.put("Table.selectionForeground", Color.WHITE); // Chữ trắng
+
+        // Padding (Khoảng cách) nội dung trong ô cho đỡ dính lề
+        UIManager.put("Table.cellNoFocusBorder", new EmptyBorder(0, 10, 0, 10));
+        UIManager.put("Table.focusCellHighlightBorder", new EmptyBorder(0, 10, 0, 10));
+        UIManager.put("Table.rowHeight", 70);
+
+
+        UIManager.put("Button.arc", 10);
+        UIManager.put("Component.arc", 10); // Áp dụng cho TextField, ComboBox, Spinner...
+        UIManager.put("Button.borderWidth", 0);
+        UIManager.put("ProgressBar.arc", 10);
+        UIManager.put("TextComponent.arc", 10);
+
+
+    }
+
     public static void main(String args[]) {
         FlatRobotoFont.install();
-        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
+        setCss();
+
         FlatLightLaf.setup();
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
         // Khởi tạo Guice Injector

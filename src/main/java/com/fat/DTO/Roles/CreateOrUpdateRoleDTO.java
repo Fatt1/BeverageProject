@@ -1,8 +1,10 @@
 package com.fat.DTO.Roles;
 
 import com.fat.DTO.Abstractions.CreateOrUpdateDTO;
+import jakarta.validation.constraints.NotBlank;
 
 public class CreateOrUpdateRoleDTO extends CreateOrUpdateDTO<Integer> {
+    @NotBlank(message = "Tên vai trò không được để trống")
     private String name;
 
     // For update

@@ -95,7 +95,7 @@ public class StaffDAO implements IStaffDAO {
                 String roleName = rs.getString("RoleName");
                 return new StaffDetailDTO( staffId,  roleId,  password,
                          userName,  salary,  birthDate,
-                         phoneNumber,  lastName,  firstName);
+                         phoneNumber,  lastName,  firstName, roleName);
             }
             return null;
         } catch (SQLException sqlException) {

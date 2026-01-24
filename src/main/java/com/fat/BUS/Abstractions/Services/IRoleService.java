@@ -9,6 +9,8 @@ public interface IRoleService {
     void createRole(CreateOrUpdateRoleDTO dto);
     void updateRole(CreateOrUpdateRoleDTO dto);
     void deleteRole(Integer id);
+    RoleViewDTO getRoleById(Integer id);
+    RoleViewDTO getRoleByName(String name);
     List<RoleViewDTO> getAllRoles();
     List<RoleViewDTO> filterRoleByList(String searchKey); // Filter từ ArrayList
     void refreshCache();

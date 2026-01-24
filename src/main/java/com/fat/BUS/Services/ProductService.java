@@ -87,7 +87,7 @@ public class ProductService implements IProductService {
        if(categoryId != null)
            stream = stream.filter(p -> p.getCategoryId() == categoryId);
 
-       return PagedResult.create(stream, productsCache.size() ,pageIndex, pageSize);
+       return PagedResult.create(stream ,pageIndex, pageSize);
 
     }
 
@@ -105,7 +105,7 @@ public class ProductService implements IProductService {
 
     @Override
     public PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize) {
-        return PagedResult.create(this.productsCache.stream(), productsCache.size() ,pageIndex, pageSize);
+        return PagedResult.create(this.productsCache.stream() ,pageIndex, pageSize);
 
     }
 

@@ -333,9 +333,8 @@ public class MainForm extends javax.swing.JFrame {
     private void setupCardLayout() {
         cardLayout = new CardLayout();
         mainContentPanel.setLayout(cardLayout);
-
-
         // Add vào CardLayout
+
         mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
         mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
@@ -384,8 +383,8 @@ public class MainForm extends javax.swing.JFrame {
 
     private static void setCss() {
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
-        UIManager.put("ToggleButton.selectedBackground", new Color(0, 120, 215)); // Màu xanh dương
-        UIManager.put("ToggleButton.selectedForeground", Color.WHITE); // Chữ trắng
+        UIManager.put("ToggleButton.selectedBackground", new Color(0, 0, 0,60)); // Màu xanh dương
+        UIManager.put("ToggleButton.selectedForeground", Color.BLACK); // Chữ trắng
 
         // 2. CẤU HÌNH TOÀN CỤC CHO JTABLE (Và các thành phần khác)
         // ---------------------------------------------------

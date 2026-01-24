@@ -13,8 +13,8 @@ public interface IRoleService {
     void deleteRole(Integer id);
     RoleViewDTO getRoleById(Integer id);
     List<RoleViewDTO> getAllRoles();
-    Map<String, Integer> getPermissions(Integer roleId);
-    void setPermissions(Integer roleId, List<CreateOrUpdateRoleClaimDTO> claims);
+    Map<String, Integer> getRoleClaims(Integer roleId);
+    void setRoleClaims(Integer roleId, List<CreateOrUpdateRoleClaimDTO> claims);
     List<RoleViewDTO> filterRoleByList(String searchKey); // Filter từ ArrayList
     void refreshCache();
 }

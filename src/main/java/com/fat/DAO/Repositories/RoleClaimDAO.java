@@ -26,13 +26,13 @@ public class RoleClaimDAO implements IRoleClaimDAO {
     }
 
 
+
     @Override
-    public List<RoleClaimViewDTO> getAllByRoleId(int roleId) {
-        String sql = "SELECT Id, RoleId, ClaimType, Value FROM RoleClaim WHERE RoleID = ?";
+    public List<RoleClaimViewDTO> getAll() {
+        String sql = "SELECT Id, RoleId, ClaimType, Value FROM RoleClaim";
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
         ){
-            ps.setInt(1,roleId);
             ResultSet rs = ps.executeQuery();
             List<RoleClaimViewDTO> roleClaims = new ArrayList<>();
             while(rs.next()) {

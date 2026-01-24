@@ -7,8 +7,10 @@ package com.fat.GUI;
 import com.fat.DI.AppModule;
 import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
 import com.fat.GUI.Forms.LoginForm;
+import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
+import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -336,10 +338,10 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.setLayout(cardLayout);
         // Add vào CardLayout
 
-        // mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
+        mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
         mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
-        // mainContentPanel.add(new RolesPanel(), "ROLES");
+         mainContentPanel.add(new RolesPanel(), "ROLES");
     }
 
     private void tbtnSellingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSellingActionPerformed
@@ -367,7 +369,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnStaffActionPerformed
 
     private void tbtnRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnRoleActionPerformed
-        // cardLayout.show(mainContentPanel, "ROLES");
+         cardLayout.show(mainContentPanel, "ROLES");
     }//GEN-LAST:event_tbtnRoleActionPerformed
 
     private void tbtnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStatisticActionPerformed
@@ -385,9 +387,7 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+
 
     private static void setCss() {
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
@@ -434,7 +434,9 @@ public class MainForm extends javax.swing.JFrame {
 
 
     }
-
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         FlatRobotoFont.install();
         setCss();

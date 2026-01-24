@@ -28,9 +28,9 @@ public class RoleDAO implements IRoleDAO {
     @Override
     public List<RoleViewDTO> getAll() {
         String sql = "SELECT Id, Name FROM Role";
-        try(Connection conn = DbContext.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-        ){
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
             ResultSet rs = ps.executeQuery();
             List<RoleViewDTO> roles = new ArrayList<>();
             while (rs.next()) {
@@ -41,38 +41,53 @@ public class RoleDAO implements IRoleDAO {
             }
 
             return roles;
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
             return null;
         }
 
     }
 
+
     @Override
-    public List<RoleViewDTO> filter(String searchKey) {
-        return List.of();
+    public RoleViewDTO getById(Integer id) {
+        String sql = "SELECT Id, Name FROM Role WHERE Id = ?";
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Integer roleId = rs.getInt("Id");
+                String name = rs.getString("Name");
+                return new RoleViewDTO(roleId, name);
+
+            }
+            return null;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
     }
 
 
     @Override
     public Integer add(CreateOrUpdateRoleDTO entity) {
         String sql = "INSERT INTO ROLE (Name) VALUES (?);";
-        try(Connection conn = DbContext.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
 
-        ){
-            ps.setString(1,entity.getName());
+        ) {
+            ps.setString(1, entity.getName());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
-            if(rs != null && rs.next()) {
+            if (rs != null && rs.next()) {
                 return rs.getInt(1);
             } else {
                 return null;
             }
 
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
             return null;
         }
@@ -80,19 +95,27 @@ public class RoleDAO implements IRoleDAO {
 
     @Override
     public void update(CreateOrUpdateRoleDTO entity) {
-
+        String sql = "UPDATE ROLE SET Name = ? WHERE Id = ?";
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+            ps.setString(1, entity.getName());
+            ps.setInt(2, entity.getId());
+            ps.executeUpdate();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
     }
 
     @Override
     public void delete(Integer id) {
         String sql = "DELETE FROM ROLE WHERE Id = ?";
-        try(Connection conn = DbContext.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-        ){
-            ps.setInt(1,id);
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+            ps.setInt(1, id);
             ps.executeUpdate();
-        }
-        catch (SQLException sqlException) {
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
     }

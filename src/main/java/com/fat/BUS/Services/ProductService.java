@@ -20,11 +20,11 @@ public class ProductService implements IProductService {
     private static ProductService instance;
     private final IProductDAO productDAO = ProductDAO.getInstance();
     private final ICategoryDAO categoryDAO = CategoryDAO.getInstance();
-
-    private List<ProductViewDTO> productsCache;
+    private boolean isCacheLoaded = false;
+    private List<ProductViewDTO> productsCache = new ArrayList<>();
     @Inject
     private ProductService() {
-        productsCache = new ArrayList<>();
+
     }
 
     public static ProductService getInstance() {
@@ -65,6 +65,14 @@ public class ProductService implements IProductService {
 
     }
 
+    private void ensureCacheLoaded() {
+        // Nếu chưa load lần nào (hoặc list bị null), thì gọi DB ngay lập tức
+        if (!isCacheLoaded || productsCache.isEmpty()) {
+            System.out.println("Auto loading products from DB..."); // Log để debug
+            this.refreshProductList();
+        }
+    }
+
     @Override
     public void deleteProduct(Integer id) {
         productDAO.delete(id);
@@ -78,6 +86,7 @@ public class ProductService implements IProductService {
 
     @Override
     public PagedResult<ProductViewDTO> filterProductByList(String searchKey, Integer categoryId, int pageIndex, int pageSize) {
+        ensureCacheLoaded();
        var stream =  productsCache.stream();
        if(searchKey != null && !searchKey.isEmpty()) {
            stream = stream.filter(p -> p.getName().toLowerCase().contains(searchKey.toLowerCase()));
@@ -91,16 +100,19 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDetailDTO getProductById(Integer id) {
+        ensureCacheLoaded();
         return productDAO.getById(id);
     }
 
     @Override
     public List<ProductViewDTO> getAllProducts() {
+        ensureCacheLoaded();
         return this.productsCache;
     }
 
     @Override
     public PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize) {
+        ensureCacheLoaded();
         return PagedResult.create(this.productsCache.stream(), productsCache.size() ,pageIndex, pageSize);
 
     }
@@ -108,6 +120,7 @@ public class ProductService implements IProductService {
     @Override
     public void refreshProductList() {
         this.productsCache = productDAO.getAll();
+        this.isCacheLoaded = true;
     }
 
 }

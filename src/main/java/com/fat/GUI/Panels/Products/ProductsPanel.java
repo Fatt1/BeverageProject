@@ -71,15 +71,11 @@ public class ProductsPanel extends javax.swing.JPanel {
         });
 
 
-
-        // Load dữ liệu trang đầu tiên
-        loadData(1, 10);
     }
 
     private void updateDataOnShow() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         new Thread(() -> {
-            categoryService.refreshCategoryCache();
             productService.refreshProductList();
             var categoriesFromDB = categoryService.getAllCategories();
             SwingUtilities.invokeLater(() -> {
@@ -398,7 +394,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         int id = Integer.parseInt(idObj.toString());
         ProductDetailDTO productDetailDTO = productService.getProductById(id);
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, productDetailDTO);
+        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productDetailDTO);
         updateProductDialog.setLocationRelativeTo(parentFrame);
         updateProductDialog.setVisible(true);
 
@@ -479,7 +475,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, null);
+        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, null);
         addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
 
         addOrUpdateProductDialog.setVisible(true);

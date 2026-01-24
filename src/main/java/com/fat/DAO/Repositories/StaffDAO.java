@@ -80,7 +80,7 @@ public class StaffDAO implements IStaffDAO {
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
         ) {
-            ps.setInt(1,id);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 Integer staffId = rs.getInt("Id");
@@ -212,5 +212,42 @@ public class StaffDAO implements IStaffDAO {
             return false;
         }
 
+    }
+
+    @Override
+    public boolean isLoginSuccessful(String username, String password) {
+        String sql = "SELECT COUNT(*) AS Total FROM [Staff] WHERE UserName = ? AND Password = ?";
+        try (Connection conn = DbContext.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                int count = rs.getInt("Total");
+                return count == 1;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public String getIdStaffOfLoginSuccessful(String username, String password) {
+        String sql = "SELECT Id FROM [Staff] WHERE UserName = ? AND Password = ?";
+        try (Connection conn = DbContext.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return String.valueOf(rs.getInt("Id")); 
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

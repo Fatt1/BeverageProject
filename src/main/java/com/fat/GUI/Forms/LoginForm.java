@@ -4,10 +4,34 @@
  */
 package com.fat.GUI.Forms;
 
+
 import com.fat.GUI.Utils.ImageHelper;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+
+import com.formdev.flatlaf.FlatLightLaf;
+
+import net.miginfocom.layout.AlignX;
+
+import org.apache.commons.collections4.functors.WhileClosure;
 /**
  *
  * @author User
@@ -19,12 +43,107 @@ public class LoginForm extends javax.swing.JFrame {
     /**
      * Creates new form LoginForm
      */
-    public LoginForm() {
-        initComponents();
-        var image = ImageHelper.resizeImage(new ImageIcon (getClass().getResource("/Icons/background.png")), jLabel1.getWidth(), jLabel1.getHeight());
-        jLabel1.setIcon(image);
-   }
+    public LoginForm(){
+        setTitle("Đăng Nhập Vào Hệ thống");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1300, 760);
+        setLocationRelativeTo(null);
 
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBackground(Color.WHITE);
+
+        JPanel Login = new JPanel(new GridLayout(1, 2));
+
+        ImageIcon icon = new ImageIcon(getClass().getResource("/Icons/BackgroundLogin.png"));
+        Image image = icon.getImage();
+
+        JPanel rightPanel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+
+        JPanel leftPanel = new JPanel();
+
+        // right Panel
+        rightPanel.setBackground(Color.WHITE);
+        
+        JLabel containerImgRPanel = new JLabel();
+        containerImgRPanel.setIcon(new ImageIcon(image));
+
+        rightPanel.add(containerImgRPanel);
+
+        // left Panel
+        leftPanel.setBackground(Color.WHITE );
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel leftWrapper = new JPanel();
+        leftWrapper.setBackground(Color.WHITE);
+        leftWrapper.setLayout(new BoxLayout(leftWrapper, BoxLayout.Y_AXIS));
+        leftWrapper.setBorder(BorderFactory.createEmptyBorder(10, 50, 50, 50));
+        leftWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel title = new JLabel("ĐĂNG NHẬP");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        title.setBorder(BorderFactory.createEmptyBorder(10, 100, 10, 100));
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblUser = new JLabel("Tên đăng nhập: ");
+        lblUser.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblUser.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JTextField txtUser = new JTextField();
+        txtUser.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        txtUser.setAlignmentX(Component.LEFT_ALIGNMENT); 
+
+        JLabel lblPass = new JLabel("Mật Khẩu: ");
+        lblPass.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblPass.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPasswordField txtPass = new JPasswordField();
+        txtPass.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        txtPass.setAlignmentX(Component.LEFT_ALIGNMENT); 
+      
+        JButton btnLogin = new JButton("Đăng Nhập");
+        btnLogin.setBackground(new Color(255, 204, 0));
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        btnLogin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        btnLogin.setAlignmentX(Component.LEFT_ALIGNMENT); 
+
+        leftWrapper.add(title);
+
+        leftWrapper.add(Box.createRigidArea(new Dimension(0, 50)));
+        leftWrapper.add(lblUser);
+        leftWrapper.add(txtUser);
+
+        leftWrapper.add(Box.createRigidArea(new Dimension(0, 30)));
+        leftWrapper.add(lblPass);
+        leftWrapper.add(txtPass);
+
+        leftWrapper.add(Box.createRigidArea(new Dimension(0, 50)));
+        leftWrapper.add(btnLogin);
+        
+        leftPanel.add(leftWrapper);
+        // leftPanel.setBackground(Color.PINK);
+        
+        // them vao main panel
+        Login.add(leftPanel);
+        Login.add(rightPanel);
+        mainPanel.add(Login);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(100, 20, 200, 0));
+
+        // Login.setBorder(BorderFactory.createLineBorder(Color.decode("#FFCC00"), 2));
+        // leftPanel.putClientProperty("FlatLaf.style", "border: 2,2,2,2,#FFCC00,,50");
+        // leftWrapper.putClientProperty("FlatLaf.style", "border: 2,2,2,2,#FFCC00,,50");
+       
+        Login.putClientProperty("FlatLaf.style", "border: 2,2,2,2,#FFCC00,,50");
+
+        add(mainPanel);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -33,45 +152,6 @@ public class LoginForm extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 460));
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 598, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 22, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        jPanel1 = new javax.swing.JPanel() {
-            @Override
-            protected void paintComponent(java.awt.Graphics g) {
-                super.paintComponent(g);
-                // Load ảnh từ thư mục resources của bạn
-                java.net.URL imgURL = getClass().getResource("/Icons/background.png");
-                if (imgURL != null) {
-                    java.awt.Image img = new javax.swing.ImageIcon(imgURL).getImage();
-                    // Vẽ ảnh co giãn theo đúng chiều rộng và chiều cao của Panel
-                    g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
-                }
-            }
-        };
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -83,24 +163,24 @@ public class LoginForm extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        com.formdev.flatlaf.FlatLightLaf.setup(); // Kích hoạt FlatLaf Light
+        new LoginForm().setVisible(true);
+        // try {
+        //     for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+        //         if ("Nimbus".equals(info.getName())) {
+        //             javax.swing.UIManager.setLookAndFeel(info.getClassName());
+        //             break;
+        //         }
+        //     }
+        // } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+        //     logger.log(java.util.logging.Level.SEVERE, null, ex);
+        // }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new LoginForm().setVisible(true));
+        // java.awt.EventQueue.invokeLater(() -> new LoginForm().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

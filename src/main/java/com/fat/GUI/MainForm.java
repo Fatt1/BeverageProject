@@ -5,6 +5,7 @@
 package com.fat.GUI;
 
 import com.fat.DI.AppModule;
+import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
 import com.fat.GUI.Forms.LoginForm;
 import com.fat.GUI.Panels.Products.ProductsPanel;
@@ -378,6 +379,7 @@ public class MainForm extends javax.swing.JFrame {
         boolean result = ConfirmDialog.show(this, "Đăng xuất", "Bạn có muốn đăng xuất không?", "Xác Nhận");
         if (result) {
             this.dispose();
+            UserSessionDTO.getInstance().clear();
             new LoginForm().setVisible(true);
         }
         else{
@@ -434,7 +436,20 @@ public class MainForm extends javax.swing.JFrame {
 
 
     }
+    public void init(){
+              FlatRobotoFont.install();
+        setCss();
 
+        FlatLightLaf.setup();
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
+        // Khởi tạo Guice Injector
+        Injector injector = Guice.createInjector(new AppModule());
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> {
+            MainForm mainForm = injector.getInstance(MainForm.class);
+            mainForm.setVisible(true);
+        });
+    }
     public static void main(String args[]) {
         FlatRobotoFont.install();
         setCss();

@@ -232,7 +232,6 @@
                                   <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="txtUnit1" min="-2" pref="43" max="-2" attributes="0"/>
@@ -319,6 +318,9 @@
         <Component class="javax.swing.JTextField" name="txtUnit">
         </Component>
         <Component class="javax.swing.JTextField" name="txtUnit1">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtUnit1ActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>

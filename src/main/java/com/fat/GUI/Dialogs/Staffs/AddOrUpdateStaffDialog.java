@@ -137,6 +137,8 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
 
         jLabel5.setText("Số điện thoại");
 
+        txtUnit1.addActionListener(this::txtUnit1ActionPerformed);
+
         jLabel6.setText("Ngày sinh");
 
         jLabel7.setText("Địa chỉ");
@@ -234,7 +236,6 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(49, 49, 49)))
-                        .addGap(18, 18, 18)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtUnit1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -428,6 +429,10 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
+
+    private void txtUnit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUnit1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUnit1ActionPerformed
 
     /**
      * @param args the command line arguments

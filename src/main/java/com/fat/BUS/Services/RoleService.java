@@ -144,7 +144,7 @@ public class RoleService implements IRoleService {
         List<RoleClaimViewDTO> existingClaims = roleClaimDAO.getAllByRoleId(roleId);
        for(var claim : claims) {
            var existingClaimOptional = existingClaims.stream()
-                   .filter(c -> c.getClaimType() == claim.getClaimType())
+                   .filter(c -> c.getClaimType().equalsIgnoreCase(claim.getClaimType()))
                    .findFirst();
            // Kiểm tra để update claim hiện tại nếu có thay đổi
            if(existingClaimOptional.isPresent()) {

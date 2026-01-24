@@ -14,10 +14,11 @@ public class StaffDetailDTO {
     private String userName;
     private String password;
     private Integer roleId;
+    private String roleName;
 
     public StaffDetailDTO(Integer id, Integer roleId, String password,
                           String userName, BigDecimal salary, LocalDate birthDate,
-                          String phoneNumber, String lastName, String firstName) {
+                          String phoneNumber, String lastName, String firstName, String roleName) {
         this.id = id;
         this.roleId = roleId;
         this.password = password;
@@ -27,6 +28,7 @@ public class StaffDetailDTO {
         this.phoneNumber = phoneNumber;
         this.lastName = lastName;
         this.firstName = firstName;
+        this.roleName = roleName;
     }
 
     public Integer getId() {
@@ -68,4 +70,6 @@ public class StaffDetailDTO {
     public Integer getRoleId() {
         return roleId;
     }
+
+    public String getRoleName(){ return roleName; }
 }

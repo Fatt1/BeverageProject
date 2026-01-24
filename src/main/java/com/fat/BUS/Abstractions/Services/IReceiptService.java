@@ -20,5 +20,6 @@ public interface IReceiptService {
                                               Integer staffId, BigDecimal totalAmount,
                                               int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy); // Filter từ ArrayList
     ReceptDetailDTO getReceiptById(Integer id);
+    void refreshCache();
 }
 

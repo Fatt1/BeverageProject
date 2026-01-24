@@ -13,7 +13,7 @@ import java.util.List;
 public class CustomerService implements ICustomerService {
     private static CustomerService instance;
     private final ICustomerDAO customerDAO;
-    private final ArrayList<CustomerViewDTO> customersCache = new ArrayList<>();
+    private List<CustomerViewDTO> customersCache = new ArrayList<>();
 
     private CustomerService() {
         this.customerDAO = CustomerDAO.getInstance();
@@ -59,6 +59,11 @@ public class CustomerService implements ICustomerService {
     @Override
     public void createCustomer(CreateOrUpdateCustomerDTO dto) {
 
+    }
+
+    @Override
+    public void refreshCache() {
+        customersCache = customerDAO.getAll();
     }
 }
 

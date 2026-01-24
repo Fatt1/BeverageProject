@@ -7,6 +7,7 @@ package com.fat.GUI;
 import com.fat.DI.AppModule;
 import com.fat.GUI.Panels.Products.ProductsPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
+import com.fat.GUI.Panels.Supplier.SupplierPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
@@ -384,7 +385,16 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnTrangChuActionPerformed
 
     private void tbtnSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSupplierActionPerformed
-        // TODO add your handling code here:
+          if (mainContentPanel.getComponentCount() > 0 &&
+            mainContentPanel.getComponent(0) instanceof SupplierPanel) {
+            return; // Không làm gì cả, thoát hàm
+        }
+        SupplierPanel pPanel = new SupplierPanel();
+        mainContentPanel.removeAll();
+        mainContentPanel.add(pPanel);
+
+        mainContentPanel.revalidate(); // Tính toán lại bố cục (Layout)
+        mainContentPanel.repaint();
     }//GEN-LAST:event_tbtnSupplierActionPerformed
 
     private void tbtnPromotionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnPromotionActionPerformed

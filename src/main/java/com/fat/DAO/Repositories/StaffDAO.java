@@ -75,7 +75,7 @@ public class StaffDAO implements IStaffDAO {
     public StaffDetailDTO getById(Integer id) {
         String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.Password, St.RoleId, R.Name AS RoleName "
                 + "FROM [Staff] AS St "
-                + "JOIN Role AS R "
+                + "JOIN Role AS R ON St.RoleId = R.Id "
                 + "WHERE St.Id = ?";
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -148,7 +148,8 @@ public class StaffDAO implements IStaffDAO {
             ps.setString(5, entity.getPhoneNumber());
             ps.setString(6, entity.getUserName());
             ps.setString(7, entity.getPassword());
-            ps.setInt(8,entity.getRoleId());
+            ps.setInt(8, entity.getRoleId());
+            ps.setInt(9, entity.getId());
             ps.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -192,12 +193,14 @@ public class StaffDAO implements IStaffDAO {
         String sql = "SELECT COUNT(*) AS Count FROM [Staff] " +
                 "WHERE UserName = ?";
         if(excludeId != null){
-            sql += "AND Id <> ?";
+            sql += " AND Id <> ?";
         }
         try(Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1,userName);
-            ps.setInt(2,excludeId);
+            ps.setString(1, userName);
+            if(excludeId != null) {
+                ps.setInt(2, excludeId);
+            }
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 int count = rs.getInt("Count");

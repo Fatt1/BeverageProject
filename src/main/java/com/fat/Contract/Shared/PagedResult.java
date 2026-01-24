@@ -23,15 +23,24 @@ public class PagedResult <T> {
         this.hasPreviousPage = pageIndex > 1;
     }
 
-    public static <T>PagedResult<T> create(Stream<T> stream,int totalItems, Integer pageIndex, Integer pageSize) {
+    public static <T>PagedResult<T> create(Stream<T> stream, Integer pageIndex, Integer pageSize) {
         int effectivePageIndex = (pageIndex == null || pageIndex < 1) ? 1 : pageIndex;
         int effectivePageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         int skipPage = (effectivePageIndex - 1) * effectivePageSize;
-        List<T> items = stream
+        List<T> allItems = stream.toList();
+         // Reset the stream after count
+        List<T> items = allItems.stream()
                 .skip(skipPage)
                 .limit(effectivePageSize)
                 .toList();
-        return new PagedResult<>(items, totalItems,effectivePageIndex, effectivePageSize);
+        return new PagedResult<>(items, allItems.size(),effectivePageIndex, effectivePageSize);
+    }
+
+    public static <T>PagedResult<T> createInQueryDB(List<T> itemList, Integer pageIndex, Integer pageSize) {
+        int effectivePageIndex = (pageIndex == null || pageIndex < 1) ? 1 : pageIndex;
+        int effectivePageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
+        int totalItems = itemList.size();
+        return new PagedResult<>(itemList, totalItems, effectivePageIndex, effectivePageSize);
     }
 
     public boolean isHasNextPage() {

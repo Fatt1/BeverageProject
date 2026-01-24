@@ -334,11 +334,10 @@ public class MainForm extends javax.swing.JFrame {
     private void setupCardLayout() {
         cardLayout = new CardLayout();
         mainContentPanel.setLayout(cardLayout);
-
-        // Khởi tạo tất cả panels 1 lần
-        var productsPanel = new ProductsPanel();
         // Add vào CardLayout
-        mainContentPanel.add(productsPanel, "PRODUCTS");
+
+        // mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
+        mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         // mainContentPanel.add(new RolesPanel(), "ROLES");
     }
@@ -348,7 +347,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnSellingActionPerformed
 
     private void tbtnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnTrangChuActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "DASHBOARD");
     }//GEN-LAST:event_tbtnTrangChuActionPerformed
 
     private void tbtnSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSupplierActionPerformed
@@ -392,8 +391,8 @@ public class MainForm extends javax.swing.JFrame {
 
     private static void setCss() {
         UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
-        UIManager.put("ToggleButton.selectedBackground", new Color(0, 120, 215)); // Màu xanh dương
-        UIManager.put("ToggleButton.selectedForeground", Color.WHITE); // Chữ trắng
+        UIManager.put("ToggleButton.selectedBackground", new Color(0, 0, 0,60)); // Màu xanh dương
+        UIManager.put("ToggleButton.selectedForeground", Color.BLACK); // Chữ trắng
 
         // 2. CẤU HÌNH TOÀN CỤC CHO JTABLE (Và các thành phần khác)
         // ---------------------------------------------------

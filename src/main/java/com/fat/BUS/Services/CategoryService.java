@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class CategoryService implements ICategoryService {
     private static CategoryService instance;
     private final ICategoryDAO categoryDAO;
-    private final ArrayList<CategoryViewDTO> categoriesCache = new ArrayList<>();
+    private List<CategoryViewDTO> categoriesCache = new ArrayList<>();
 
     @Inject
     private CategoryService() {
@@ -31,8 +31,8 @@ public class CategoryService implements ICategoryService {
     @Override
     public List<CategoryViewDTO> getAllCategories() {
         if(categoriesCache.isEmpty()){
-            List<CategoryViewDTO> data = categoryDAO.getAll();
-            categoriesCache.addAll(data);
+            categoriesCache = categoryDAO.getAll();
+
         }
         return categoriesCache;
     }
@@ -97,6 +97,11 @@ public class CategoryService implements ICategoryService {
         }
         categoryDAO.delete(id);
         categoriesCache.removeIf(c -> c.getId().equals(id));
+    }
+
+    @Override
+    public void refreshCategoryCache() {
+        categoriesCache = categoryDAO.getAll();
     }
 }
 

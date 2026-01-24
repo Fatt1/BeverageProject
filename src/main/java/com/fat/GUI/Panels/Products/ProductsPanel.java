@@ -27,6 +27,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
@@ -45,7 +48,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     private ICategoryService categoryService;
     private Integer selectedCategoryId = null;
     private String searchKey = null;
-
+    private boolean isFirstLoad = true;
 
     @Inject
     public ProductsPanel() {
@@ -54,24 +57,43 @@ public class ProductsPanel extends javax.swing.JPanel {
         initComponents();
         initalTable();
         setCss();
-        loadCategories();
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                updateDataOnShow();
+            }
+        });
 
-        // 1. Gọi DAO lấy dữ liệu phân trang
 
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
             loadData(pageIndex, pageSize);
         });
 
-        // Load dữ liệu trang đầu tiên
-        loadData(1, 10);
+
+    }
+    private void updateDataOnShow() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        new Thread(() -> {
+            if(!isFirstLoad) productService.refreshProductList();
+            if(isFirstLoad) {
+                isFirstLoad = false;
+            }
+            var categoriesFromDB = categoryService.getAllCategories();
+            SwingUtilities.invokeLater(() -> {
+                loadCategories(categoriesFromDB);
+                loadData(1, 10);
+                setCursor(Cursor.getDefaultCursor());
+            });
+
+        }).start();
     }
 
-    private void loadCategories() {
-        DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
 
+    private void loadCategories(List<CategoryViewDTO> categories) {
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
+        model.removeAllElements();
         CategoryViewDTO allCategory = new CategoryViewDTO(0, "Tất cả");
         model.addElement(allCategory);
-        var categories = categoryService.getAllCategories();
 
         for (var c : categories) {
             model.addElement(c);
@@ -80,6 +102,8 @@ public class ProductsPanel extends javax.swing.JPanel {
         cboCategory.setSelectedIndex(0);
 
     }
+
+
 
     private void fillTable(List<ProductViewDTO> products) {
 
@@ -129,29 +153,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void setCss() {
-        String styleBtn = "" +
-                "borderWidth: 0;";
-        btnAdd.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnDelete.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnUpdate.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnImportExcel.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnExportExcel.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnReset.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-
 
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tên sản phẩm");
 
-
-
         TableColumnModel col = tblProduct.getColumnModel();
         col.getColumn(1).setCellRenderer(new ImageRenderer());
-        tblProduct.setRowHeight(70);
 
 
         col.getColumn(0).setPreferredWidth(50);
@@ -182,7 +188,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     private void loadData(int pageIndex, int pageSize) {
 
         PagedResult<ProductViewDTO> result = null;
-
         if(searchKey == null && selectedCategoryId == null) {
             result = productService.getAllProductPagination(pageIndex, pageSize);
         }
@@ -220,6 +225,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         btnExportExcel = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         paginationPanel1 = new com.fat.GUI.Components.PaginationPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -337,10 +343,15 @@ public class ProductsPanel extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtSearch)
                             .addComponent(cboCategory, 0, 224, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                        .addComponent(btnAdd)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDelete)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                                .addComponent(btnAdd)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDelete))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(135, 135, 135)
+                                .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -365,10 +376,15 @@ public class ProductsPanel extends javax.swing.JPanel {
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(51, 51, 51))
         );
 
@@ -389,7 +405,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         int id = Integer.parseInt(idObj.toString());
         ProductDetailDTO productDetailDTO = productService.getProductById(id);
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, productDetailDTO);
+        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productDetailDTO);
         updateProductDialog.setLocationRelativeTo(parentFrame);
         updateProductDialog.setVisible(true);
 
@@ -470,7 +486,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, null);
+        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, null);
         addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
 
         addOrUpdateProductDialog.setVisible(true);
@@ -531,6 +547,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cboCategory;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

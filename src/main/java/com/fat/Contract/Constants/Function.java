@@ -2,7 +2,7 @@ package com.fat.Contract.Constants;
 
 public class Function {
     public final static String ROLE = "Nhóm quyền";
-    private final static String PROMOTION = "Khuyến mãi";
+    public final static String PROMOTION = "Khuyến mãi";
     public final static String RECEIPT = "Hóa đơn";
     public final static String STAFF = "Nhân viên";
     public final static String CUSTOMER = "Khách hàng";

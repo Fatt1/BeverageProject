@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
 
 public class SupplierService implements ISupplierService {
     private static SupplierService instance;
-    private final ISupplierDAO supplierDAO;
-    private final ArrayList<SupplierViewDTO> suppliersCache = new ArrayList<>();
+
+    private final ISupplierDAO supplierDAO = SupplierDAO.getInstance();
+    private  List<SupplierViewDTO> suppliersCache ;
+
 
     private SupplierService() {
-        this.supplierDAO = SupplierDAO.getInstance();
+        suppliersCache = supplierDAO.getAll();
     }
 
     public static SupplierService getInstance() {
@@ -28,32 +30,45 @@ public class SupplierService implements ISupplierService {
 
     @Override
     public void createSupplier(CreateOrUpdateSupplierDTO dto) {
-
+        supplierDAO.add(dto);
     }
 
     @Override
     public void updateSupplier(CreateOrUpdateSupplierDTO dto) {
-
+        supplierDAO.update(dto);
     }
 
     @Override
     public void deleteSupplier(Integer id) {
-
+        supplierDAO.delete(id);
     }
 
     @Override
     public List<SupplierViewDTO> getAllSuppliers() {
-        return List.of();
+        return suppliersCache;
     }
 
     @Override
     public List<SupplierViewDTO> filterSupplierByList(String searchKey) {
         // TODO: Implement filter from ArrayList
-        return null;
+        String lowerCaseSearchKey = searchKey.toLowerCase();
+        return suppliersCache.stream()
+                .filter(supplier -> supplier.getName().toLowerCase().contains(lowerCaseSearchKey))
+                .collect(Collectors.toList());
     }
 
     @Override
     public SupplierViewDTO getSupplierById(Integer id) {
+        for (SupplierViewDTO supplier : suppliersCache) {
+            if (supplier.getId().equals(id)) {
+                return supplier;
+            }
+        }
         return null;
+    }
+
+    @Override
+    public void refreshCache() {
+        suppliersCache = supplierDAO.getAll();
     }
 }

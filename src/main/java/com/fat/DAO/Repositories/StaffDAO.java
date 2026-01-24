@@ -95,7 +95,7 @@ public class StaffDAO implements IStaffDAO {
                 String roleName = rs.getString("RoleName");
                 return new StaffDetailDTO( staffId,  roleId,  password,
                          userName,  salary,  birthDate,
-                         phoneNumber,  lastName,  firstName);
+                         phoneNumber,  lastName,  firstName, roleName);
             }
             return null;
         } catch (SQLException sqlException) {
@@ -135,7 +135,7 @@ public class StaffDAO implements IStaffDAO {
 
     @Override
     public void update(CreateOrUpdateStaffDTO entity) {
-        String sql = "UPDATE PRODUCT " +
+        String sql = "UPDATE STAFF " +
                 "SET FirstName = ?, LastName = ?, Birthday = ?, Salary = ?, PhoneNumber = ?, UserName = ?, Password = ?, RoleId = ? " +
                 "WHERE Id = ?;";
         try (Connection conn = DbContext.getConnection();

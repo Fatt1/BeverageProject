@@ -18,6 +18,6 @@ public interface IPromotionService {
     PagedResult<PromotionViewDTO> filterPromotionByList(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize); // Filter từ ArrayList
     PagedResult<PromotionDetailDTO> getPromotionById(Integer id);
     BigDecimal calculateDiscountPrice(Integer productId, BigDecimal originalPrice);
-
+    void refreshCache();
 }
 

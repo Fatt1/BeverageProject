@@ -12,4 +12,5 @@ public interface ICategoryService {
     void createCategory(CreateOrUpdateCategoryDTO dto);
     void updateCategory(CreateOrUpdateCategoryDTO dto);
     void deleteCategory(Integer id);
+    public void refreshCategoryCache();
 }

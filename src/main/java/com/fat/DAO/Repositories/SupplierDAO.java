@@ -53,33 +53,6 @@ public class SupplierDAO implements ISupplierDAO {
     }
 
     @Override
-    public List<SupplierViewDTO> filter(String searchKey) {
-        String sql = "Select * from Supplier where Name like ?";
-        try (Connection conn = DbContext.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-                ) {
-            ps.setString(1, "%" + searchKey + "%");
-            ResultSet rs = null;
-            rs = ps.executeQuery();
-            if (rs != null) {
-                List<SupplierViewDTO> suppliers = new ArrayList<>();
-                while (rs.next()) {
-                    Integer id = rs.getInt("Id");
-                    String email = rs.getString("Email");
-                    String phoneNumber = rs.getString("PhoneNumber");
-                    String name = rs.getString("Name");
-                    String address = rs.getString("Address");
-                    SupplierViewDTO supplier = new SupplierViewDTO(id, email, phoneNumber, name, address);
-                    suppliers.add(supplier);
-                }return suppliers;
-            }return null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
     public SupplierViewDTO getById(Integer id) {
         String sql = "Select * from Supplier where Id = ?";
         try (Connection conn = DbContext.getConnection();

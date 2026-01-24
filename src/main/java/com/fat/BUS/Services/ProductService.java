@@ -20,8 +20,7 @@ public class ProductService implements IProductService {
     private static ProductService instance;
     private final IProductDAO productDAO = ProductDAO.getInstance();
     private final ICategoryDAO categoryDAO = CategoryDAO.getInstance();
-
-    private final List<ProductViewDTO> productsCache;
+    private List<ProductViewDTO> productsCache = new ArrayList<>();
     @Inject
     private ProductService() {
         productsCache = productDAO.getAll();
@@ -34,6 +33,7 @@ public class ProductService implements IProductService {
         return instance;
     }
 
+
     @Override
     public void createProduct(CreateOrUpdateProductDTO dto) {
         boolean isExists = productDAO.isExistByName(dto.getName(), null);
@@ -43,8 +43,8 @@ public class ProductService implements IProductService {
 
        Integer id =  productDAO.add(dto);
        if(id != null) {
-           String categoryName = categoryDAO.getById(dto.getCategoryId()).getName();
-              ProductViewDTO newProduct = new ProductViewDTO(id, categoryName ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
+           ProductDetailDTO productDetailDTO = productDAO.getById(id);
+              ProductViewDTO newProduct = new ProductViewDTO(id, productDetailDTO.getCategoryName() ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
               productsCache.addFirst(newProduct);
        }
 
@@ -64,6 +64,8 @@ public class ProductService implements IProductService {
 
     }
 
+
+
     @Override
     public void deleteProduct(Integer id) {
         productDAO.delete(id);
@@ -77,6 +79,7 @@ public class ProductService implements IProductService {
 
     @Override
     public PagedResult<ProductViewDTO> filterProductByList(String searchKey, Integer categoryId, int pageIndex, int pageSize) {
+
        var stream =  productsCache.stream();
        if(searchKey != null && !searchKey.isEmpty()) {
            stream = stream.filter(p -> p.getName().toLowerCase().contains(searchKey.toLowerCase()));
@@ -84,29 +87,33 @@ public class ProductService implements IProductService {
        if(categoryId != null)
            stream = stream.filter(p -> p.getCategoryId() == categoryId);
 
-       return PagedResult.create(stream, productsCache.size() ,pageIndex, pageSize);
+       return PagedResult.create(stream ,pageIndex, pageSize);
 
     }
 
     @Override
     public ProductDetailDTO getProductById(Integer id) {
+
         return productDAO.getById(id);
     }
 
     @Override
     public List<ProductViewDTO> getAllProducts() {
+
         return this.productsCache;
     }
 
     @Override
     public PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize) {
-        return PagedResult.create(this.productsCache.stream(), productsCache.size() ,pageIndex, pageSize);
+        return PagedResult.create(this.productsCache.stream() ,pageIndex, pageSize);
 
     }
 
     @Override
-    public boolean hasProductInCategoryId(Integer categoryId) {
-        return productsCache.stream().anyMatch(p -> p.getCategoryId() == categoryId);
+    public void refreshProductList() {
+        this.productsCache = productDAO.getAll();
+
     }
+
 }
 

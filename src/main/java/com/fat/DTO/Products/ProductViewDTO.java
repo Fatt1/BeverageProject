@@ -1,6 +1,7 @@
 package com.fat.DTO.Products;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class ProductViewDTO {
     private Integer id;

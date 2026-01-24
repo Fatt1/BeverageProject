@@ -14,6 +14,7 @@ public interface ICustomerService {
     void deleteCustomer(Integer id);
     void updateCustomer(CreateOrUpdateCustomerDTO dto);
     void createCustomer(CreateOrUpdateCustomerDTO dto);
+    void refreshCache();
 }
 
 

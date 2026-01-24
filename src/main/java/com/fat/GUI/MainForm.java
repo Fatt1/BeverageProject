@@ -5,7 +5,12 @@
 package com.fat.GUI;
 
 import com.fat.DI.AppModule;
+import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
+import com.fat.GUI.Forms.LoginForm;
+import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
+// import com.fat.GUI.Panels.Roles.RolesPanel;
+import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
 import com.fat.GUI.Panels.Supplier.SupplierPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
@@ -29,55 +34,16 @@ import java.math.BigDecimal;
 public class MainForm extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainForm.class.getName());
-    private final Provider<ProductsPanel> productsPanelProvider;
+    private CardLayout cardLayout;
     /**
      * Creates new form MainForm
      */
     @Inject
-    public MainForm(Provider<ProductsPanel> productsPanelProvider) {
-        this.productsPanelProvider = productsPanelProvider;
+    public MainForm() {
         initComponents();
-        
+        setupCardLayout();
 //        tbtnTrangChu.putClientProperty("JButton.buttonType", "toolBarButton");
-        UIManager.put("ToggleButton.selectedBackground", new Color(0, 120, 215)); // Màu xanh dương
-        UIManager.put("ToggleButton.selectedForeground", Color.WHITE); // Chữ trắng
 
-
-        // 2. CẤU HÌNH TOÀN CỤC CHO JTABLE (Và các thành phần khác)
-        // ---------------------------------------------------
-
-        // Chỉnh chiều cao hàng (Mặc định 16 rất bé, 30-35 là đẹp)
-        UIManager.put("Table.rowHeight", 35);
-        // Chỉnh Font chữ mặc định cho nội dung bảng
-        UIManager.put("Table.font", new Font("Segoe UI", Font.PLAIN, 14));
-
-        // Chỉnh Font chữ cho tiêu đề cột (Header) - Cần to và đậm hơn
-        UIManager.put("TableHeader.font", new Font("Segoe UI", Font.BOLD, 14));
-        UIManager.put("TableHeader.height", 40); // Chiều cao header
-        UIManager.put("TableHeader.bottomSeparatorColor", new Color(220, 220, 220)); // Màu đường kẻ dưới header
-        UIManager.put("TableHeader.foreground", new Color(121,121,121));
-
-        // Hiệu ứng Zebra (Sọc vằn): Dòng chẵn lẻ khác màu nhau cho dễ nhìn
-        UIManager.put("Table.alternateRowColor", new Color(242, 242, 242));
-
-        // Ẩn đường kẻ dọc, chỉ hiện đường kẻ ngang (Style hiện đại)
-        UIManager.put("Table.showVerticalLines", false);
-        UIManager.put("Table.showHorizontalLines", true);
-        UIManager.put("Table.gridColor", new Color(230, 230, 230)); // Màu đường kẻ nhạt thôi
-
-        // Màu nền khi chọn 1 dòng (Selection)
-        UIManager.put("Table.selectionBackground", new Color(50, 150, 255)); // Xanh dương
-        UIManager.put("Table.selectionForeground", Color.WHITE); // Chữ trắng
-
-        // Padding (Khoảng cách) nội dung trong ô cho đỡ dính lề
-        UIManager.put("Table.cellNoFocusBorder", new EmptyBorder(0, 10, 0, 10));
-        UIManager.put("Table.focusCellHighlightBorder", new EmptyBorder(0, 10, 0, 10));
-
-
-        UIManager.put("Button.arc", 10);
-        UIManager.put("Component.arc", 10); // Áp dụng cho TextField, ComboBox, Spinner...
-        UIManager.put("ProgressBar.arc", 10);
-        UIManager.put("TextComponent.arc", 10);
 
         this.setLocationRelativeTo(null);
     }
@@ -116,6 +82,7 @@ public class MainForm extends javax.swing.JFrame {
         setTitle("Phần mềm quản lý bán tạp hóa");
         setBackground(new java.awt.Color(255, 255, 255));
         setLocation(new java.awt.Point(0, 0));
+        setPreferredSize(new java.awt.Dimension(1400, 900));
         getContentPane().setLayout(new java.awt.BorderLayout(10, 0));
 
         sidebarPandel.setBackground(new java.awt.Color(217, 217, 217));
@@ -329,7 +296,7 @@ public class MainForm extends javax.swing.JFrame {
         tbtnStatistic.addActionListener(this::tbtnStatisticActionPerformed);
         sidebarPandel.add(tbtnStatistic);
 
-        jButton1.setBackground(new java.awt.Color(134, 134, 134));
+        jButton1.setBackground(new java.awt.Color(255, 51, 0));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Đăng xuất");
@@ -337,6 +304,7 @@ public class MainForm extends javax.swing.JFrame {
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setMaximumSize(new java.awt.Dimension(300, 50));
         jButton1.setPreferredSize(new java.awt.Dimension(100, 50));
+        jButton1.addActionListener(this::jButton1ActionPerformed);
         sidebarPandel.add(jButton1);
 
         getContentPane().add(sidebarPandel, java.awt.BorderLayout.WEST);
@@ -344,7 +312,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainContentPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
         mainContentPanel.setPreferredSize(new java.awt.Dimension(1000, 723));
-        mainContentPanel.setLayout(new java.awt.BorderLayout());
+        mainContentPanel.setLayout(new java.awt.CardLayout());
         getContentPane().add(mainContentPanel, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -363,25 +331,26 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnReceiptActionPerformed
 
     private void tbtnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnProductActionPerformed
-
-        if (mainContentPanel.getComponentCount() > 0 &&
-            mainContentPanel.getComponent(0) instanceof ProductsPanel) {
-            return; // Không làm gì cả, thoát hàm
-        }
-        ProductsPanel pPanel = productsPanelProvider.get();
-        mainContentPanel.removeAll();
-        mainContentPanel.add(pPanel);
-
-        mainContentPanel.revalidate(); // Tính toán lại bố cục (Layout)
-        mainContentPanel.repaint();
+        cardLayout.show(mainContentPanel, "PRODUCTS");
     }//GEN-LAST:event_tbtnProductActionPerformed
+
+    private void setupCardLayout() {
+        cardLayout = new CardLayout();
+        mainContentPanel.setLayout(cardLayout);
+        // Add vào CardLayout
+
+        mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
+        mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
+        mainContentPanel.add(new StaffsPanel(), "STAFFS");
+         mainContentPanel.add(new RolesPanel(), "ROLES");
+    }
 
     private void tbtnSellingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSellingActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tbtnSellingActionPerformed
 
     private void tbtnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnTrangChuActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "DASHBOARD");
     }//GEN-LAST:event_tbtnTrangChuActionPerformed
 
     private void tbtnSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSupplierActionPerformed
@@ -406,32 +375,82 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnCustomerActionPerformed
 
     private void tbtnStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStaffActionPerformed
-        if (mainContentPanel.getComponentCount() > 0 &&
-            mainContentPanel.getComponent(0) instanceof StaffsPanel) {
-            return; // Không làm gì cả, thoát hàm
-        }
-        StaffsPanel pPanel = new StaffsPanel();
-        mainContentPanel.removeAll();
-        mainContentPanel.add(pPanel);
-
-        mainContentPanel.revalidate(); // Tính toán lại bố cục (Layout)
-        mainContentPanel.repaint();
+        cardLayout.show(mainContentPanel, "STAFFS");
     }//GEN-LAST:event_tbtnStaffActionPerformed
 
     private void tbtnRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnRoleActionPerformed
-        // TODO add your handling code here:
+         cardLayout.show(mainContentPanel, "ROLES");
     }//GEN-LAST:event_tbtnRoleActionPerformed
 
     private void tbtnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStatisticActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tbtnStatisticActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        boolean result = ConfirmDialog.show(this, "Đăng xuất", "Bạn có muốn đăng xuất không?", "Xác Nhận");
+        if (result) {
+            this.dispose();
+            new LoginForm().setVisible(true);
+        }
+        else{
+            cardLayout.show(mainContentPanel, this.toString());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+
+
+    private static void setCss() {
+        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
+        UIManager.put("ToggleButton.selectedBackground", new Color(0, 0, 0,60)); // Màu xanh dương
+        UIManager.put("ToggleButton.selectedForeground", Color.BLACK); // Chữ trắng
+
+        // 2. CẤU HÌNH TOÀN CỤC CHO JTABLE (Và các thành phần khác)
+        // ---------------------------------------------------
+
+        // Chỉnh chiều cao hàng (Mặc định 16 rất bé, 30-35 là đẹp)
+        UIManager.put("Table.rowHeight", 35);
+        // Chỉnh Font chữ mặc định cho nội dung bảng
+        UIManager.put("Table.font", new Font("Segoe UI", Font.PLAIN, 14));
+
+        // Chỉnh Font chữ cho tiêu đề cột (Header) - Cần to và đậm hơn
+        UIManager.put("TableHeader.font", new Font("Segoe UI", Font.BOLD, 14));
+        UIManager.put("TableHeader.height", 40); // Chiều cao header
+        UIManager.put("TableHeader.bottomSeparatorColor", new Color(220, 220, 220)); // Màu đường kẻ dưới header
+        UIManager.put("TableHeader.foreground", new Color(121,121,121));
+
+        // Hiệu ứng Zebra (Sọc vằn): Dòng chẵn lẻ khác màu nhau cho dễ nhìn
+        UIManager.put("Table.alternateRowColor", new Color(242, 242, 242));
+
+        // Ẩn đường kẻ dọc, chỉ hiện đường kẻ ngang (Style hiện đại)
+        UIManager.put("Table.showVerticalLines", false);
+        UIManager.put("Table.showHorizontalLines", true);
+        UIManager.put("Table.gridColor", new Color(230, 230, 230)); // Màu đường kẻ nhạt thôi
+
+        // Màu nền khi chọn 1 dòng (Selection)
+        UIManager.put("Table.selectionBackground", new Color(50, 150, 255)); // Xanh dương
+        UIManager.put("Table.selectionForeground", Color.WHITE); // Chữ trắng
+
+        // Padding (Khoảng cách) nội dung trong ô cho đỡ dính lề
+        UIManager.put("Table.cellNoFocusBorder", new EmptyBorder(0, 10, 0, 10));
+        UIManager.put("Table.focusCellHighlightBorder", new EmptyBorder(0, 10, 0, 10));
+        UIManager.put("Table.rowHeight", 70);
+
+
+        UIManager.put("Button.arc", 10);
+        UIManager.put("Component.arc", 10); // Áp dụng cho TextField, ComboBox, Spinner...
+        UIManager.put("Button.borderWidth", 0);
+        UIManager.put("ProgressBar.arc", 10);
+        UIManager.put("TextComponent.arc", 10);
+
+
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         FlatRobotoFont.install();
-        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
+        setCss();
+
         FlatLightLaf.setup();
         Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
         // Khởi tạo Guice Injector

@@ -12,5 +12,6 @@ public interface ISupplierService {
     List<SupplierViewDTO> getAllSuppliers();
     List<SupplierViewDTO> filterSupplierByList(String searchKey); // Filter từ ArrayList
     SupplierViewDTO getSupplierById(Integer id);
+    void refreshCache();
 }
 

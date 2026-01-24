@@ -28,20 +28,13 @@ public class PromotionDAO implements IPromotionDAO {
         return List.of();
     }
 
-    @Override
-    public PagedResult<PromotionViewDTO> filter(String searchKey, LocalDate from, LocalDate to, int pageIndex, int pageSize) {
-        return null;
-    }
+
 
     @Override
     public PagedResult<PromotionDetailDTO> getById(Integer id) {
         return null;
     }
 
-    @Override
-    public List<PromotionItemDTO> getPromotionItemsByProductId(LocalDate date, Integer productId) {
-        return List.of();
-    }
 
     @Override
     public Integer add(CreateOrUpdatePromotionDTO entity) {

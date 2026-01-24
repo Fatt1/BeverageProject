@@ -3,21 +3,30 @@ package com.fat.BUS.Services;
 import com.fat.BUS.Abstractions.Services.IRoleService;
 import com.fat.Contract.Exceptions.Roles.AdminRoleException;
 import com.fat.Contract.Exceptions.Roles.DuplicateRoleNameException;
+import com.fat.DAO.Abstractions.Repositories.IRoleClaimDAO;
 import com.fat.DAO.Abstractions.Repositories.IRoleDAO;
+import com.fat.DAO.Repositories.RoleClaimDAO;
 import com.fat.DAO.Repositories.RoleDAO;
+import com.fat.DTO.Roles.CreateOrUpdateRoleClaimDTO;
 import com.fat.DTO.Roles.CreateOrUpdateRoleDTO;
+import com.fat.DTO.Roles.RoleClaimViewDTO;
 import com.fat.DTO.Roles.RoleViewDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RoleService implements IRoleService {
     private static RoleService instance;
     private final IRoleDAO roleDAO;
-    private  List<RoleViewDTO> rolesCache = new ArrayList<>();
+    private List<RoleViewDTO> rolesCache = new ArrayList<>();
+    private final IRoleClaimDAO roleClaimDAO = RoleClaimDAO.getInstance();
 
     private RoleService() {
         this.roleDAO = RoleDAO.getInstance();
+        this.rolesCache = roleDAO.getAll();
+        initAdmin();
 
     }
 
@@ -76,23 +85,85 @@ public class RoleService implements IRoleService {
 
     }
 
+    private void initAdmin() {
+
+        var adminRoleOptional = rolesCache.stream()
+                .filter(r -> r.getName().equalsIgnoreCase("Admin"))
+                .findFirst();
+        System.out.println("Admin role exists: " + adminRoleOptional.isPresent());
+        if(adminRoleOptional.isEmpty()) {
+            CreateOrUpdateRoleDTO adminDto = new CreateOrUpdateRoleDTO("Admin");
+            int adminId = roleDAO.add(adminDto);
+            RoleViewDTO adminRole = new RoleViewDTO(adminId, "Admin");
+            rolesCache.add(adminRole);
+            // initialize admin role claims
+            Map<String, Integer> defaultPermissions = com.fat.Contract.Constants.Permission.getPermissions();
+            for(Map.Entry<String, Integer> entry : defaultPermissions.entrySet()) {
+                roleClaimDAO.add(new CreateOrUpdateRoleClaimDTO(adminId, entry.getKey(), entry.getValue()));
+            }
+        }
+    }
+
     @Override
     public RoleViewDTO getRoleById(Integer id) {
         return roleDAO.getById(id);
     }
 
-    @Override
-    public RoleViewDTO getRoleByName(String name) {
-        return null;
-    }
 
     @Override
     public List<RoleViewDTO> getAllRoles() {
+
         return rolesCache;
     }
 
     @Override
+    public Map<String, Integer> getPermissions(Integer roleId) {
+        List<RoleClaimViewDTO> roleClaims = roleClaimDAO.getAllByRoleId(roleId);
+        Map<String, Integer> permissions = new HashMap<>();
+        for (RoleClaimViewDTO rc: roleClaims) {
+            permissions.put(rc.getClaimType(), rc.getValue());
+        }
+        return permissions;
+    }
+
+    @Override
+    public void setPermissions(Integer roleId, List<CreateOrUpdateRoleClaimDTO> claims) {
+       // Kiểm tra xem có phải thay đổi quyền admin không
+
+        var roleOptional = rolesCache.stream()
+                .filter(r -> r.getId().equals(roleId))
+                .findFirst();
+        if(roleOptional.isPresent()) {
+            var role = roleOptional.get();
+            if(role.getName().equalsIgnoreCase("Admin"))
+            throw new AdminRoleException("Không thể thay đổi quyền của vai trò Admin");
+        }
+
+
+
+        List<RoleClaimViewDTO> existingClaims = roleClaimDAO.getAllByRoleId(roleId);
+       for(var claim : claims) {
+           var existingClaimOptional = existingClaims.stream()
+                   .filter(c -> c.getClaimType() == claim.getClaimType())
+                   .findFirst();
+           // Kiểm tra để update claim hiện tại nếu có thay đổi
+           if(existingClaimOptional.isPresent()) {
+                var existingClaim = existingClaimOptional.get();
+                if(existingClaim.getValue() != claim.getValue()) {
+                     roleClaimDAO.update(new CreateOrUpdateRoleClaimDTO(existingClaim.getId(), roleId, claim.getClaimType(), claim.getValue()));
+                }
+           }
+           // Thêm mới claim nếu giá trị khác 0 và chưa tồn tại
+           else if(existingClaimOptional.isEmpty() && claim.getValue() != 0) {
+                // Thêm mới claim nếu chưa tồn tại
+                roleClaimDAO.add(new CreateOrUpdateRoleClaimDTO(roleId, claim.getClaimType(), claim.getValue()));
+           }
+       }
+    }
+
+    @Override
     public List<RoleViewDTO> filterRoleByList(String searchKey) {
+
         return rolesCache.stream()
                 .filter(r -> r.getName().toLowerCase().contains(searchKey.toLowerCase()))
                 .toList();

@@ -5,6 +5,7 @@
 package com.fat.GUI;
 
 import com.fat.DI.AppModule;
+import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
@@ -333,10 +334,10 @@ public class MainForm extends javax.swing.JFrame {
         cardLayout = new CardLayout();
         mainContentPanel.setLayout(cardLayout);
 
-        // Khởi tạo tất cả panels 1 lần
-       var productsPanel = new ProductsPanel();
+
         // Add vào CardLayout
-        mainContentPanel.add(productsPanel, "PRODUCTS");
+        mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
+        mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         mainContentPanel.add(new RolesPanel(), "ROLES");
     }
@@ -346,7 +347,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnSellingActionPerformed
 
     private void tbtnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnTrangChuActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "DASHBOARD");
     }//GEN-LAST:event_tbtnTrangChuActionPerformed
 
     private void tbtnSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSupplierActionPerformed

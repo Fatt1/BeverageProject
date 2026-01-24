@@ -8,4 +8,5 @@ import java.util.List;
 public interface IRoleDAO extends IDAO<CreateOrUpdateRoleDTO, Integer> {
     List<RoleViewDTO> getAll();
     RoleViewDTO getById(Integer id);
+
 }

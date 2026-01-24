@@ -4,8 +4,8 @@ public class RoleClaimViewDTO{
     private Integer id;
     private int roleId;
     private String claimType;
-    private String value;
-    public RoleClaimViewDTO(Integer id, int roleId, String claimType, String value) {
+    private int value;
+    public RoleClaimViewDTO(Integer id, int roleId, String claimType, int value) {
         this.id = id;
         this.roleId = roleId;
         this.claimType = claimType;
@@ -20,11 +20,27 @@ public class RoleClaimViewDTO{
         return roleId;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setClaimType(String claimType) {
+        this.claimType = claimType;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
     public String getClaimType() {
         return claimType;
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 }

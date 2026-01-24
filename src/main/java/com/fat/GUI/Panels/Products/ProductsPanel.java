@@ -48,7 +48,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     private ICategoryService categoryService;
     private Integer selectedCategoryId = null;
     private String searchKey = null;
-
+    private boolean isFirstLoad = true;
 
     @Inject
     public ProductsPanel() {
@@ -57,7 +57,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         initComponents();
         initalTable();
         setCss();
-        // 1. Gọi DAO lấy dữ liệu phân trang
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -72,11 +71,13 @@ public class ProductsPanel extends javax.swing.JPanel {
 
 
     }
-
     private void updateDataOnShow() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         new Thread(() -> {
-            productService.refreshProductList();
+            if(!isFirstLoad) productService.refreshProductList();
+            if(isFirstLoad) {
+                isFirstLoad = false;
+            }
             var categoriesFromDB = categoryService.getAllCategories();
             SwingUtilities.invokeLater(() -> {
                 loadCategories(categoriesFromDB);
@@ -187,7 +188,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     private void loadData(int pageIndex, int pageSize) {
 
         PagedResult<ProductViewDTO> result = null;
-
         if(searchKey == null && selectedCategoryId == null) {
             result = productService.getAllProductPagination(pageIndex, pageSize);
         }

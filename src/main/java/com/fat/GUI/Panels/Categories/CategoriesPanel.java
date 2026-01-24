@@ -3,18 +3,31 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package com.fat.GUI.Panels.Categories;
-
+import com.fat.BUS.Services.CategoryService;
+import com.fat.DTO.Categories.CategoryViewDTO;
+import com.fat.GUI.Dialogs.Categories.AddOrUpdateCategoryDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.KeyEvent;
+import java.util.List;
 /**
  *
  * @author tranc
  */
 public class CategoriesPanel extends javax.swing.JPanel {
-
+    private CategoryService categoryService;
+    private String searchKeyword = null;
     /**
      * Creates new form CategoriesPanel
      */
     public CategoriesPanel() {
+        this.categoryService = CategoryService.getInstance();
         initComponents();
+        initTable();
+        loadData();
     }
 
     /**
@@ -142,30 +155,143 @@ public class CategoriesPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-
+        txtSearch.setText(""); // Xóa ô search
+        searchKeyword = null;   // Reset keyword
+        loadData();             // Load lại tất cả
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
+
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
-
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            searchKeyword = txtSearch.getText().trim();
+            loadData();
+        }
     }//GEN-LAST:event_txtSearchKeyPressed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
 
+        if(selectedRow == -1){
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục để chỉnh sửa",
+             "Chưa chọn danh mục", JOptionPane.WARNING_MESSAGE);
+             return;
+        }
+
+        //lay ID tu cot 0
+        Object idObj = jTable1.getValueAt(selectedRow, 0);
+        Integer id = Integer.parseInt(idObj.toString());
+
+        //lay thong tin category
+        CategoryViewDTO category = categoryService.getCategoryById(id);
+
+        //Mo dialog Sua
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        AddOrUpdateCategoryDialog dialog = new AddOrUpdateCategoryDialog(parentFrame, true, category);
+        dialog.setLocationRelativeTo(parentFrame);
+        dialog.setVisible(true);
+    
+        // Load lại dữ liệu
+        loadData();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        AddOrUpdateCategoryDialog dialog = new AddOrUpdateCategoryDialog(parentFrame, true, null);
+        dialog.setLocationRelativeTo(parentFrame);
+        dialog.setVisible(true);
+    
+        // Sau khi đóng dialog, load lại dữ liệu
+        loadData();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-
+        int selectedRow = jTable1.getSelectedRow();
+    
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this,
+            "Vui lòng chọn danh mục để xóa!",
+            "Chưa chọn danh mục",
+            JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    // Confirm xóa
+    int choice = JOptionPane.showConfirmDialog(this,
+        "Bạn có chắc chắn muốn xóa danh mục này?",
+        "Xác nhận xóa",
+        JOptionPane.YES_NO_OPTION);
+    
+    if (choice != JOptionPane.YES_OPTION) {
+        return; // User chọn No hoặc đóng dialog
+    }
+    
+    // Lấy ID
+    Object idObj = jTable1.getValueAt(selectedRow, 0);
+    Integer id = Integer.parseInt(idObj.toString());
+    
+    try {
+        categoryService.deleteCategory(id);
+        JOptionPane.showMessageDialog(this,
+            "Xóa danh mục thành công!",
+            "Thành công",
+            JOptionPane.INFORMATION_MESSAGE);
+        loadData(); // Load lại dữ liệu
+    } catch (RuntimeException e) {
+        JOptionPane.showMessageDialog(this,
+            e.getMessage(),
+            "Lỗi",
+            JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    private void initTable(){
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); //xoa du lieu mau
 
+        String[] headers = {"ID", "TÊN DANH MỤC"};
+        model.setColumnIdentifiers(headers);
+    }
+
+    private void loadData(){
+        List<CategoryViewDTO> categories;
+
+        if(searchKeyword == null || searchKeyword.trim().isEmpty()) {
+            //không có tìm kiếm - lấy tất cả
+            categories = categoryService.getAllCategories();
+        }else{
+            //có từ khoa -> filter
+            categories = categoryService.filterCategoryByList(searchKeyword);
+        }
+
+        fillTable(categories);
+    }
+
+    private void fillTable(List<CategoryViewDTO> categories){
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);//xoa du lieu cu
+
+        //can giua tat ca cac cot
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(javax.swing.JLabel.CENTER);
+
+        for(CategoryViewDTO category : categories){
+            Object[] row = new Object[]{
+                category.getId(),
+                category.getName()
+            };
+            model.addRow(row);
+        }
+
+        //ap dung can giua cho tat ca cac cot
+        for(int i = 0; i < jTable1.getColumnCount(); i++){
+            jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;

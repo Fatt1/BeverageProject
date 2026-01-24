@@ -1,6 +1,7 @@
 package com.fat.BUS.Services;
 
 import com.fat.BUS.Abstractions.Services.IStaffService;
+import com.fat.Contract.Exceptions.DuplicateStaffUserNameException;
 import com.fat.Contract.Exceptions.ValidationException;
 import com.fat.DAO.Abstractions.Repositories.IProductDAO;
 import com.fat.DAO.Abstractions.Repositories.IStaffDAO;
@@ -9,20 +10,24 @@ import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
 import com.fat.DTO.Staffs.StaffDetailDTO;
 import com.fat.DTO.Staffs.StaffViewDTO;
+import jakarta.inject.Inject;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StaffService implements IStaffService {
     private static StaffService instance;
-    private final IStaffDAO staffDAO;
-    private List<StaffViewDTO> staffsCache = new ArrayList<>();
+    private final IStaffDAO staffDAO = StaffDAO.getInstance();
+    private List<StaffViewDTO> staffsCache ;
 
+    @Inject
     private StaffService() {
-        this.staffDAO = StaffDAO.getInstance();
+        staffsCache = new ArrayList<>();
     }
 
     public static StaffService getInstance() {
@@ -34,37 +39,12 @@ public class StaffService implements IStaffService {
 
     @Override
     public void createStaff(CreateOrUpdateStaffDTO dto) {
-        // 1. VALIDATE CÁC TRƯỜNG
-        // FirstName
-        if (dto.getFirstName() == null || dto.getFirstName().trim().isEmpty()) {
-            throw new ValidationException("Tên nhân viên không được để trống");
+        boolean isExists = staffDAO.isExistByUserName(dto.getUserName(), null);
+        if(isExists) {
+            throw new DuplicateStaffUserNameException("Tên tài khoản đã tồn tại: " + dto.getUserName());
         }
-
-        // PhoneNumber
-        if (dto.getPhoneNumber() == null || !dto.getPhoneNumber().matches("^\\d{10,11}$")) {
-            throw new ValidationException("Số điện thoại phải có 10-11 chữ số");
-        }
-
-        // Password
-        if (dto.getPassword() == null || dto.getPassword().length() < 6) {
-            throw new ValidationException("Mật khẩu phải có ít nhất 6 ký tự");
-        }
-
-        // Salary
-        if (dto.getSalary() == null || dto.getSalary().compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidationException("Mức lương không hợp lệ");
-        }
-
-        // 2. CHECK TRÙNG USERNAME
-        if (staffDAO.isExistByUserName(dto.getUserName(), null)) {
-            throw new ValidationException("Tên đăng nhập đã tồn tại: " + dto.getUserName());
-        }
-
-        // 3. MÃ HÓA PASSWORD
         String hashedPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
-
-        // 4. TẠO DTO MỚI VỚI PASSWORD ĐÃ MÃ HÓA
-        CreateOrUpdateStaffDTO secureDto = new CreateOrUpdateStaffDTO(
+        CreateOrUpdateStaffDTO newDTO = new CreateOrUpdateStaffDTO(
                 dto.getFirstName(),
                 dto.getLastName(),
                 dto.getBirthDate(),
@@ -72,40 +52,60 @@ public class StaffService implements IStaffService {
                 dto.getPhoneNumber(),
                 dto.getUserName(),
                 hashedPassword,
-                dto.getRoleId()
-        );
-
-        // 5. THÊM VÀO DATABASE
-        Integer id = staffDAO.add(secureDto);
-
-        // 6. CÂP NHẬT CACHE
-        if (id != null) {
+                dto.getRoleId());
+        Integer id =  staffDAO.add(newDTO);
+        if(id != null) {
             StaffDetailDTO staffDetailDTO = staffDAO.getById(id);
             StaffViewDTO newStaff = new StaffViewDTO(
                     id,
-                    staffDetailDTO.getFirstName(),
-                    staffDetailDTO.getLastName(),
-                    staffDetailDTO.getBirthDate(),
-                    staffDetailDTO.getPhoneNumber(),
-                    staffDetailDTO.getSalary(),
-                    staffDetailDTO.getRoleId(),
-                    staffDetailDTO.getUserName(),
-                    staffDetailDTO.getRoleName()
-            );
+                    dto.getFirstName(),
+                    dto.getLastName(),
+                    dto.getBirthDate(),
+                    dto.getPhoneNumber(),
+                    dto.getSalary(),
+                    dto.getRoleId(),
+                    dto.getUserName(),
+                    staffDetailDTO.getRoleName());
             staffsCache.addFirst(newStaff);
-        } else {
-            throw new RuntimeException("Lỗi khi thêm nhân viên vào database");
         }
     }
 
     @Override
     public void updateStaff(CreateOrUpdateStaffDTO dto) {
-        staffDAO.update(dto);
+        boolean isExist = staffDAO.isExistByUserName(dto.getUserName(), dto.getId());
+        if(isExist){
+            throw new DuplicateStaffUserNameException("Tên tài khoản đã tồn tại: " + dto.getUserName());
+        }
+        String newPassword;
+        if(dto.getPassword() != null && dto.getPassword().trim().isEmpty()){
+            newPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
+        }else{
+            StaffDetailDTO currentPassword = staffDAO.getById(dto.getId());
+            newPassword = currentPassword.getPassword();
+        }
+        CreateOrUpdateStaffDTO updateDTO = new CreateOrUpdateStaffDTO(
+                dto.getId(),
+                dto.getFirstName(),
+                dto.getLastName(),
+                dto.getBirthDate(),
+                dto.getPhoneNumber(),
+                dto.getSalary(),
+                LocalDateTime.now() ,
+                dto.getUserName(),
+                dto.getRoleId(),
+                newPassword );
+        staffDAO.update(updateDTO);
+        staffsCache.clear();
+        staffsCache.addAll(staffDAO.getAll());
     }
 
     @Override
-    public void deleteStaff(Integer id) {
+    public void deleteStaff(Integer id) throws Exception {
+        if(staffDAO.hasTransaction(id)){
+            throw new Exception("Nhân viên này đã thực hiện giao dịch, không thể xóa");
+        }
         staffDAO.delete(id);
+        staffsCache.removeIf(s->s.getId().equals(id));
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.List;
 public interface IStaffService {
     void createStaff(CreateOrUpdateStaffDTO dto);
     void updateStaff(CreateOrUpdateStaffDTO dto);
-    void deleteStaff(Integer id);
+    void deleteStaff(Integer id) throws Exception;
     List<StaffViewDTO> getAllStaffs();
     List<StaffViewDTO> filterStaffByList(String searchKey); // Filter từ ArrayList
     StaffDetailDTO getStaffById(Integer id);

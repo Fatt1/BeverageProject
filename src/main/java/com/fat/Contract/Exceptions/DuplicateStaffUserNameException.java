@@ -1,7 +1,7 @@
 package com.fat.Contract.Exceptions;
 
-public class DuplicateProductNameException extends  BadRequestException{
-    public DuplicateProductNameException(String message) {
+public class DuplicateStaffUserNameException extends  BadRequestException{
+    public DuplicateStaffUserNameException(String message) {
         super(message);
     }
 }

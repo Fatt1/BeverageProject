@@ -48,7 +48,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     private ICategoryService categoryService;
     private Integer selectedCategoryId = null;
     private String searchKey = null;
-
+    private boolean isFirstLoad = true;
 
     @Inject
     public ProductsPanel() {
@@ -57,7 +57,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         initComponents();
         initalTable();
         setCss();
-        // 1. Gọi DAO lấy dữ liệu phân trang
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -71,16 +70,14 @@ public class ProductsPanel extends javax.swing.JPanel {
         });
 
 
-
-        // Load dữ liệu trang đầu tiên
-        loadData(1, 10);
     }
-
     private void updateDataOnShow() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         new Thread(() -> {
-            categoryService.refreshCategoryCache();
-            productService.refreshProductList();
+            if(!isFirstLoad) productService.refreshProductList();
+            if(isFirstLoad) {
+                isFirstLoad = false;
+            }
             var categoriesFromDB = categoryService.getAllCategories();
             SwingUtilities.invokeLater(() -> {
                 loadCategories(categoriesFromDB);
@@ -156,29 +153,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
     private void setCss() {
-        String styleBtn = "" +
-                "borderWidth: 0;";
-        btnAdd.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnDelete.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnUpdate.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnImportExcel.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnExportExcel.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-        btnReset.putClientProperty(FlatClientProperties.STYLE, styleBtn
-        );
-
 
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tên sản phẩm");
-        txtSearch.putClientProperty(FlatClientProperties.STYLE, "arc: 10");
-
 
         TableColumnModel col = tblProduct.getColumnModel();
         col.getColumn(1).setCellRenderer(new ImageRenderer());
-        tblProduct.setRowHeight(70);
 
 
         col.getColumn(0).setPreferredWidth(50);
@@ -209,7 +188,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     private void loadData(int pageIndex, int pageSize) {
 
         PagedResult<ProductViewDTO> result = null;
-
         if(searchKey == null && selectedCategoryId == null) {
             result = productService.getAllProductPagination(pageIndex, pageSize);
         }
@@ -416,7 +394,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         int id = Integer.parseInt(idObj.toString());
         ProductDetailDTO productDetailDTO = productService.getProductById(id);
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, productDetailDTO);
+        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productDetailDTO);
         updateProductDialog.setLocationRelativeTo(parentFrame);
         updateProductDialog.setVisible(true);
 
@@ -497,7 +475,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productService, categoryService, null);
+        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, null);
         addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
 
         addOrUpdateProductDialog.setVisible(true);

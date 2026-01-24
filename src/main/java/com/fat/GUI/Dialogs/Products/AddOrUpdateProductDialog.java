@@ -7,6 +7,8 @@ package com.fat.GUI.Dialogs.Products;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.IUploadImageService;
+import com.fat.BUS.Services.CategoryService;
+import com.fat.BUS.Services.ProductService;
 import com.fat.BUS.Services.UploadImageService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.DuplicateProductNameException;
@@ -30,17 +32,16 @@ import java.math.BigDecimal;
 public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateProductDialog.class.getName());
-    private IProductService productService;
-    private ICategoryService categoryService;
+    private IProductService productService = ProductService.getInstance();
+    private ICategoryService categoryService = CategoryService.getInstance();
     private JFileChooser fileChooser = new JFileChooser();
     private ProductDetailDTO productDetailDTO = null;
     /**
      * Creates new form AddProductDialog
      */
-    public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, IProductService productService, ICategoryService categoryService, ProductDetailDTO productDetailDTO) {
+    public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, ProductDetailDTO productDetailDTO) {
         super(parent, modal);
-        this.productService = productService;
-        this.categoryService = categoryService;
+
         initComponents();
         loadCategories();
         setCss();
@@ -56,6 +57,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
 
     private void loadCategories() {
         DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
+        categoryService.refreshCategoryCache();
         var categories = categoryService.getAllCategories();
 
         for(var c : categories) {
@@ -254,7 +256,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
             String priceText = txtPrice.getText().trim();
             BigDecimal price = null;
 
-            if(!priceText.isEmpty()) {
+            if(!priceText.isEmpty() ) {
                 price = new BigDecimal(priceText);
             }
 
@@ -307,11 +309,14 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
             }
             this.dispose();
         }
+        catch (NumberFormatException numberFormatException) {
+            JOptionPane.showMessageDialog(this, "Giá sản phẩm không hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
         catch (ValidationException validationException) {
             JOptionPane.showMessageDialog(this, validationException.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-        catch (DuplicateProductNameException duplicateEx) {
-            JOptionPane.showMessageDialog(this, duplicateEx.getMessage(), "Lỗi trùng tên sản phẩm", JOptionPane.ERROR_MESSAGE);
+        catch (DuplicateProductNameException duplicateProductNameException) {
+            JOptionPane.showMessageDialog(this, duplicateProductNameException.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
         catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Đã có lỗi xảy ra khi thêm sản phẩm.", "Lỗi", JOptionPane.ERROR_MESSAGE);

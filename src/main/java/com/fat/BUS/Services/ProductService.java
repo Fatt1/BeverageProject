@@ -20,11 +20,10 @@ public class ProductService implements IProductService {
     private static ProductService instance;
     private final IProductDAO productDAO = ProductDAO.getInstance();
     private final ICategoryDAO categoryDAO = CategoryDAO.getInstance();
-
-    private List<ProductViewDTO> productsCache;
+    private List<ProductViewDTO> productsCache = new ArrayList<>();
     @Inject
     private ProductService() {
-        productsCache = new ArrayList<>();
+        productsCache = productDAO.getAll();
     }
 
     public static ProductService getInstance() {
@@ -65,6 +64,8 @@ public class ProductService implements IProductService {
 
     }
 
+
+
     @Override
     public void deleteProduct(Integer id) {
         productDAO.delete(id);
@@ -78,6 +79,7 @@ public class ProductService implements IProductService {
 
     @Override
     public PagedResult<ProductViewDTO> filterProductByList(String searchKey, Integer categoryId, int pageIndex, int pageSize) {
+
        var stream =  productsCache.stream();
        if(searchKey != null && !searchKey.isEmpty()) {
            stream = stream.filter(p -> p.getName().toLowerCase().contains(searchKey.toLowerCase()));
@@ -85,29 +87,32 @@ public class ProductService implements IProductService {
        if(categoryId != null)
            stream = stream.filter(p -> p.getCategoryId() == categoryId);
 
-       return PagedResult.create(stream, productsCache.size() ,pageIndex, pageSize);
+       return PagedResult.create(stream ,pageIndex, pageSize);
 
     }
 
     @Override
     public ProductDetailDTO getProductById(Integer id) {
+
         return productDAO.getById(id);
     }
 
     @Override
     public List<ProductViewDTO> getAllProducts() {
+
         return this.productsCache;
     }
 
     @Override
     public PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize) {
-        return PagedResult.create(this.productsCache.stream(), productsCache.size() ,pageIndex, pageSize);
+        return PagedResult.create(this.productsCache.stream() ,pageIndex, pageSize);
 
     }
 
     @Override
     public void refreshProductList() {
         this.productsCache = productDAO.getAll();
+
     }
 
 }

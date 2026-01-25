@@ -4,6 +4,9 @@
  */
 package com.fat.GUI;
 
+import com.fat.BUS.Abstractions.Services.IRoleService;
+import com.fat.BUS.Services.RoleService;
+import com.fat.Contract.Constants.Function;
 import com.fat.DI.AppModule;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
@@ -36,6 +39,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainForm.class.getName());
     private CardLayout cardLayout;
+    private IRoleService roleService = RoleService.getInstance();
     /**
      * Creates new form MainForm
      */
@@ -44,9 +48,36 @@ public class MainForm extends javax.swing.JFrame {
         initComponents();
         setupCardLayout();
 //        tbtnTrangChu.putClientProperty("JButton.buttonType", "toolBarButton");
-
+        checkPermissionAndSetButtonState();
+        tbtnTrangChu.setSelected(true);
 
         this.setLocationRelativeTo(null);
+    }
+
+    private void checkPermissionAndSetButtonState() {
+        // Lấy roleId của người dùng hiện tại
+        UserSessionDTO userSession = UserSessionDTO.getInstance();
+        //userSession.setSession(1, "Nguyen Van A", "Nhân viên", 7); // Ví dụ thiết lập session
+        if(userSession.getRoleId() == null) {
+            logger.warning("User session or role ID is null.");
+            return;
+        }
+        int roleId = UserSessionDTO.getInstance().getRoleId();
+
+        // Kiểm tra quyền và thiết lập trạng thái nút
+        tbtnStaff.setVisible(roleService.checkPermission(roleId, Function.STAFF, com.fat.Contract.Constants.Action.READ));
+        tbtnRole.setVisible(roleService.checkPermission(roleId, Function.ROLE, com.fat.Contract.Constants.Action.READ));
+        tbtnCategory.setVisible(roleService.checkPermission(roleId, Function.CATEGORY, com.fat.Contract.Constants.Action.READ));
+        tbtnProduct.setVisible(roleService.checkPermission(roleId, Function.PRODUCT, com.fat.Contract.Constants.Action.READ));
+        tbtnSupplier.setVisible(roleService.checkPermission(roleId, Function.SUPPLIER, com.fat.Contract.Constants.Action.READ));
+        tbtnCustomer.setVisible(roleService.checkPermission(roleId, Function.CUSTOMER, com.fat.Contract.Constants.Action.READ));
+        tbtnImport.setVisible(roleService.checkPermission(roleId, Function.IMPORT, com.fat.Contract.Constants.Action.READ));
+        tbtnSelling.setVisible(roleService.checkPermission(roleId, Function.SELL, com.fat.Contract.Constants.Action.READ));
+        tbtnReceipt.setVisible(roleService.checkPermission(roleId, Function.RECEIPT, com.fat.Contract.Constants.Action.READ));
+        tbtnPromotion.setVisible(roleService.checkPermission(roleId, Function.PROMOTION, com.fat.Contract.Constants.Action.READ));
+        tbtnStatistic.setVisible(roleService.checkPermission(roleId, Function.STATISTIC, com.fat.Contract.Constants.Action.READ));
+
+        // Thêm các nút khác tương tự
     }
 
     /**
@@ -60,10 +91,11 @@ public class MainForm extends javax.swing.JFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         sidebarPandel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jLabel1 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
+        jLabel1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         tbtnTrangChu = new javax.swing.JToggleButton();
         tbtnSelling = new javax.swing.JToggleButton();
         tbtnReceipt = new javax.swing.JToggleButton();
@@ -90,6 +122,12 @@ public class MainForm extends javax.swing.JFrame {
         sidebarPandel.setPreferredSize(new java.awt.Dimension(200, 787));
         sidebarPandel.setLayout(new javax.swing.BoxLayout(sidebarPandel, javax.swing.BoxLayout.Y_AXIS));
 
+        jPanel1.setBackground(new java.awt.Color(217, 217, 217));
+        jPanel1.setMaximumSize(new java.awt.Dimension(49150, 163));
+        jPanel1.setMinimumSize(new java.awt.Dimension(85, 70));
+        jPanel1.setPreferredSize(new java.awt.Dimension(85, 163));
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
+
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/StockTake.png"))); // NOI18N
@@ -97,12 +135,12 @@ public class MainForm extends javax.swing.JFrame {
         jLabel3.setToolTipText("");
         jLabel3.setMaximumSize(new java.awt.Dimension(32767, 80));
         jLabel3.setPreferredSize(new java.awt.Dimension(85, 100));
-        sidebarPandel.add(jLabel3);
+        jPanel1.add(jLabel3);
 
-        jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
-        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
-        jSeparator1.setToolTipText("");
-        sidebarPandel.add(jSeparator1);
+        jSeparator3.setBackground(new java.awt.Color(255, 255, 255));
+        jSeparator3.setForeground(new java.awt.Color(255, 255, 255));
+        jSeparator3.setToolTipText("");
+        jPanel1.add(jSeparator3);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -110,12 +148,14 @@ public class MainForm extends javax.swing.JFrame {
         jLabel1.setText("Fat");
         jLabel1.setMaximumSize(new java.awt.Dimension(32767, 60));
         jLabel1.setPreferredSize(new java.awt.Dimension(60, 60));
-        sidebarPandel.add(jLabel1);
+        jPanel1.add(jLabel1);
 
-        jSeparator3.setBackground(new java.awt.Color(255, 255, 255));
-        jSeparator3.setForeground(new java.awt.Color(255, 255, 255));
-        jSeparator3.setToolTipText("");
-        sidebarPandel.add(jSeparator3);
+        jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
+        jSeparator1.setToolTipText("");
+        jPanel1.add(jSeparator1);
+
+        sidebarPandel.add(jPanel1);
 
         tbtnTrangChu.setBackground(new java.awt.Color(217, 217, 217));
         buttonGroup1.add(tbtnTrangChu);
@@ -480,6 +520,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JPanel mainContentPanel;

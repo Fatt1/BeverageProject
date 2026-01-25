@@ -13,6 +13,7 @@ import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
 import com.fat.GUI.Forms.LoginForm;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
+import com.fat.GUI.Panels.Promotion.PromotionsPanel;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
@@ -384,7 +385,8 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new SupplierPanel(), "SUPPLIERS");
         mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
-         mainContentPanel.add(new RolesPanel(), "ROLES");
+        mainContentPanel.add(new RolesPanel(), "ROLES");
+        mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
     }
 
     private void tbtnSellingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSellingActionPerformed
@@ -400,7 +402,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnSupplierActionPerformed
 
     private void tbtnPromotionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnPromotionActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "PROMOTIONS");
     }//GEN-LAST:event_tbtnPromotionActionPerformed
 
     private void tbtnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnCustomerActionPerformed

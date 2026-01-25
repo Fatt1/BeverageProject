@@ -340,6 +340,7 @@ public class MainForm extends javax.swing.JFrame {
         // Add vào CardLayout
 
         mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
+        mainContentPanel.add(new SupplierPanel(), "SUPPLIERS");
         mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
          mainContentPanel.add(new RolesPanel(), "ROLES");
@@ -354,16 +355,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnTrangChuActionPerformed
 
     private void tbtnSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSupplierActionPerformed
-          if (mainContentPanel.getComponentCount() > 0 &&
-            mainContentPanel.getComponent(0) instanceof SupplierPanel) {
-            return; // Không làm gì cả, thoát hàm
-        }
-        SupplierPanel pPanel = new SupplierPanel();
-        mainContentPanel.removeAll();
-        mainContentPanel.add(pPanel);
-
-        mainContentPanel.revalidate(); // Tính toán lại bố cục (Layout)
-        mainContentPanel.repaint();
+         cardLayout.show(mainContentPanel, "SUPPLIERS");
     }//GEN-LAST:event_tbtnSupplierActionPerformed
 
     private void tbtnPromotionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnPromotionActionPerformed

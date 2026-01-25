@@ -4,17 +4,28 @@
  */
 package com.fat.GUI.Panels.Supplier;
 
+import com.fat.BUS.Abstractions.Services.ICategoryService;
+import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.ISupplierService;
+import com.fat.BUS.Abstractions.Services.IUploadImageService;
 import com.fat.BUS.Services.SupplierService;
-import com.fat.DTO.Products.ProductDetailDTO;
+import com.fat.BUS.Services.UploadImageService;
+import com.fat.BUS.Utils.ExcelHelper;
+import com.fat.Contract.Shared.PagedResult;
+import com.fat.DTO.Products.CreateOrUpdateProductDTO;
+import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
 import com.fat.DTO.Suppliers.SupplierViewDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
+import com.fat.GUI.Utils.FormatterUtil;
 
+import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -25,7 +36,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class SupplierPanel extends javax.swing.JPanel {
 
-    private ISupplierService supplierService = SupplierService.getInstance();
+    private ICategoryService categoryService;
+    private Integer selectedCategoryId = null;
+    private String searchKey = null;
+    private final ISupplierService supplierService = SupplierService.getInstance();
+
     public SupplierPanel() {
         initComponents();
         loadData();
@@ -172,20 +187,6 @@ public class SupplierPanel extends javax.swing.JPanel {
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void loadData(){
-        DefaultTableModel model = (DefaultTableModel)tblSupplier.getModel();
-        
-        // 
-        var suppliers = supplierService.getAllSuppliers();
-        
-        filterTable(suppliers);
-       
-    }
     private void filterTable(List<SupplierViewDTO> suppliers){
         DefaultTableModel model = (DefaultTableModel)tblSupplier.getModel();
         model.setRowCount(0);
@@ -208,6 +209,23 @@ public class SupplierPanel extends javax.swing.JPanel {
             tblSupplier.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
     }
+    
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, null);
+        addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
+
+        addOrUpdateProductDialog.setVisible(true);
+
+        // Sau khi đóng dialog, tải lại dữ liệu
+        loadData();
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void loadData(){
+        List<SupplierViewDTO> suppliers = supplierService.getAllSuppliers();
+        filterTable(suppliers);
+    }
+    
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // int selectedRow = tblSupplier.getSelectedRow();
         // if(selectedRow == -1) {
@@ -230,19 +248,70 @@ public class SupplierPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        
+        txtSearch.setText("");
+        searchKey = null;
+        loadData();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
+        var result =  ExcelHelper.readFromExcel();
+        if(!result.isEmpty()) {
+            for(var row: result) {
+                try{
+                    String name = row.get(0).toString();
+                    String email = row.get(1).toString();
+                    String phoneNumber = row.get(2).toString();
+                    String address = row.get(3).toString();
 
+                    CreateOrUpdateSupplierDTO supplier = new CreateOrUpdateSupplierDTO(null, name, email, phoneNumber, address);
+                    supplierService.createSupplier(supplier);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Dữ liệu trong file Excel không hợp lệ. Vui lòng kiểm tra lại.",
+                            "Lỗi dữ liệu", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            loadData();
+        }
     }//GEN-LAST:event_btnImportExcelActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        
+        JTable table = new JTable();
+        List<SupplierViewDTO> allSuppliers = supplierService.getAllSuppliers();
+        String[] columns = {"ID", "Tên Nhà Cung Cấp", "Email", "Số Điện Thoại", "Địa Chỉ"};
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setColumnIdentifiers(columns);
+        for (SupplierViewDTO s : allSuppliers) {
+            Object[] row = new Object[]{
+                    s.getId(),
+                    s.getName(),
+                    s.getEmail(),
+                    s.getPhoneNumber(),
+                    s.getAddress()
+            };
+            model.addRow(row);
+        }
+        ExcelHelper.exportToExcel(table, "Danh_sach_nha_cung_cap.xlsx", "Danh_sach_nha_cung_cap");
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = tblSupplier.getSelectedRow();
+       if(selectedRow == -1) {
+           JOptionPane.showConfirmDialog(this, "Vui lòng chọn nhà cung cấp để xóa", "Chưa chọn nhà cung cấp", JOptionPane.WARNING_MESSAGE);
+           return;
+       }
+
+        int choose = JOptionPane.showConfirmDialog(this, "Bạn có chăc muốn xóa nhà cung cấp này", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if(choose != JOptionPane.YES_OPTION) {
+            return;
+        }
+       Object idObj = tblSupplier.getValueAt(selectedRow, 0);
+       int id = Integer.parseInt(idObj.toString());
+       supplierService.deleteSupplier(id);
+       loadData();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

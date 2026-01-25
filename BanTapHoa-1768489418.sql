@@ -1,4 +1,6 @@
 --Create database [GroceryDB]
+Use GroceryDB;
+
 USE [GroceryDB]
 GO
 /****** Object:  Table [dbo].[Category]    Script Date: 1/24/2026 6:39:08 PM ******/

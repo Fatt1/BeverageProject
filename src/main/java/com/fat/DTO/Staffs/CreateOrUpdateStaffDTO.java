@@ -34,7 +34,7 @@ public class CreateOrUpdateStaffDTO extends CreateOrUpdateDTO<Integer> {
     @Size(min = 4, max = 20, message = "Tên đăng nhập phải từ 4-20 ký tự")
     private String userName;
 
-    @NotBlank(message = "Mật khẩu không được để trống")
+    // Password: bắt buộc khi CREATE, optional khi UPDATE (null = giữ nguyên)
     @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
     private String password;
 

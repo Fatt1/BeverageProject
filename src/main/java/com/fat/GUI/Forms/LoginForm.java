@@ -5,9 +5,15 @@
 package com.fat.GUI.Forms;
 
 
+import com.fat.DAO.Repositories.StaffDAO;
+import com.fat.DTO.Auths.UserSessionDTO;
+import com.fat.DTO.Staffs.StaffDetailDTO;
+import com.fat.GUI.MainForm;
+import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
 import com.fat.GUI.Utils.ImageHelper;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -22,16 +28,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
-
-import com.formdev.flatlaf.FlatLightLaf;
-
-import net.miginfocom.layout.AlignX;
-
-import org.apache.commons.collections4.functors.WhileClosure;
 /**
  *
  * @author User
@@ -113,6 +113,32 @@ public class LoginForm extends javax.swing.JFrame {
         btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 20));
         btnLogin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
         btnLogin.setAlignmentX(Component.LEFT_ALIGNMENT); 
+
+        btnLogin.addActionListener(e -> {
+            String userName = txtUser.getText();
+            String password = String.valueOf(txtPass.getPassword());
+
+            if (userName.trim().isEmpty() || password.trim().isEmpty()){
+                ConfirmDialog.show(this, "Error", "Không được để trống username hoặc password", "OK");
+                return;
+            }
+
+            if(!StaffDAO.getInstance().isLoginSuccessful(userName, password)){
+                ConfirmDialog.show(this, "Error", "Sai username hoặc password", "OK");
+                return;
+            }
+            
+            String idStaff = StaffDAO.getInstance().getIdStaffOfLoginSuccessful(userName, password);
+            // JOptionPane.showMessageDialog(null, 
+            //             "Đăng nhập thành công! ID của bạn là: " + idStaff, 
+            //             "Thông báo", 
+            //             JOptionPane.INFORMATION_MESSAGE);
+            StaffDetailDTO staff = StaffDAO.getInstance().getById(Integer.parseInt(idStaff));
+            UserSessionDTO.getInstance().setSession(staff.getId(), userName, password, staff.getRoleId());
+            new MainForm().init();
+        });
+
+
 
         leftWrapper.add(title);
 

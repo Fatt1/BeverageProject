@@ -6,13 +6,14 @@ import com.fat.Contract.Exceptions.ValidationException;
 import com.fat.DAO.Abstractions.Repositories.IProductDAO;
 import com.fat.DAO.Abstractions.Repositories.IStaffDAO;
 import com.fat.DAO.Repositories.StaffDAO;
+
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
 import com.fat.DTO.Staffs.StaffDetailDTO;
 import com.fat.DTO.Staffs.StaffViewDTO;
 import jakarta.inject.Inject;
 import org.mindrot.jbcrypt.BCrypt;
-
+import com.fat.BUS.Services.RoleService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class StaffService implements IStaffService {
     private static StaffService instance;
     private final IStaffDAO staffDAO = StaffDAO.getInstance();
+    private final RoleService roleService = RoleService.getInstance();
     private List<StaffViewDTO> staffsCache ;
 
     @Inject
@@ -56,17 +58,35 @@ public class StaffService implements IStaffService {
         Integer id =  staffDAO.add(newDTO);
         if(id != null) {
             StaffDetailDTO staffDetailDTO = staffDAO.getById(id);
-            StaffViewDTO newStaff = new StaffViewDTO(
-                    id,
-                    dto.getFirstName(),
-                    dto.getLastName(),
-                    dto.getBirthDate(),
-                    dto.getPhoneNumber(),
-                    dto.getSalary(),
-                    dto.getRoleId(),
-                    dto.getUserName(),
-                    staffDetailDTO.getRoleName());
-            staffsCache.addFirst(newStaff);
+            if(staffDetailDTO != null) {
+                StaffViewDTO newStaff = new StaffViewDTO(
+                        id,
+                        dto.getFirstName(),
+                        dto.getLastName(),
+                        dto.getBirthDate(),
+                        dto.getPhoneNumber(),
+                        dto.getSalary(),
+                        dto.getRoleId(),
+                        dto.getUserName(),
+                        staffDetailDTO.getRoleName());
+                staffsCache.addFirst(newStaff);
+            } else {
+                // Nếu không lấy được detail, tạo StaffViewDTO với roleName tạm
+
+                var role = roleService.getRoleById(dto.getRoleId());
+                String roleName = role != null ? role.getName() : "Unknown";
+                StaffViewDTO newStaff = new StaffViewDTO(
+                        id,
+                        dto.getFirstName(),
+                        dto.getLastName(),
+                        dto.getBirthDate(),
+                        dto.getPhoneNumber(),
+                        dto.getSalary(),
+                        dto.getRoleId(),
+                        dto.getUserName(),
+                        roleName);
+                staffsCache.addFirst(newStaff);
+            }
         }
     }
 
@@ -77,11 +97,13 @@ public class StaffService implements IStaffService {
             throw new DuplicateStaffUserNameException("Tên tài khoản đã tồn tại: " + dto.getUserName());
         }
         String newPassword;
-        if(dto.getPassword() != null && dto.getPassword().trim().isEmpty()){
+        if(dto.getPassword() != null && !dto.getPassword().trim().isEmpty()){
+            // Có password mới -> mã hóa
             newPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
         }else{
-            StaffDetailDTO currentPassword = staffDAO.getById(dto.getId());
-            newPassword = currentPassword.getPassword();
+            // Không có password mới -> giữ nguyên password cũ
+            StaffDetailDTO currentStaff = staffDAO.getById(dto.getId());
+            newPassword = currentStaff.getPassword();
         }
         CreateOrUpdateStaffDTO updateDTO = new CreateOrUpdateStaffDTO(
                 dto.getId(),

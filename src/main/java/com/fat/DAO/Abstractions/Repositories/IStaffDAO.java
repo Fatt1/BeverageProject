@@ -12,4 +12,6 @@ public interface IStaffDAO extends IDAO<CreateOrUpdateStaffDTO, Integer> {
     StaffDetailDTO getById(Integer id);
     boolean hasTransaction(Integer staffId);
     boolean isExistByUserName(String userName, Integer excludeId);
+    boolean isLoginSuccessful(String username, String password);
+    String getIdStaffOfLoginSuccessful(String username, String password);
 }

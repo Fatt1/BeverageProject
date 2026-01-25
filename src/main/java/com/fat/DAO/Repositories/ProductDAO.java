@@ -150,7 +150,7 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public ProductDetailDTO getById(Integer id) {
-        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.CategoryId, C.Name AS CategoryName " +
+        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.CategoryId, C.   Name AS CategoryName " +
                 "FROM [Product] AS P JOIN Category AS C ON P.CategoryId = C.Id " +
                 "WHERE P.Id = ? AND P.IsDeleted = 0;";
         try (Connection conn = DbContext.getConnection();

@@ -1,12 +1,14 @@
 package com.fat.DTO.Promotions;
 
 import com.fat.DTO.Abstractions.CreateOrUpdateDTO;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class CreateOrUpdatePromotionDTO extends CreateOrUpdateDTO<Integer> {
+    @NotBlank(message = "Tên chương trình giảm giá không được để trống")
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;

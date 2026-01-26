@@ -40,7 +40,9 @@ public class ProductService implements IProductService {
         if(isExists) {
             throw new DuplicateProductNameException("Tên sản phầm đã tồn tại: " + dto.getName());
         }
-
+        UploadImageService uploadImageService = new UploadImageService();
+        String uploadedImageName = uploadImageService.uploadImage(dto.getImage(), dto.getImageSourcePath());
+        dto.setImage(uploadedImageName);
        Integer id =  productDAO.add(dto);
        if(id != null) {
            ProductDetailDTO productDetailDTO = productDAO.getById(id);
@@ -55,6 +57,13 @@ public class ProductService implements IProductService {
         boolean isExists = productDAO.isExistByName(dto.getName(), dto.getId());
         if(isExists) {
             throw new DuplicateProductNameException("Tên sản phầm đã tồn tại: " + dto.getName());
+        }
+
+        String oldImage = productDAO.getById(dto.getId()).getImage();
+        if(!oldImage.equals(dto.getImage())) {
+            UploadImageService uploadImageService = new UploadImageService();
+            String uploadedImageName = uploadImageService.uploadImage(dto.getImage(), dto.getImageSourcePath());
+            dto.setImage(uploadedImageName);
         }
         productDAO.update(dto);
         String categoryName = categoryDAO.getById(dto.getCategoryId()).getName();

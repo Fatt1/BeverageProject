@@ -16,6 +16,8 @@ import com.fat.GUI.Utils.FormatterUtil;
 import com.formdev.flatlaf.FlatClientProperties;
 import jakarta.validation.groups.Default;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,8 +45,13 @@ public class StaffsPanel extends javax.swing.JPanel {
         initTable();
         setCss();
         
-        // Load dữ liệu ban đầu
-        loadData();
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                updateDataOnShow();
+            }
+        });
         
         // Lắng nghe sự kiện pagination
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
@@ -373,13 +380,11 @@ public class StaffsPanel extends javax.swing.JPanel {
             if(isFirstLoad) {
                 isFirstLoad = false;
             }
-
             SwingUtilities.invokeLater(() -> {
 
                 loadData();
                 setCursor(Cursor.getDefaultCursor());
             });
-
         }).start();
     }
 
@@ -454,8 +459,6 @@ public class StaffsPanel extends javax.swing.JPanel {
         col.getColumn(6).setPreferredWidth(120);
         col.getColumn(6).setMaxWidth(150);
 
-        // Set row height
-        tblStaff.setRowHeight(40);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

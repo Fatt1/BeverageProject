@@ -18,9 +18,19 @@ import java.util.List;
 
 public class ProductService implements IProductService {
     private final IProductDAO productDAO = ProductDAO.getInstance();
-    private final List<ProductViewDTO> productsCache;
-    public ProductService() {
+    private static ProductService instance;
+    private List<ProductViewDTO> productsCache;
+
+    private ProductService() {
         productsCache = productDAO.getAll();
+    }
+
+
+    public static ProductService getInstance() {
+        if (instance == null) {
+            instance = new ProductService();
+        }
+        return instance;
     }
 
     @Override
@@ -103,6 +113,12 @@ public class ProductService implements IProductService {
     @Override
     public PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize) {
         return PagedResult.create(this.productsCache.stream(), pageIndex, pageSize);
+
+    }
+
+    @Override
+    public void refreshProductList() {
+        this.productsCache = productDAO.getAll();
 
     }
 

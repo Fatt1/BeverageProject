@@ -5,6 +5,7 @@
 package com.fat.GUI.Forms;
 
 
+import com.fat.BUS.Services.StaffService;
 import com.fat.DAO.Repositories.StaffDAO;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Staffs.StaffDetailDTO;
@@ -123,19 +124,21 @@ public class LoginForm extends javax.swing.JFrame {
                 return;
             }
 
-            if(!StaffDAO.getInstance().isLoginSuccessful(userName, password)){
+            if(!StaffService.getInstance().isDetectdStaff(userName, password)){
                 ConfirmDialog.show(this, "Error", "Sai username hoặc password", "OK");
                 return;
             }
             
-            String idStaff = StaffDAO.getInstance().getIdStaffOfLoginSuccessful(userName, password);
-            // JOptionPane.showMessageDialog(null, 
-            //             "Đăng nhập thành công! ID của bạn là: " + idStaff, 
-            //             "Thông báo", 
-            //             JOptionPane.INFORMATION_MESSAGE);
-            StaffDetailDTO staff = StaffDAO.getInstance().getById(Integer.parseInt(idStaff));
-            UserSessionDTO.getInstance().setSession(staff.getId(), userName, password, staff.getRoleId());
+            // String idStaff = StaffDAO.getInstance().getIdStaffOfLoginSuccessful(userName, password);
+            //  JOptionPane.showMessageDialog(null, 
+            //              "Đăng nhập thành công! ID của bạn là: " + idStaff, 
+            //              "Thông báo", 
+            //              JOptionPane.INFORMATION_MESSAGE);
+
+            StaffDetailDTO staff = StaffService.getInstance().getStaffByUserName(userName);
+            UserSessionDTO.getInstance().setSession(staff.getId(), staff.getUserName(), staff.getRoleName(), staff.getRoleId());
             new MainForm().init();
+            this.dispose();
         });
 
 

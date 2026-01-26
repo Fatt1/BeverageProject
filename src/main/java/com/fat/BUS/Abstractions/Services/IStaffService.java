@@ -14,6 +14,7 @@ public interface IStaffService {
     List<StaffViewDTO> getAllStaffs();
     List<StaffViewDTO> filterStaffByList(String searchKey); // Filter từ ArrayList
     StaffDetailDTO getStaffById(Integer id);
+    StaffDetailDTO getStaffByUserName(String userName);
     void refreshCache();
 }
 

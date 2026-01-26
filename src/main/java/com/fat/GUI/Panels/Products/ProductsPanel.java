@@ -64,17 +64,16 @@ public class ProductsPanel extends javax.swing.JPanel {
             }
         });
 
-
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
             loadData(pageIndex, pageSize);
         });
 
-
     }
     private void updateDataOnShow() {
+
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         new Thread(() -> {
-            if(!isFirstLoad) productService.refreshProductList();
+            if(!isFirstLoad)  productService.refreshProductList();
             if(isFirstLoad) {
                 isFirstLoad = false;
             }

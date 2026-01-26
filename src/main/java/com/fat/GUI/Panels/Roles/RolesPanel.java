@@ -30,7 +30,6 @@ import java.util.List;
  */
 public class RolesPanel extends javax.swing.JPanel {
     private final IRoleService roleService = RoleService.getInstance();
-    private boolean isFirstLoad = true;
     /**
      * Creates new form RolesPanel
      */
@@ -43,10 +42,6 @@ public class RolesPanel extends javax.swing.JPanel {
             public void componentShown(ComponentEvent e) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
               new Thread(() -> {
-                  if(!isFirstLoad)
-                  roleService.refreshCache();
-                  if(isFirstLoad) isFirstLoad = false;
-
                   SwingUtilities.invokeLater(() -> {
                       loadData();
                       setCursor(Cursor.getDefaultCursor());

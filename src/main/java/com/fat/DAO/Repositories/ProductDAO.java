@@ -171,7 +171,7 @@ public class ProductDAO implements IProductDAO {
             return null;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw new RuntimeException("Xảy ra lỗi khi lấy thông tin sản phẩm");
         }
     }
 
@@ -207,7 +207,7 @@ public class ProductDAO implements IProductDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Xảy ra lỗi khi lấy danh sách san phẩm");
         }
 
     }
@@ -263,7 +263,7 @@ public class ProductDAO implements IProductDAO {
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw new RuntimeException("Xảy ra lỗi khi thêm sản phẩm", sqlException);
         }
     }
 
@@ -303,7 +303,7 @@ public class ProductDAO implements IProductDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-
+            throw new RuntimeException("Xảy ra lỗi khi xóa sản phẩm", e);
         }
 
     }

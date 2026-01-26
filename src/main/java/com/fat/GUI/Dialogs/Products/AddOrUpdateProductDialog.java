@@ -48,8 +48,6 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
         setCss();
         this.productDetailDTO = productDetailDTO;
         initProductDetail();
-
-
         FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình ảnh", "jpg", "png", "jpeg");
         fileChooser.setFileFilter(imageFilter);
         // Tránh chọn tất cả các loại file

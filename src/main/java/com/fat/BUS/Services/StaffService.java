@@ -29,7 +29,7 @@ public class StaffService implements IStaffService {
 
     @Inject
     private StaffService() {
-        staffsCache = new ArrayList<>();
+        this.staffsCache = staffDAO.getAll();
     }
 
     public static StaffService getInstance() {
@@ -155,6 +155,11 @@ public class StaffService implements IStaffService {
     @Override
     public StaffDetailDTO getStaffById(Integer id) {
         return staffDAO.getById(id);
+    }
+
+    @Override
+    public StaffDetailDTO getStaffByUserName(String userName) {
+        return staffDAO.getByUserName(userName);
     }
 
     @Override

@@ -105,6 +105,39 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
+    public StaffDetailDTO getByUserName(String userName) {
+        String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.Password, St.RoleId, R.Name AS RoleName "
+                + "FROM [Staff] AS St "
+                + "JOIN Role AS R ON St.RoleId = R.Id "
+                + "WHERE St.UserName = ?";
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+            ps.setString(1, userName);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Integer staffId = rs.getInt("Id");
+                String firstName = rs.getString("FirstName") ;
+                String lastName =  rs.getString("LastName");
+                LocalDate birthDate = rs.getObject("Birthday",LocalDate.class);
+                BigDecimal salary = rs.getBigDecimal("Salary");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String userNameQ = rs.getString("UserName");
+                String password = rs.getString("Password");
+                Integer roleId = rs.getInt("RoleId");
+                String roleName = rs.getString("RoleName");
+                return new StaffDetailDTO( staffId,  roleId,  password,
+                        userNameQ,  salary,  birthDate,
+                        phoneNumber,  lastName,  firstName, roleName);
+            }
+            return null;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public Integer add(CreateOrUpdateStaffDTO entity) {
         String sql = "INSERT INTO [Staff] (FirstName, LastName,BirthDay,Salary,PhoneNumber,RoleId, CreatedAt, UpdatedAt,UserName,Password)" +
                 "VALUES (?,?,?,?,?,?,?,?,?,?)";

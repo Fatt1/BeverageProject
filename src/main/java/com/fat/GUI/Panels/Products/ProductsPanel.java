@@ -48,12 +48,10 @@ public class ProductsPanel extends javax.swing.JPanel {
     private ICategoryService categoryService;
     private Integer selectedCategoryId = null;
     private String searchKey = null;
-    private boolean isFirstLoad = true;
 
     @Inject
     public ProductsPanel() {
         this.categoryService = CategoryService.getInstance();
-        this.productService = ProductService.getInstance();
         initComponents();
         initalTable();
         setCss();
@@ -64,7 +62,6 @@ public class ProductsPanel extends javax.swing.JPanel {
             }
         });
 
-
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
             loadData(pageIndex, pageSize);
         });
@@ -72,12 +69,10 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     }
     private void updateDataOnShow() {
+
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         new Thread(() -> {
-            if(!isFirstLoad) productService.refreshProductList();
-            if(isFirstLoad) {
-                isFirstLoad = false;
-            }
+            this.productService = new ProductService();
             var categoriesFromDB = categoryService.getAllCategories();
             SwingUtilities.invokeLater(() -> {
                 loadCategories(categoriesFromDB);

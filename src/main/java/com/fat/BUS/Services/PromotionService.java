@@ -91,6 +91,7 @@ public class PromotionService implements IPromotionService {
         return null;
     }
 
+
     @Override
     public void refreshCache() {
         this.promotionsCache = promotionDAO.getAll();

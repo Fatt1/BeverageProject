@@ -33,7 +33,7 @@ import java.nio.file.Path;
 public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateProductDialog.class.getName());
-    private IProductService productService = ProductService.getInstance();
+    private IProductService productService;
     private ICategoryService categoryService = CategoryService.getInstance();
     private JFileChooser fileChooser = new JFileChooser();
     private ProductDetailDTO productDetailDTO = null;
@@ -42,14 +42,12 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
      */
     public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, ProductDetailDTO productDetailDTO) {
         super(parent, modal);
-
+        productService = new ProductService();
         initComponents();
         loadCategories();
         setCss();
         this.productDetailDTO = productDetailDTO;
         initProductDetail();
-
-
         FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình ảnh", "jpg", "png", "jpeg");
         fileChooser.setFileFilter(imageFilter);
         // Tránh chọn tất cả các loại file

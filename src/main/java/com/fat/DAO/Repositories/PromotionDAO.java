@@ -3,6 +3,7 @@ package com.fat.DAO.Repositories;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IPromotionDAO;
 import com.fat.DAO.Utils.DbContext;
+import com.fat.DTO.Products.ProductViewDTO;
 import com.fat.DTO.Promotions.CreateOrUpdatePromotionDTO;
 import com.fat.DTO.Promotions.PromotionDetailDTO;
 import com.fat.DTO.Promotions.PromotionItemDTO;
@@ -98,6 +99,12 @@ public class PromotionDAO implements IPromotionDAO {
                 e.printStackTrace();
                 return null;
             }
+    }
+
+    // Láy danh sách sản phẩm đang có khuyến mãi
+    @Override
+    public List<ProductViewDTO> getActivePromotions() {
+        return List.of();
     }
 
 

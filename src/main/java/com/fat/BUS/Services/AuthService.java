@@ -4,6 +4,8 @@ import com.fat.BUS.Abstractions.Services.IAuthService;
 import com.fat.BUS.Abstractions.Services.IStaffService;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Staffs.StaffDetailDTO;
+import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
+import com.fat.GUI.Forms.LoginForm;
 
 public class AuthService implements IAuthService {
     private static AuthService instance;
@@ -20,8 +22,8 @@ public class AuthService implements IAuthService {
 
     @Override
     public UserSessionDTO login(String username, String password) {
-        StaffDetailDTO staff = staffService.getStaffByUserName(username);
-        // TODO: Implement login logic
+        StaffDetailDTO staff = StaffService.getInstance().getStaffByUserName(username);
+        UserSessionDTO.getInstance().setSession(staff.getId(), staff.getUserName(), staff.getRoleName(), staff.getRoleId());
         return null;
     }
 

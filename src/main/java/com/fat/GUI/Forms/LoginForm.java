@@ -5,6 +5,7 @@
 package com.fat.GUI.Forms;
 
 
+import com.fat.BUS.Services.AuthService;
 import com.fat.BUS.Services.StaffService;
 import com.fat.DAO.Repositories.StaffDAO;
 import com.fat.DTO.Auths.UserSessionDTO;
@@ -135,8 +136,7 @@ public class LoginForm extends javax.swing.JFrame {
             //              "Thông báo", 
             //              JOptionPane.INFORMATION_MESSAGE);
 
-            StaffDetailDTO staff = StaffService.getInstance().getStaffByUserName(userName);
-            UserSessionDTO.getInstance().setSession(staff.getId(), staff.getUserName(), staff.getRoleName(), staff.getRoleId());
+            AuthService.getInstance().login(userName, password);
             new MainForm().init();
             this.dispose();
         });

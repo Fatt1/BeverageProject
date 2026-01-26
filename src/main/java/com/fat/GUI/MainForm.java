@@ -5,6 +5,7 @@
 package com.fat.GUI;
 
 import com.fat.BUS.Abstractions.Services.IRoleService;
+import com.fat.BUS.Services.AuthService;
 import com.fat.BUS.Services.RoleService;
 import com.fat.Contract.Constants.Function;
 import com.fat.DI.AppModule;
@@ -424,15 +425,16 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnStatisticActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        boolean result = ConfirmDialog.show(this, "Đăng xuất", "Bạn có muốn đăng xuất không?", "Xác Nhận");
-        if (result) {
-            this.dispose();
-            UserSessionDTO.getInstance().clear();
-            new LoginForm().setVisible(true);
-        }
-        else{
-            cardLayout.show(mainContentPanel, this.toString());
-        }
+        AuthService.getInstance().logout(null, this);
+        // boolean result = ConfirmDialog.show(this, "Đăng xuất", "Bạn có muốn đăng xuất không?", "Xác Nhận");
+        // if (result) {
+        //     this.dispose();
+        //     UserSessionDTO.getInstance().clear();
+        //     new LoginForm().setVisible(true);
+        // }
+        // else{
+        //     cardLayout.show(mainContentPanel, this.toString());
+        // }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
@@ -510,7 +512,12 @@ public class MainForm extends javax.swing.JFrame {
             mainForm.setVisible(true);
         });
     }
-
+    public CardLayout getCardLayout(){
+        return cardLayout;
+    }
+    public JPanel getMainContentPanel(){
+        return mainContentPanel;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;

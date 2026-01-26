@@ -11,6 +11,7 @@ import com.fat.DI.AppModule;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
 import com.fat.GUI.Forms.LoginForm;
+import com.fat.GUI.Panels.Categories.CategoriesPanel;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
 import com.fat.GUI.Panels.Promotion.PromotionsPanel;
@@ -78,7 +79,7 @@ public class MainForm extends javax.swing.JFrame {
         tbtnPromotion.setVisible(roleService.checkPermission(roleId, Function.PROMOTION, com.fat.Contract.Constants.Action.READ));
         tbtnStatistic.setVisible(roleService.checkPermission(roleId, Function.STATISTIC, com.fat.Contract.Constants.Action.READ));
 
-        // Thêm các nút khác tương tự
+
     }
 
     /**
@@ -365,7 +366,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnImportActionPerformed
 
     private void tbtnCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnCategoryActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "CATEGORIES");
     }//GEN-LAST:event_tbtnCategoryActionPerformed
 
     private void tbtnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnReceiptActionPerformed
@@ -384,6 +385,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
         mainContentPanel.add(new SupplierPanel(), "SUPPLIERS");
         mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
+        mainContentPanel.add(new CategoriesPanel(), "CATEGORIES");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         mainContentPanel.add(new RolesPanel(), "ROLES");
         mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");

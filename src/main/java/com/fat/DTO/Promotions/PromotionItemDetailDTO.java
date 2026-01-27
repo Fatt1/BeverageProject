@@ -33,6 +33,10 @@ public class PromotionItemDetailDTO {
         return discountPercentage;
     }
 
+    public void setDiscountPercentage(double discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
     public int getProductId() {
         return productId;
     }

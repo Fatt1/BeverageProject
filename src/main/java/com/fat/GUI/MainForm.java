@@ -5,12 +5,14 @@
 package com.fat.GUI;
 
 import com.fat.BUS.Abstractions.Services.IRoleService;
+import com.fat.BUS.Services.AuthService;
 import com.fat.BUS.Services.RoleService;
 import com.fat.Contract.Constants.Function;
 import com.fat.DI.AppModule;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
 import com.fat.GUI.Forms.LoginForm;
+import com.fat.GUI.Panels.Categories.CategoriesPanel;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
 import com.fat.GUI.Panels.Promotion.PromotionPanel2;
@@ -79,7 +81,7 @@ public class MainForm extends javax.swing.JFrame {
         tbtnPromotion.setVisible(roleService.checkPermission(roleId, Function.PROMOTION, com.fat.Contract.Constants.Action.READ));
         tbtnStatistic.setVisible(roleService.checkPermission(roleId, Function.STATISTIC, com.fat.Contract.Constants.Action.READ));
 
-        // Thêm các nút khác tương tự
+
     }
 
     /**
@@ -366,7 +368,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnImportActionPerformed
 
     private void tbtnCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnCategoryActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "CATEGORIES");
     }//GEN-LAST:event_tbtnCategoryActionPerformed
 
     private void tbtnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnReceiptActionPerformed
@@ -385,6 +387,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new DashBoardPanel(), "DASHBOARD");
         mainContentPanel.add(new SupplierPanel(), "SUPPLIERS");
         mainContentPanel.add(new ProductsPanel(), "PRODUCTS");
+        mainContentPanel.add(new CategoriesPanel(), "CATEGORIES");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         mainContentPanel.add(new RolesPanel(), "ROLES");
         mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
@@ -464,15 +467,16 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnStatisticActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        boolean result = ConfirmDialog.show(this, "Đăng xuất", "Bạn có muốn đăng xuất không?", "Xác Nhận");
-        if (result) {
-            this.dispose();
-            UserSessionDTO.getInstance().clear();
-            new LoginForm().setVisible(true);
-        }
-        else{
-            cardLayout.show(mainContentPanel, this.toString());
-        }
+        AuthService.getInstance().logout(null, this);
+        // boolean result = ConfirmDialog.show(this, "Đăng xuất", "Bạn có muốn đăng xuất không?", "Xác Nhận");
+        // if (result) {
+        //     this.dispose();
+        //     UserSessionDTO.getInstance().clear();
+        //     new LoginForm().setVisible(true);
+        // }
+        // else{
+        //     cardLayout.show(mainContentPanel, this.toString());
+        // }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
@@ -550,7 +554,12 @@ public class MainForm extends javax.swing.JFrame {
             mainForm.setVisible(true);
         });
     }
-
+    public CardLayout getCardLayout(){
+        return cardLayout;
+    }
+    public JPanel getMainContentPanel(){
+        return mainContentPanel;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;

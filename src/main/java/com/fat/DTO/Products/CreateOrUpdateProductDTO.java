@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 public class CreateOrUpdateProductDTO extends CreateOrUpdateDTO<Integer> {
@@ -24,11 +25,12 @@ public class CreateOrUpdateProductDTO extends CreateOrUpdateDTO<Integer> {
     private LocalDateTime updatedAt;
     private int categoryId;
     private boolean isDeleted;
+    private Path imageSourcePath;
 
 
     // Constructor without id for create operations
     public CreateOrUpdateProductDTO(String name, String image, String unit,
-                                    BigDecimal price, int categoryId) {
+                                    BigDecimal price, int categoryId, Path imageSourcePath) {
         this.name = name;
         this.image = image;
         this.unit = unit;
@@ -37,13 +39,14 @@ public class CreateOrUpdateProductDTO extends CreateOrUpdateDTO<Integer> {
         this.updatedAt = LocalDateTime.now();
         this.categoryId = categoryId;
         this.isDeleted = false; // Default value for new products
+        this.imageSourcePath = imageSourcePath;
     }
 
 
     // Constructor with id for update operations and without createdAt, isDeleted
     public CreateOrUpdateProductDTO(Integer id,String name, String image, String unit,
                                     BigDecimal price,
-                                     int categoryId) {
+                                     int categoryId, Path imageSourcePath) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -51,6 +54,11 @@ public class CreateOrUpdateProductDTO extends CreateOrUpdateDTO<Integer> {
         this.price = price;
         this.updatedAt = LocalDateTime.now();
         this.categoryId = categoryId;
+        this.imageSourcePath = imageSourcePath;
+    }
+
+    public Path getImageSourcePath() {
+        return imageSourcePath;
     }
 
     public String getName() {

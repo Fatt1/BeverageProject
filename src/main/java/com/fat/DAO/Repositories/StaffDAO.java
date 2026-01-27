@@ -215,39 +215,72 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
-    public boolean isLoginSuccessful(String username, String password) {
-        String sql = "SELECT COUNT(*) AS Total FROM [Staff] WHERE UserName = ? AND Password = ?";
-        try (Connection conn = DbContext.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
+    public StaffDetailDTO getByUserName(String username) {
+        String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.Password, St.RoleId, R.Name AS RoleName "
+                + "FROM [Staff] AS St "
+                + "JOIN Role AS R ON St.RoleId = R.Id "
+                + "WHERE St.UserName = ?";
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
             ps.setString(1, username);
-            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()){
-                int count = rs.getInt("Total");
-                return count == 1;
+            while(rs.next()){
+                Integer staffId = rs.getInt("Id");
+                String firstName = rs.getString("FirstName") ;
+                String lastName =  rs.getString("LastName");
+                LocalDate birthDate = rs.getObject("Birthday",LocalDate.class);
+                BigDecimal salary = rs.getBigDecimal("Salary");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String userName = rs.getString("UserName");
+                String password = rs.getString("Password");
+                Integer roleId = rs.getInt("RoleId");
+                String roleName = rs.getString("RoleName");
+                return new StaffDetailDTO( staffId,  roleId,  password,
+                         userName,  salary,  birthDate,
+                         phoneNumber,  lastName,  firstName, roleName);
             }
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            return null;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
         }
     }
 
-    @Override
-    public String getIdStaffOfLoginSuccessful(String username, String password) {
-        String sql = "SELECT Id FROM [Staff] WHERE UserName = ? AND Password = ?";
-        try (Connection conn = DbContext.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return String.valueOf(rs.getInt("Id")); 
-            }
+    // @Override
+    // public boolean isLoginSuccessful(String username, String password) {
+    //     String sql = "SELECT COUNT(*) AS Total FROM [Staff] WHERE UserName = ? AND Password = ?";
+    //     try (Connection conn = DbContext.getConnection();
+    //     PreparedStatement ps = conn.prepareStatement(sql)) {
+    //         ps.setString(1, username);
+    //         ps.setString(2, password);
+    //         ResultSet rs = ps.executeQuery();
+    //         if (rs.next()){
+    //             int count = rs.getInt("Total");
+    //             return count == 1;
+    //         }
+    //         return false;
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //         return false;
+    //     }
+    // }
+
+    // @Override
+    // public String getIdStaffOfLoginSuccessful(String username, String password) {
+    //     String sql = "SELECT Id FROM [Staff] WHERE UserName = ? AND Password = ?";
+    //     try (Connection conn = DbContext.getConnection();
+    //     PreparedStatement ps = conn.prepareStatement(sql)) {
+    //         ps.setString(1, username);
+    //         ps.setString(2, password);
+    //         ResultSet rs = ps.executeQuery();
+    //         if (rs.next()) {
+    //             return String.valueOf(rs.getInt("Id")); 
+    //         }
             
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return null;
+    // }
 }

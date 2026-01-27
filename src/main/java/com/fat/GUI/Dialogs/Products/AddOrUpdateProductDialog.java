@@ -24,6 +24,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 
 /**
  *
@@ -47,8 +48,6 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
         setCss();
         this.productDetailDTO = productDetailDTO;
         initProductDetail();
-
-
         FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình ảnh", "jpg", "png", "jpeg");
         fileChooser.setFileFilter(imageFilter);
         // Tránh chọn tất cả các loại file
@@ -262,26 +261,9 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
 
             CategoryViewDTO selectedCategory = (CategoryViewDTO) cboCategory.getSelectedItem();
             Integer categoryId = selectedCategory.getId();
-            String imageName = null;
             File selectedFile = fileChooser.getSelectedFile();
-            boolean needUpload = true;
-
-            // Kiểm tra trường hợp UPDATE: Nếu đang có sản phẩm cũ và file đang chọn trùng tên với file cũ
-            if (productDetailDTO != null && selectedFile != null) {
-                String oldImageName = productDetailDTO.getImage();
-
-                // Nếu tên file đang chọn == tên file trong DB
-                // Tức là user không thay đổi hình ảnh
-                if (selectedFile.getName().equals(oldImageName)) {
-                    imageName = oldImageName; // Giữ nguyên tên cũ
-                    needUpload = false;       // Đánh dấu là không cần copy
-                }
-            }
-
-            if(selectedFile != null && needUpload) {
-                IUploadImageService uploadImageService = new UploadImageService();
-                imageName = uploadImageService.uploadImage(selectedFile.getName(), selectedFile.toPath());
-            }
+            String imageName = selectedFile != null ? selectedFile.getName() : null;
+            Path imagePath = selectedFile != null ? selectedFile.toPath() : null;
 
             if(productDetailDTO == null) {
                 CreateOrUpdateProductDTO newProduct = new CreateOrUpdateProductDTO(
@@ -289,7 +271,8 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                         imageName,
                         unit,
                         price,
-                        categoryId);
+                        categoryId,
+                        imagePath);
                 ValidatorUtil.validate(newProduct);
                 productService.createProduct(newProduct);
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
@@ -302,7 +285,8 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                         imageName,
                         unit,
                         price,
-                        categoryId);
+                        categoryId,
+                        imagePath);
                 ValidatorUtil.validate(updateProduct);
                 productService.updateProduct(updateProduct);
                 JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
@@ -359,32 +343,6 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
-//        FlatLightLaf.setup();
-//
-//        //</editor-fold>
-//
-//        /* Create and display the dialog */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                AddProductDialog dialog = new AddProductDialog(new javax.swing.JFrame(), true, productService);
-//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-//                    @Override
-//                    public void windowClosing(java.awt.event.WindowEvent e) {
-//                        System.exit(0);
-//                    }
-//                });
-//                dialog.setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;

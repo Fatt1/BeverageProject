@@ -20,13 +20,13 @@ import java.util.Map;
 
 public class RoleService implements IRoleService {
     private static RoleService instance;
-    private final IRoleDAO roleDAO;
+    private final IRoleDAO roleDAO = RoleDAO.getInstance();
     private List<RoleViewDTO> rolesCache;
     private List<RoleClaimViewDTO> roleClaimsCache;
     private final IRoleClaimDAO roleClaimDAO = RoleClaimDAO.getInstance();
 
+
     private RoleService() {
-        this.roleDAO = RoleDAO.getInstance();
         this.rolesCache = roleDAO.getAll();
         this.roleClaimsCache = roleClaimDAO.getAll();
         initAdminRole();

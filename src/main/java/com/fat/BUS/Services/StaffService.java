@@ -29,7 +29,7 @@ public class StaffService implements IStaffService {
 
     @Inject
     private StaffService() {
-        staffsCache = new ArrayList<>();
+        this.staffsCache = staffDAO.getAll();
     }
 
     public static StaffService getInstance() {
@@ -158,8 +158,25 @@ public class StaffService implements IStaffService {
     }
 
     @Override
+    public StaffDetailDTO getStaffByUserName(String userName) {
+        return staffDAO.getByUserName(userName);
+    }
+
+    @Override
     public void refreshCache() {
         this.staffsCache = staffDAO.getAll();
+    }
+
+    @Override
+    public boolean isDetectdStaff(String username, String password) {
+        boolean isHaveUserName = staffDAO.isExistByUserName(username, null);
+        if (!isHaveUserName) return false;
+
+        StaffDetailDTO staff = getStaffByUserName(username);
+        boolean isCorrectPass = BCrypt.checkpw(password, staff.getPassword());
+        if (!isCorrectPass) return false;
+        
+        return true;
     }
 }
 

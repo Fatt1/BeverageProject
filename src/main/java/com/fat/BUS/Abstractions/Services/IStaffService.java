@@ -13,7 +13,6 @@ public interface IStaffService {
     void deleteStaff(Integer id) throws Exception;
     List<StaffViewDTO> getAllStaffs();
     List<StaffViewDTO> filterStaffByList(String searchKey); // Filter từ ArrayList
-    boolean isDetectdStaff(String username, String password);
     StaffDetailDTO getStaffById(Integer id);
     StaffDetailDTO getStaffByUserName(String userName);
     void refreshCache();

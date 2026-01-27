@@ -167,16 +167,6 @@ public class StaffService implements IStaffService {
         this.staffsCache = staffDAO.getAll();
     }
 
-    @Override
-    public boolean isDetectdStaff(String username, String password) {
-        boolean isHaveUserName = staffDAO.isExistByUserName(username, null);
-        if (!isHaveUserName) return false;
 
-        StaffDetailDTO staff = getStaffByUserName(username);
-        boolean isCorrectPass = BCrypt.checkpw(password, staff.getPassword());
-        if (!isCorrectPass) return false;
-        
-        return true;
-    }
 }
 

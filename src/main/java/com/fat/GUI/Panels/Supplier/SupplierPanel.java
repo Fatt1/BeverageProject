@@ -5,21 +5,14 @@
 package com.fat.GUI.Panels.Supplier;
 
 import com.fat.BUS.Abstractions.Services.ICategoryService;
-import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.ISupplierService;
-import com.fat.BUS.Abstractions.Services.IUploadImageService;
 import com.fat.BUS.Services.SupplierService;
-import com.fat.BUS.Services.UploadImageService;
 import com.fat.BUS.Utils.ExcelHelper;
-import com.fat.Contract.Shared.PagedResult;
-import com.fat.DTO.Products.CreateOrUpdateProductDTO;
 import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
 import com.fat.DTO.Suppliers.SupplierViewDTO;
-import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
-import com.fat.GUI.Utils.FormatterUtil;
+import com.fat.GUI.Dialogs.Supplier.AddOrUpdateSupplierDialog;
 
-import java.io.File;
-import java.math.BigDecimal;
+
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -212,10 +205,10 @@ public class SupplierPanel extends javax.swing.JPanel {
     
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, null);
-        addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
+        AddOrUpdateSupplierDialog addOrUpdateSupplierDialog = new AddOrUpdateSupplierDialog(parentFrame, true);
+        addOrUpdateSupplierDialog.setLocationRelativeTo(parentFrame);
 
-        addOrUpdateProductDialog.setVisible(true);
+        addOrUpdateSupplierDialog.setVisible(true);
 
         // Sau khi đóng dialog, tải lại dữ liệu
         loadData();
@@ -227,25 +220,24 @@ public class SupplierPanel extends javax.swing.JPanel {
     }
     
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // int selectedRow = tblSupplier.getSelectedRow();
-        // if(selectedRow == -1) {
-        //     JOptionPane.showMessageDialog(this,
-        //             "Vui lòng chọn nhà cung cấp để chỉnh sửa.", "Chưa chọn nhà cung cấp", JOptionPane.WARNING_MESSAGE);
-        //     return;
-        // }
-        // Object idObj = tblSupplier.getValueAt(selectedRow, 0); // Cột ID
-        // int id = Integer.parseInt(idObj.toString());
-        
-        // SupplierViewDTO supplier = supplierService.getSupplierById(id);
-        // JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        // AddOrUpdateSupplierDialog updateDialog = new AddOrUpdateSupplierDialog(parentFrame, true, supplierService, supplier);
-        // updateDialog.setLocationRelativeTo(parentFrame);
-        // updateDialog.setVisible(true);
+        int selectedRow = tblSupplier.getSelectedRow();
+       if(selectedRow == -1) {
+           JOptionPane.showConfirmDialog(this, "Vui lòng chọn nhà cung cấp để chỉnh sửa", "Chưa chọn nhà cung cấp", JOptionPane.WARNING_MESSAGE);
+           return;
+       }
+       Object idObj = tblSupplier.getValueAt(selectedRow, 0);
+       Integer id = Integer.parseInt(idObj.toString());
 
-        // // Sau khi đóng dialog, tải lại dữ liệu
-        // loadData();
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        AddOrUpdateSupplierDialog addOrUpdateSupplierDialog = new AddOrUpdateSupplierDialog(parentFrame, true);
+        addOrUpdateSupplierDialog.setLocationRelativeTo(parentFrame);
 
+        addOrUpdateSupplierDialog.setVisible(true);
+
+        // Sau khi đóng dialog, tải lại dữ liệu
+        loadData();
     }//GEN-LAST:event_btnUpdateActionPerformed
+
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         txtSearch.setText("");

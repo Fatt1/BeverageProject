@@ -8,6 +8,8 @@ import com.fat.BUS.Abstractions.Services.IPromotionService;
 import com.fat.BUS.Services.PromotionService;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DTO.Promotions.PromotionViewDTO;
+import com.fat.GUI.MainForm;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,8 +30,30 @@ public class PromotionsPanel extends javax.swing.JPanel {
     public PromotionsPanel() {
         initComponents();
         promotionService = PromotionService.getInstance();
+        setupTable();
         loadStatusComboBox();
         loadData();
+    }
+    
+    private void setupTable() {
+        // Không cho phép edit bất kỳ ô nào
+        DefaultTableModel model = new DefaultTableModel(
+            new String[]{"ID", "Tên chương trình", "Trạng thái", "Ngày bắt đầu", "Ngày kết thúc"},
+            0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Không cho phép edit
+            }
+        };
+        jTable1.setModel(model);
+        
+        // Highlight cả dòng khi chọn với màu xanh
+        jTable1.setRowSelectionAllowed(true);
+        jTable1.setColumnSelectionAllowed(false);
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setSelectionBackground(new java.awt.Color(0, 120, 215));
+        jTable1.setSelectionForeground(java.awt.Color.WHITE);
     }
 
     private void loadStatusComboBox(){
@@ -44,6 +68,14 @@ public class PromotionsPanel extends javax.swing.JPanel {
     private void loadData(){
         PagedResult<PromotionViewDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage ,pageSize);
         fillTable(result);
+    }
+    
+    /**
+     * Refresh dữ liệu từ bên ngoài (được gọi khi quay về từ Panel 2)
+     */
+    public void refreshData() {
+        promotionService.refreshCache();
+        loadData();
     }
 
     private void fillTable(PagedResult<PromotionViewDTO> result){
@@ -187,9 +219,9 @@ public class PromotionsPanel extends javax.swing.JPanel {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnAdd)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addComponent(btnDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnUpdate)
@@ -200,7 +232,7 @@ public class PromotionsPanel extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 12, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
@@ -212,28 +244,24 @@ public class PromotionsPanel extends javax.swing.JPanel {
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(122, 122, 122))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1226, Short.MAX_VALUE)
+            .addGap(0, 1238, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 6, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 199, Short.MAX_VALUE)
+            .addGap(0, 208, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -262,7 +290,7 @@ public class PromotionsPanel extends javax.swing.JPanel {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(681, Short.MAX_VALUE)
+                .addContainerGap(693, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cboPageSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -334,15 +362,53 @@ public class PromotionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_cboCategoryActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một chương trình khuyến mãi!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Lấy ID từ cột đầu tiên (ẩn hoặc hiện)
+        int promotionId = (int) jTable1.getValueAt(selectedRow, 0);
+        
+        // Mở Panel 2 với chế độ Edit
+        MainForm mainForm = (MainForm) javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (mainForm != null) {
+            mainForm.showPromotionForm(promotionId);
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-
+        // Mở Panel 2 với chế độ Add (không có promotionId)
+        MainForm mainForm = (MainForm) javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (mainForm != null) {
+            mainForm.showPromotionForm(null);
+        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một chương trình khuyến mãi!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int promotionId = (int) jTable1.getValueAt(selectedRow, 0);
+        String promotionName = (String) jTable1.getValueAt(selectedRow, 1);
+        
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Bạn có chắc muốn xóa chương trình \"" + promotionName + "\"?",
+            "Xác nhận xóa", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                promotionService.deletePromotion(promotionId);
+                JOptionPane.showMessageDialog(this, "Xóa thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                loadData(); // Reload lại danh sách
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void cboPageSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboPageSizeActionPerformed

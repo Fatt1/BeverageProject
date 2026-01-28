@@ -114,6 +114,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 btnSaveMouseClicked(evt);
             }
         });
+        btnSave.addActionListener(this::btnSaveActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -135,6 +136,8 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_END);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        txtName.addActionListener(this::txtNameActionPerformed);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Thông tin sản phẩm");
@@ -311,6 +314,14 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
 
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSaveActionPerformed
+
     private void initProductDetail() {
         if(productDetailDTO != null) {
             setTitle("Cập nhật sản phẩm");
@@ -346,7 +357,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox<CategoryViewDTO> cboCategory;
+    private javax.swing.JComboBox<String> cboCategory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -27,7 +27,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public UserSessionDTO login(String username, String password) {
+    public UserSessionDTO login(LoginForm lg,String username, String password) {
         StaffDTO staff = StaffService.getInstance().getStaffByUserName(username);
         UserSessionDTO.getInstance().setSession(staff.getId(), staff.getUserName(), roleService.getRoleById(staff.getRoleId()).getName(), staff.getRoleId());
         return null;

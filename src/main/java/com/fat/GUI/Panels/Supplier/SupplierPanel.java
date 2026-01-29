@@ -12,6 +12,7 @@ import com.fat.Contract.Shared.PagedResult;
 import com.fat.DTO.Products.ProductDTO;
 import com.fat.DTO.Suppliers.SupplierDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
+import com.fat.GUI.Dialogs.Supplier.AddOrUpdateSupplierDialog;
 import com.fat.GUI.Utils.FormatterUtil;
 
 import java.util.List;

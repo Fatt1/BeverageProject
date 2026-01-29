@@ -119,25 +119,19 @@ public class LoginForm extends javax.swing.JFrame {
             String userName = txtUser.getText();
             String password = String.valueOf(txtPass.getPassword());
 
-            if (userName.trim().isEmpty() || password.trim().isEmpty()){
-                ConfirmDialog.show(this, "Error", "Không được để trống username hoặc password", "OK");
-                return;
-            }
 
-            if(!StaffService.getInstance().isDetectdStaff(userName, password)){
-                ConfirmDialog.show(this, "Error", "Sai username hoặc password", "OK");
-                return;
-            }
-            
             // String idStaff = StaffDAO.getInstance().getIdStaffOfLoginSuccessful(userName, password);
             //  JOptionPane.showMessageDialog(null, 
             //              "Đăng nhập thành công! ID của bạn là: " + idStaff, 
             //              "Thông báo", 
             //              JOptionPane.INFORMATION_MESSAGE);
 
-            AuthService.getInstance().login(userName, password);
-            new MainForm().init();
-            this.dispose();
+            if (AuthService.getInstance().login(this, userName, password) == null){
+                return;
+            }else {
+                new MainForm().init();
+                this.dispose();
+            }
         });
 
 

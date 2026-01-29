@@ -4,7 +4,7 @@
  */
 package com.fat.GUI.Panels.Categories;
 import com.fat.BUS.Services.CategoryService;
-import com.fat.DTO.Categories.CategoryViewDTO;
+import com.fat.DTO.Categories.CategoryDTO;
 import com.fat.GUI.Dialogs.Categories.AddOrUpdateCategoryDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -183,7 +183,7 @@ public class CategoriesPanel extends javax.swing.JPanel {
         Integer id = Integer.parseInt(idObj.toString());
 
         //lay thong tin category
-        CategoryViewDTO category = categoryService.getCategoryById(id);
+        CategoryDTO category = categoryService.getCategoryById(id);
 
         //Mo dialog Sua
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -254,7 +254,7 @@ public class CategoriesPanel extends javax.swing.JPanel {
     }
 
     private void loadData(){
-        List<CategoryViewDTO> categories;
+        List<CategoryDTO> categories;
 
         if(searchKeyword == null || searchKeyword.trim().isEmpty()) {
             //không có tìm kiếm - lấy tất cả
@@ -267,7 +267,7 @@ public class CategoriesPanel extends javax.swing.JPanel {
         fillTable(categories);
     }
 
-    private void fillTable(List<CategoryViewDTO> categories){
+    private void fillTable(List<CategoryDTO> categories){
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);//xoa du lieu cu
 
@@ -275,7 +275,7 @@ public class CategoriesPanel extends javax.swing.JPanel {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(javax.swing.JLabel.CENTER);
 
-        for(CategoryViewDTO category : categories){
+        for(CategoryDTO category : categories){
             Object[] row = new Object[]{
                 category.getId(),
                 category.getName()

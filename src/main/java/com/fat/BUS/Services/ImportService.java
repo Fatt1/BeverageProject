@@ -5,9 +5,7 @@ import com.fat.Contract.Enumerations.ImportStatus;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IImportDAO;
 import com.fat.DAO.Repositories.ImportDAO;
-import com.fat.DTO.Imports.CreateOrUpdateImportDTO;
-import com.fat.DTO.Imports.ImportViewDTO;
-import com.fat.DTO.Receipts.ReceptDetailDTO;
+import com.fat.DTO.Imports.ImportDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.List;
 public class ImportService implements IImportService {
     private static ImportService instance;
     private final IImportDAO importDAO;
-    private List<ImportViewDTO> importsCache = new ArrayList<>();
+    private static List<ImportDTO> importsCache = new ArrayList<>();
 
     private ImportService() {
         this.importDAO = ImportDAO.getInstance();
@@ -30,44 +28,39 @@ public class ImportService implements IImportService {
     }
 
     @Override
-    public void createImport(CreateOrUpdateImportDTO dto) {
-        importDAO.add(dto);
+    public void createImport(ImportDTO dto) {
+
     }
 
     @Override
-    public void updateImport(CreateOrUpdateImportDTO dto) {
-        importDAO.update(dto);
+    public void updateImport(ImportDTO dto) {
+
     }
 
     @Override
     public void deleteImport(Integer id) {
-        importDAO.delete(id);
+
     }
 
     @Override
-    public List<ImportViewDTO> getAllImports() {
-        // TODO: Implement getAll
-        return null;
+    public List<ImportDTO> getAllImports() {
+       return null;
     }
 
 
     @Override
-    public PagedResult<ImportViewDTO> filterImportByList(String keyword, LocalDateTime from, LocalDateTime to,
+    public PagedResult<ImportDTO> filterImportByList(String keyword, LocalDateTime from, LocalDateTime to,
                                                    ImportStatus status, Integer staffId, Integer supplierId,
                                                    int pageIndex, int pageSize) {
-        // TODO: Implement filter from ArrayList
         return null;
     }
 
     @Override
-    public ReceptDetailDTO getImportById(Integer id) {
-        return importDAO.getById(id);
-    }
-
-    @Override
-    public void refreshCache() {
-        this.importsCache = importDAO.getAll();
-
+    public ImportDTO getImportById(Integer id) {
+        return importsCache.stream()
+            .filter(i -> i.getId().equals(id))
+            .findFirst()
+            .orElse(null);
     }
 }
 

@@ -1,37 +1,64 @@
 package com.fat.DTO.Inventories;
 
-public class InventoryHistoryDTO {
-    private Integer id;
-    private int quantity;
-    private int type; // 0 - Nhập kho, 1 - Xuất kho
-    private  int stockAfter; // Tồn kho sau khi nhập/xuất
-    private int productId;
+import com.fat.DTO.Abstractions.BaseDTO;
+import java.time.LocalDateTime;
 
-    public InventoryHistoryDTO(Integer id, int quantity, int type, int stockAfter, int productId) {
+public class InventoryHistoryDTO extends BaseDTO {
+    private Integer quantity;
+    private Integer productId;
+    private LocalDateTime createdAt;
+    private Integer type;
+    private Integer stockAfter;
+
+    public InventoryHistoryDTO() {
+    }
+
+    public InventoryHistoryDTO(Integer id, Integer quantity, Integer productId, LocalDateTime createdAt, Integer type, Integer stockAfter) {
         this.id = id;
         this.quantity = quantity;
+        this.productId = productId;
+        this.createdAt = createdAt;
         this.type = type;
         this.stockAfter = stockAfter;
-        this.productId = productId;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public int getType() {
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Integer getType() {
         return type;
     }
 
-    public int getStockAfter() {
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getStockAfter() {
         return stockAfter;
     }
 
-    public int getProductId() {
-        return productId;
+    public void setStockAfter(Integer stockAfter) {
+        this.stockAfter = stockAfter;
     }
 }

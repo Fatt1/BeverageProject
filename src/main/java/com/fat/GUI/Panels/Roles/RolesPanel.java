@@ -7,7 +7,7 @@ package com.fat.GUI.Panels.Roles;
 import com.fat.BUS.Abstractions.Services.IRoleService;
 import com.fat.BUS.Services.RoleService;
 import com.fat.DAO.Repositories.RoleDAO;
-import com.fat.DTO.Roles.RoleViewDTO;
+import com.fat.DTO.Roles.RoleDTO;
 import com.fat.GUI.Dialogs.Roles.AddOrUpdateRole;
 import com.fat.GUI.Dialogs.Roles.PermissionRoleDialog;
 import com.fat.GUI.Utils.ImageRenderer;
@@ -56,10 +56,10 @@ public class RolesPanel extends javax.swing.JPanel {
     }
 
     private void loadData() {
-        List<RoleViewDTO> roles = roleService.getAllRoles();
+        List<RoleDTO> roles = roleService.getAllRoles();
         fillTable(roles);
     }
-    private void fillTable(List<RoleViewDTO> roles) {
+    private void fillTable(List<RoleDTO> roles) {
         DefaultTableModel model = (DefaultTableModel) tblRole.getModel();
         model.setRowCount(0);
         for(var role : roles) {
@@ -246,7 +246,7 @@ public class RolesPanel extends javax.swing.JPanel {
         }
         Object objectId = tblRole.getValueAt(selectedRow, 0);
         int roleId = Integer.parseInt(objectId.toString());
-        RoleViewDTO selectedRole = roleService.getRoleById(roleId);
+        RoleDTO selectedRole = roleService.getRoleById(roleId);
         Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
         AddOrUpdateRole roleDialog = new AddOrUpdateRole(parentFrame, true, selectedRole);
         roleDialog.setLocationRelativeTo(parentFrame);
@@ -267,7 +267,7 @@ public class RolesPanel extends javax.swing.JPanel {
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String keyword = txtSearch.getText().trim();
-            List<RoleViewDTO> roles = roleService.filterRoleByList(keyword);
+            List<RoleDTO> roles = roleService.filterRoleByList(keyword);
             fillTable(roles);
         }
     }//GEN-LAST:event_txtSearchKeyPressed
@@ -280,7 +280,7 @@ public class RolesPanel extends javax.swing.JPanel {
         }
         Object objectId = tblRole.getValueAt(selectedRow, 0);
         int roleId = Integer.parseInt(objectId.toString());
-        RoleViewDTO role = roleService.getRoleById(roleId);
+        RoleDTO role = roleService.getRoleById(roleId);
         PermissionRoleDialog permissionDialog = new PermissionRoleDialog((Frame) SwingUtilities.getWindowAncestor(this), true, role);
         permissionDialog.setLocationRelativeTo(this);
         permissionDialog.setVisible(true);

@@ -1,62 +1,50 @@
 package com.fat.DTO.Imports;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-
 public class ImportDetailDTO {
-    private Integer id;
-    private String code;
-    private LocalDateTime createdAt;
-    private int supplierId;
-    private int staffId;
-    private String staffName;
-    private List<ImportLineItemDetailDTO> importLineItems;
-    private BigDecimal totalAmount;
+    private Integer importId;
+    private Integer quantity;
+    private Integer productId;
+    private String unitName;
 
-    public ImportDetailDTO(Integer id, String code, LocalDateTime createdAt,
-                           int supplierId, int staffId, String staffName,
-                           List<ImportLineItemDetailDTO> importLineItems,
-                           BigDecimal totalAmount) {
-        this.id = id;
-        this.code = code;
-        this.createdAt = createdAt;
-        this.supplierId = supplierId;
-        this.staffId = staffId;
-        this.staffName = staffName;
-        this.importLineItems = importLineItems;
-        this.totalAmount = totalAmount;
+    public ImportDetailDTO() {
     }
 
-    public Integer getId() {
-        return id;
+    public ImportDetailDTO(Integer importId, Integer quantity, Integer productId, String unitName) {
+        this.importId = importId;
+        this.quantity = quantity;
+        this.productId = productId;
+        this.unitName = unitName;
     }
 
-    public String getCode() {
-        return code;
+    public Integer getImportId() {
+        return importId;
     }
 
-    public int getSupplierId() {
-        return supplierId;
+    public void setImportId(Integer importId) {
+        this.importId = importId;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public int getStaffId() {
-        return staffId;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
-    public String getStaffName() {
-        return staffName;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public List<ImportLineItemDetailDTO> getImportLineItems() {
-        return importLineItems;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }

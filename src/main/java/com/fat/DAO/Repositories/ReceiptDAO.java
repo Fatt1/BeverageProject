@@ -4,9 +4,7 @@ import com.fat.Contract.Enumerations.ReceiptSort;
 import com.fat.Contract.Enumerations.SortOrder;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IReceiptDAO;
-import com.fat.DTO.Receipts.CreateOrUpdateReceiptDTO;
-import com.fat.DTO.Receipts.ReceiptViewDTO;
-import com.fat.DTO.Receipts.ReceptDetailDTO;
+import com.fat.DTO.Receipts.ReceiptDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,18 +24,18 @@ public class ReceiptDAO implements IReceiptDAO {
     }
 
     @Override
-    public List<ReceiptViewDTO> getAll() {
+    public List<ReceiptDTO> getAll() {
         return List.of();
     }
 
 
     @Override
-    public ReceptDetailDTO getById(Integer id) {
+    public ReceiptDTO getById(Integer id) {
         return null;
     }
 
     @Override
-    public Integer add(CreateOrUpdateReceiptDTO entity) {
+    public Integer add(ReceiptDTO entity) {
         // TODO Auto-generated method stub
         // Nhớ thêm đơn hàng thì trừ tồn kho của sản phẩm tương ứng
         // Nhớ thêm lịch sử nhập xuất kho của từng sản pẩm
@@ -46,7 +44,7 @@ public class ReceiptDAO implements IReceiptDAO {
     }
 
     @Override
-    public void update(CreateOrUpdateReceiptDTO entity) {
+    public void update(ReceiptDTO entity) {
 
     }
 

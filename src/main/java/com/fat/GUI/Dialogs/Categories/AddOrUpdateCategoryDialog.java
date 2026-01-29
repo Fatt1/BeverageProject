@@ -4,8 +4,7 @@
  */
 package com.fat.GUI.Dialogs.Categories;
 import com.fat.BUS.Services.CategoryService;
-import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Categories.CreateOrUpdateCategoryDTO;
+import com.fat.DTO.Categories.CategoryDTO;
 import javax.swing.JOptionPane;
 /**
  *
@@ -16,11 +15,11 @@ public class AddOrUpdateCategoryDialog extends javax.swing.JDialog {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateCategoryDialog.class.getName());
 
     private final CategoryService categoryService;
-    private final CategoryViewDTO existingCategory; // null = THÊM MỚI, not null = SỬA
+    private final CategoryDTO existingCategory; // null = THÊM MỚI, not null = SỬA
     /**
      * Creates new form AddOrUpdateCategoryDialog
      */
-    public AddOrUpdateCategoryDialog(java.awt.Frame parent, boolean modal, CategoryViewDTO existingCategory) {
+    public AddOrUpdateCategoryDialog(java.awt.Frame parent, boolean modal, CategoryDTO existingCategory) {
     super(parent, modal);
     this.categoryService = CategoryService.getInstance();
     this.existingCategory = existingCategory;
@@ -152,13 +151,13 @@ public class AddOrUpdateCategoryDialog extends javax.swing.JDialog {
             txtName.requestFocus();
             return;
         }
-        CreateOrUpdateCategoryDTO dto;
+        CategoryDTO dto;
         if(existingCategory != null){
             //sửa
-            dto = new CreateOrUpdateCategoryDTO(existingCategory.getId(), name);
+            dto = new CategoryDTO(existingCategory.getId(), name);
         }else{
             //thêm
-            dto = new CreateOrUpdateCategoryDTO(name);
+            dto = new CategoryDTO(null, name);
         }
         try{
             if(existingCategory != null){

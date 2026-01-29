@@ -6,19 +6,18 @@ import com.fat.Contract.Enumerations.SortOrder;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IReceiptDAO;
 import com.fat.DAO.Repositories.ReceiptDAO;
-import com.fat.DTO.Receipts.CreateOrUpdateReceiptDTO;
-import com.fat.DTO.Receipts.ReceiptViewDTO;
-import com.fat.DTO.Receipts.ReceptDetailDTO;
+import com.fat.DTO.Receipts.ReceiptDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ReceiptService implements IReceiptService {
     private static ReceiptService instance;
     private final IReceiptDAO receiptDAO;
-    private  List<ReceiptViewDTO> receiptsCache = new ArrayList<>();
+    private static List<ReceiptDTO> receiptsCache = new ArrayList<>();
 
     private ReceiptService() {
         this.receiptDAO = ReceiptDAO.getInstance();
@@ -32,43 +31,41 @@ public class ReceiptService implements IReceiptService {
     }
 
     @Override
-    public void createReceipt(CreateOrUpdateReceiptDTO dto) {
-        receiptDAO.add(dto);
+    public void createReceipt(ReceiptDTO dto) {
+
     }
 
     @Override
-    public void updateReceipt(CreateOrUpdateReceiptDTO dto) {
+    public void updateReceipt(ReceiptDTO dto) {
         receiptDAO.update(dto);
+        receiptsCache.removeIf(r -> r.getId().equals(dto.getId()));
+        receiptsCache.addFirst(dto);
     }
 
     @Override
     public void deleteReceipt(Integer id) {
-        receiptDAO.delete(id);
+
     }
 
     @Override
-    public List<ReceiptViewDTO> getAllReceipts() {
-        // TODO: Implement getAll
-        return null;
+    public List<ReceiptDTO> getAllReceipts() {
+      return null;
     }
 
 
     @Override
-    public PagedResult<ReceiptViewDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
+    public PagedResult<ReceiptDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
                                                      Integer staffId, BigDecimal totalAmount,
                                                      int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy) {
-        // TODO: Implement filter from ArrayList
-        return null;
+       return null;
     }
 
     @Override
-    public ReceptDetailDTO getReceiptById(Integer id) {
-        return receiptDAO.getById(id);
-    }
-
-    @Override
-    public void refreshCache() {
-        this.receiptsCache = receiptDAO.getAll();
+    public ReceiptDTO getReceiptById(Integer id) {
+        return receiptsCache.stream()
+            .filter(r -> r.getId().equals(id))
+            .findFirst()
+            .orElse(null);
     }
 }
 

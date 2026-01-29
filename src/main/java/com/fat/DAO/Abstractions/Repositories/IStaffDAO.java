@@ -1,18 +1,12 @@
 package com.fat.DAO.Abstractions.Repositories;
 
-import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
-import com.fat.DTO.Staffs.StaffDetailDTO;
-import com.fat.DTO.Staffs.StaffViewDTO;
+import com.fat.DTO.Staffs.StaffDTO;
 
 import java.util.List;
 
-public interface IStaffDAO extends IDAO<CreateOrUpdateStaffDTO, Integer> {
-    List<StaffViewDTO> getAll();
-    List<StaffViewDTO> filter(String searchKey);
-    StaffDetailDTO getById(Integer id);
-    StaffDetailDTO getByUserName(String userName);
+public interface IStaffDAO extends IDAO<StaffDTO> {
+    List<StaffDTO> filter(String searchKey);
+    StaffDTO getByUserName(String userName);
     boolean hasTransaction(Integer staffId);
     boolean isExistByUserName(String userName, Integer excludeId);
-    // boolean isLoginSuccessful(String username, String password);
-    // String getIdStaffOfLoginSuccessful(String username, String password);
 }

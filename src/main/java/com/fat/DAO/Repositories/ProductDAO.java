@@ -3,15 +3,14 @@ package com.fat.DAO.Repositories;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IProductDAO;
 import com.fat.DAO.Utils.DbContext;
-import com.fat.DTO.Products.CreateOrUpdateProductDTO;
-import com.fat.DTO.Products.ProductDetailDTO;
-import com.fat.DTO.Products.ProductViewDTO;
+import com.fat.DTO.Products.ProductDTO;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,9 +148,9 @@ public class ProductDAO implements IProductDAO {
 //    }
 
     @Override
-    public ProductDetailDTO getById(Integer id) {
-        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.CategoryId, C.   Name AS CategoryName " +
-                "FROM [Product] AS P JOIN Category AS C ON P.CategoryId = C.Id " +
+    public ProductDTO getById(Integer id) {
+        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.Stock, P.CategoryId, P.CreatedAt, P.UpdatedAt, P.IsDeleted " +
+                "FROM [Product] AS P " +
                 "WHERE P.Id = ? AND P.IsDeleted = 0;";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)
@@ -164,9 +163,12 @@ public class ProductDAO implements IProductDAO {
                 String image = rs.getString("Image");
                 BigDecimal price = rs.getBigDecimal("Price");
                 String unit = rs.getString("Unit");
+                int stock = rs.getInt("Stock");
                 int categoryId = rs.getInt("CategoryId");
-                String categoryName = rs.getString("CategoryName");
-                return new ProductDetailDTO(productId, name, image, unit, price, 0, categoryId, categoryName);
+                LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
+                LocalDateTime updatedAt = rs.getTimestamp("UpdatedAt").toLocalDateTime();
+                boolean isDeleted = rs.getBoolean("IsDeleted");
+                return new ProductDTO(productId, name, image, price, unit, createdAt, updatedAt, isDeleted, categoryId, stock);
             }
             return null;
         } catch (SQLException sqlException) {
@@ -176,11 +178,10 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public List<ProductViewDTO> getAll() {
-        String sql = "SELECT P.[Image], P.Name, P.Id, P.Price, P.Unit, P.Stock, P.CategoryId, C.Name AS CategoryName " +
+    public List<ProductDTO> getAll() {
+        String sql = "SELECT P.Id, P.Name, P.Image, P.Price, P.Unit, P.Stock, P.CategoryId, P.CreatedAt, P.UpdatedAt, P.IsDeleted " +
                 "FROM [Product] AS P " +
-                "JOIN Category AS C " +
-                "ON P.CategoryId = C.Id WHERE P.IsDeleted = 0 ORDER BY P.UpdatedAt DESC ";
+                "WHERE P.IsDeleted = 0 ORDER BY P.UpdatedAt DESC ";
 
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -188,7 +189,7 @@ public class ProductDAO implements IProductDAO {
             ResultSet rs = null;
             rs = ps.executeQuery();
             if (rs != null) {
-                List<ProductViewDTO> products = new ArrayList<>();
+                List<ProductDTO> products = new ArrayList<>();
                 while (rs.next()) {
                     Integer id = rs.getInt("Id");
                     String name = rs.getString("Name");
@@ -197,8 +198,10 @@ public class ProductDAO implements IProductDAO {
                     String unit = rs.getString("Unit");
                     int stock = rs.getInt("Stock");
                     int categoryId = rs.getInt("CategoryId");
-                    String categoryName = rs.getString("CategoryName");
-                    ProductViewDTO product = new ProductViewDTO(id, categoryName, categoryId, stock, price, name, image, unit);
+                    LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
+                    LocalDateTime updatedAt = rs.getTimestamp("UpdatedAt").toLocalDateTime();
+                    boolean isDeleted = rs.getBoolean("IsDeleted");
+                    ProductDTO product = new ProductDTO(id, name, image, price, unit, createdAt, updatedAt, isDeleted, categoryId, stock);
                     products.add(product);
                 }
                 return products;
@@ -240,9 +243,9 @@ public class ProductDAO implements IProductDAO {
 
 
     @Override
-    public Integer add(CreateOrUpdateProductDTO entity) {
-        String sql = "INSERT INTO [PRODUCT] (Name, Image, Price, Unit, CreatedAt, UpdatedAt ,IsDeleted , CategoryId) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+    public Integer add(ProductDTO entity) {
+        String sql = "INSERT INTO [PRODUCT] (Name, Image, Price, Unit, CreatedAt, UpdatedAt ,IsDeleted , CategoryId, Stock) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
@@ -252,8 +255,9 @@ public class ProductDAO implements IProductDAO {
             ps.setString(4, entity.getUnit());
             ps.setObject(5, entity.getCreatedAt());
             ps.setObject(6, entity.getUpdatedAt());
-            ps.setBoolean(7, false);
+            ps.setBoolean(7, entity.isDeleted());
             ps.setInt(8, entity.getCategoryId());
+            ps.setInt(9, entity.getStock());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if(rs.next()) {
@@ -268,9 +272,9 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public void update(CreateOrUpdateProductDTO entity) {
+    public void update(ProductDTO entity) {
         String sql = "UPDATE PRODUCT " +
-                "SET Name = ?, Image = ?, Price = ?, Unit = ?, UpdatedAt = ?, CategoryId = ? " +
+                "SET Name = ?, Image = ?, Price = ?, Unit = ?, UpdatedAt = ?, CategoryId = ?, Stock = ? " +
                 "WHERE Id = ?;";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -281,7 +285,8 @@ public class ProductDAO implements IProductDAO {
             ps.setString(4, entity.getUnit());
             ps.setObject(5, entity.getUpdatedAt());
             ps.setInt(6, entity.getCategoryId());
-            ps.setInt(7, entity.getId());
+            ps.setInt(7, entity.getStock());
+            ps.setInt(8, entity.getId());
             ps.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();

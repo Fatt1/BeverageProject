@@ -10,12 +10,9 @@ import com.fat.BUS.Services.RoleService;
 import com.fat.Contract.Constants.Function;
 import com.fat.DI.AppModule;
 import com.fat.DTO.Auths.UserSessionDTO;
-import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
-import com.fat.GUI.Forms.LoginForm;
 import com.fat.GUI.Panels.Categories.CategoriesPanel;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
-import com.fat.GUI.Panels.Promotion.PromotionPanel2;
 import com.fat.GUI.Panels.Promotion.PromotionsPanel;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
@@ -391,7 +388,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         mainContentPanel.add(new RolesPanel(), "ROLES");
         mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
-        mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
+        //mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
     }
     
     /**
@@ -416,22 +413,22 @@ public class MainForm extends javax.swing.JFrame {
      * @param promotionId null = Add mode, có giá trị = Edit mode
      */
     public void showPromotionForm(Integer promotionId) {
-        // Xóa panel cũ nếu có
-        for (java.awt.Component comp : mainContentPanel.getComponents()) {
-            if (comp instanceof PromotionPanel2) {
-                mainContentPanel.remove(comp);
-                break;
-            }
-        }
-        
-        // Thêm panel mới
-        if (promotionId == null) {
-            mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
-        } else {
-            mainContentPanel.add(new PromotionPanel2(promotionId), "ADD_PROMOTION");
-        }
-        
-        cardLayout.show(mainContentPanel, "ADD_PROMOTION");
+//        // Xóa panel cũ nếu có
+//        for (java.awt.Component comp : mainContentPanel.getComponents()) {
+//            if (comp instanceof PromotionPanel2) {
+//                mainContentPanel.remove(comp);
+//                break;
+//            }
+//        }
+//
+//        // Thêm panel mới
+//        if (promotionId == null) {
+//            mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
+//        } else {
+//            mainContentPanel.add(new PromotionPanel2(promotionId), "ADD_PROMOTION");
+//        }
+//
+//        cardLayout.show(mainContentPanel, "ADD_PROMOTION");
     }
 
     private void tbtnSellingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSellingActionPerformed

@@ -7,7 +7,7 @@ package com.fat.GUI.Panels.Promotion;
 import com.fat.BUS.Abstractions.Services.IPromotionService;
 import com.fat.BUS.Services.PromotionService;
 import com.fat.Contract.Shared.PagedResult;
-import com.fat.DTO.Promotions.PromotionViewDTO;
+import com.fat.DTO.Promotions.PromotionDTO;
 import com.fat.GUI.MainForm;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -66,7 +66,7 @@ public class PromotionsPanel extends javax.swing.JPanel {
     }
 
     private void loadData(){
-        PagedResult<PromotionViewDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage ,pageSize);
+        PagedResult<PromotionDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage ,pageSize);
         fillTable(result);
     }
     
@@ -74,16 +74,15 @@ public class PromotionsPanel extends javax.swing.JPanel {
      * Refresh dữ liệu từ bên ngoài (được gọi khi quay về từ Panel 2)
      */
     public void refreshData() {
-        promotionService.refreshCache();
         loadData();
     }
 
-    private void fillTable(PagedResult<PromotionViewDTO> result){
+    private void fillTable(PagedResult<PromotionDTO> result){
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate today = LocalDate.now();
-        for (PromotionViewDTO p : result.getItems()){
+        for (PromotionDTO p : result.getItems()){
             String status;
             if (today.isBefore(p.getStartDate())){
                 status = "Sắp diễn ra";
@@ -433,7 +432,7 @@ public class PromotionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_prevBtnActionPerformed
 
     private void nextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBtnActionPerformed
-        PagedResult<PromotionViewDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage, pageSize);
+        PagedResult<PromotionDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage, pageSize);
         int totalPages = (int) Math.ceil((double) result.getTotalItems() / pageSize);
         if (currentPage < totalPages) {
             currentPage++;
@@ -442,7 +441,7 @@ public class PromotionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_nextBtnActionPerformed
 
     private void lastBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lastBtnActionPerformed
-        PagedResult<PromotionViewDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage, pageSize);
+        PagedResult<PromotionDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage, pageSize);
         int totalPages = (int) Math.ceil((double) result.getTotalItems() / pageSize);
         if (currentPage < totalPages) {
             currentPage = totalPages;

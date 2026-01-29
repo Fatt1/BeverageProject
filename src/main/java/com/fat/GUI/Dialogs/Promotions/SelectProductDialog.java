@@ -9,9 +9,10 @@ import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Services.CategoryService;
 import com.fat.BUS.Services.ProductService;
 import com.fat.Contract.Shared.PagedResult;
-import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Products.ProductViewDTO;
-import com.fat.DTO.Promotions.PromotionItemDetailDTO;
+import com.fat.DTO.Categories.CategoryDTO;
+import com.fat.DTO.Products.ProductDTO;
+import com.fat.DTO.Promotions.PromotionDetailDTO;
+
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class SelectProductDialog extends javax.swing.JDialog {
     
     private IProductService productService;
     private ICategoryService categoryService;
-    private List<PromotionItemDetailDTO> selectedProducts = new ArrayList<>();
+    private List<PromotionDetailDTO> selectedProducts = new ArrayList<>();
     private List<Integer> existingProductIds = new ArrayList<>();
     
     private String searchKey = null;
@@ -136,22 +137,22 @@ public class SelectProductDialog extends javax.swing.JDialog {
         cboCategory.removeAllItems();
         cboCategory.addItem("Tất cả");
         
-        List<CategoryViewDTO> categories = categoryService.getAllCategories();
-        for (CategoryViewDTO cat : categories) {
+        List<CategoryDTO> categories = categoryService.getAllCategories();
+        for (CategoryDTO cat : categories) {
             cboCategory.addItem(cat.getName());
         }
     }
     
     private void loadData() {
-        PagedResult<ProductViewDTO> result = productService.filterProductByList(searchKey, selectedCategoryId, currentPage, pageSize);
+        PagedResult<ProductDTO> result = productService.filterProductByList(searchKey, selectedCategoryId, currentPage, pageSize);
         fillTable(result);
     }
     
-    private void fillTable(PagedResult<ProductViewDTO> result) {
+    private void fillTable(PagedResult<ProductDTO> result) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
         
-        for (ProductViewDTO p : result.getItems()) {
+        for (ProductDTO p : result.getItems()) {
             if (existingProductIds.contains(p.getId())) {
                 continue;
             }
@@ -161,8 +162,7 @@ public class SelectProductDialog extends javax.swing.JDialog {
                 p.getId(),
                 p.getName(),
                 p.getUnit(),
-                p.getPrice(),
-                p.getCategoryName()
+                p.getPrice(), categoryService.getCategoryById(p.getCategoryId()).getName()
             });
         }
         
@@ -187,7 +187,7 @@ public class SelectProductDialog extends javax.swing.JDialog {
         jLabel2.setText("Đã chọn: " + count);
     }
     
-    public List<PromotionItemDetailDTO> getSelectedProducts() {
+    public List<PromotionDetailDTO> getSelectedProducts() {
         return selectedProducts;
     }
     
@@ -200,9 +200,9 @@ public class SelectProductDialog extends javax.swing.JDialog {
                 int productId = (int) model.getValueAt(i, 1);
                 String productName = (String) model.getValueAt(i, 2);
                 BigDecimal price = (BigDecimal) model.getValueAt(i, 4);
-                
-                PromotionItemDetailDTO item = new PromotionItemDetailDTO(
-                    null, productName, price, 0.0, productId
+
+                PromotionDetailDTO item = new PromotionDetailDTO(
+                    null, productId, BigDecimal.ZERO
                 );
                 selectedProducts.add(item);
             }
@@ -455,7 +455,7 @@ public class SelectProductDialog extends javax.swing.JDialog {
         if (index <= 0) {
             selectedCategoryId = null;
         } else {
-            List<CategoryViewDTO> categories = categoryService.getAllCategories();
+            List<CategoryDTO> categories = categoryService.getAllCategories();
             if (index - 1 < categories.size()) {
                 selectedCategoryId = categories.get(index - 1).getId();
             }
@@ -486,7 +486,7 @@ public class SelectProductDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_prevBtnActionPerformed
 
     private void nextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBtnActionPerformed
-        PagedResult<ProductViewDTO> result = productService.filterProductByList(searchKey, selectedCategoryId, currentPage, pageSize);
+        PagedResult<ProductDTO> result = productService.filterProductByList(searchKey, selectedCategoryId, currentPage, pageSize);
         int totalPages = (int) Math.ceil((double) result.getTotalItems() / pageSize);
         if (currentPage < totalPages) {
             currentPage++;
@@ -495,7 +495,7 @@ public class SelectProductDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_nextBtnActionPerformed
 
     private void lastBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lastBtnActionPerformed
-        PagedResult<ProductViewDTO> result = productService.filterProductByList(searchKey, selectedCategoryId, currentPage, pageSize);
+        PagedResult<ProductDTO> result = productService.filterProductByList(searchKey, selectedCategoryId, currentPage, pageSize);
         int totalPages = (int) Math.ceil((double) result.getTotalItems() / pageSize);
         if (currentPage < totalPages) {
             currentPage = totalPages;

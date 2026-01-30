@@ -38,11 +38,12 @@ public class SupplierDAO implements ISupplierDAO {
                 List<SupplierViewDTO> suppliers = new ArrayList<>();
                 while (rs.next()) {
                     Integer id = rs.getInt("Id");
-                    String email = rs.getString("Email");
-                    String phoneNumber = rs.getString("PhoneNumber");
                     String name = rs.getString("Name");
+                    String email = rs.getString("Email");
                     String address = rs.getString("Address");
-                    SupplierViewDTO supplier = new SupplierViewDTO(id, email, phoneNumber, name, address);
+                    String phoneNumber = rs.getString("PhoneNumber");
+                    // Constructor order: (id, name, email, address, phoneNumber)
+                    SupplierViewDTO supplier = new SupplierViewDTO(id, name, email, address, phoneNumber);
                     suppliers.add(supplier);
                 }return suppliers;
             }return null;
@@ -62,11 +63,12 @@ public class SupplierDAO implements ISupplierDAO {
             ResultSet rs = null;
             rs = ps.executeQuery();
             if (rs != null && rs.next()) {
-                String email = rs.getString("Email");
-                String phoneNumber = rs.getString("PhoneNumber");
                 String name = rs.getString("Name");
+                String email = rs.getString("Email");
                 String address = rs.getString("Address");
-                SupplierViewDTO supplier = new SupplierViewDTO(id, email, phoneNumber, name, address);
+                String phoneNumber = rs.getString("PhoneNumber");
+                // Constructor order: (id, name, email, address, phoneNumber)
+                SupplierViewDTO supplier = new SupplierViewDTO(id, name, email, address, phoneNumber);
                 return supplier;
             }return null;
         } catch (SQLException e) {

@@ -13,9 +13,8 @@ import com.fat.BUS.Services.UploadImageService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.DuplicateProductNameException;
 import com.fat.Contract.Exceptions.ValidationException;
-import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Products.CreateOrUpdateProductDTO;
-import com.fat.DTO.Products.ProductDetailDTO;
+import com.fat.DTO.Categories.CategoryDTO;
+import com.fat.DTO.Products.ProductDTO;
 import com.fat.GUI.Utils.ImageHelper;
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -24,6 +23,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -35,20 +36,18 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     private IProductService productService = ProductService.getInstance();
     private ICategoryService categoryService = CategoryService.getInstance();
     private JFileChooser fileChooser = new JFileChooser();
-    private ProductDetailDTO productDetailDTO = null;
+    private ProductDTO selectedProduct = null;
     /**
      * Creates new form AddProductDialog
      */
-    public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, ProductDetailDTO productDetailDTO) {
+    public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, ProductDTO selectedProduct) {
         super(parent, modal);
 
         initComponents();
         loadCategories();
         setCss();
-        this.productDetailDTO = productDetailDTO;
+        this.selectedProduct = selectedProduct;
         initProductDetail();
-
-
         FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình ảnh", "jpg", "png", "jpeg");
         fileChooser.setFileFilter(imageFilter);
         // Tránh chọn tất cả các loại file
@@ -263,51 +262,36 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 price = new BigDecimal(priceText);
             }
 
-            CategoryViewDTO selectedCategory = (CategoryViewDTO) cboCategory.getSelectedItem();
+            CategoryDTO selectedCategory = (CategoryDTO) cboCategory.getSelectedItem();
             Integer categoryId = selectedCategory.getId();
-            String imageName = null;
             File selectedFile = fileChooser.getSelectedFile();
-            boolean needUpload = true;
+            String imageName = selectedFile != null ? selectedFile.getName() : null;
+            Path imagePath = selectedFile != null ? selectedFile.toPath() : null;
 
-            // Kiểm tra trường hợp UPDATE: Nếu đang có sản phẩm cũ và file đang chọn trùng tên với file cũ
-            if (productDetailDTO != null && selectedFile != null) {
-                String oldImageName = productDetailDTO.getImage();
-
-                // Nếu tên file đang chọn == tên file trong DB
-                // Tức là user không thay đổi hình ảnh
-                if (selectedFile.getName().equals(oldImageName)) {
-                    imageName = oldImageName; // Giữ nguyên tên cũ
-                    needUpload = false;       // Đánh dấu là không cần copy
-                }
-            }
-
-            if(selectedFile != null && needUpload) {
-                IUploadImageService uploadImageService = new UploadImageService();
-                imageName = uploadImageService.uploadImage(selectedFile.getName(), selectedFile.toPath());
-            }
-
-            if(productDetailDTO == null) {
-                CreateOrUpdateProductDTO newProduct = new CreateOrUpdateProductDTO(
-                        name,
-                        imageName,
-                        unit,
-                        price,
-                        categoryId);
-                ValidatorUtil.validate(newProduct);
+            if(selectedProduct == null) {
+                ProductDTO newProduct = new ProductDTO();
+                newProduct.setName(name);
+                newProduct.setImage(imageName);
+                newProduct.setImagePath(imagePath);
+                newProduct.setCategoryId(categoryId);
+                newProduct.setPrice(price);
+                newProduct.setCreatedAt(LocalDateTime.now());
+                newProduct.setUpdatedAt(LocalDateTime.now());
+                newProduct.setStock(0);
+                newProduct.setUnit(unit);
                 productService.createProduct(newProduct);
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             // Cho trường hợp cập nhật
            else{
-                CreateOrUpdateProductDTO updateProduct = new CreateOrUpdateProductDTO(
-                        productDetailDTO.getId(),
-                        name,
-                        imageName,
-                        unit,
-                        price,
-                        categoryId);
-                ValidatorUtil.validate(updateProduct);
-                productService.updateProduct(updateProduct);
+                selectedProduct.setName(name);
+                selectedProduct.setImage(imageName);
+                selectedProduct.setImagePath(imagePath);
+                selectedProduct.setCategoryId(categoryId);
+                selectedProduct.setPrice(price);
+                selectedProduct.setUnit(unit);
+                selectedProduct.setUpdatedAt(LocalDateTime.now());
+                productService.updateProduct(selectedProduct);
                 JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             this.dispose();
@@ -339,23 +323,23 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void initProductDetail() {
-        if(productDetailDTO != null) {
+        if(selectedProduct != null) {
             setTitle("Cập nhật sản phẩm");
-            txtName.setText(productDetailDTO.getName());
-            txtUnit.setText(productDetailDTO.getUnit());
-            txtPrice.setText(productDetailDTO.getPrice().toString());
+            txtName.setText(selectedProduct.getName());
+            txtUnit.setText(selectedProduct.getUnit());
+            txtPrice.setText(selectedProduct.getPrice().toString());
             // Chọn danh mục tương ứng
             for(int i = 0; i < cboCategory.getItemCount(); i++) {
-                CategoryViewDTO category =  (CategoryViewDTO) cboCategory.getItemAt(i);
-                if(category.getId().equals(productDetailDTO.getCategoryId())) {
+                CategoryDTO category =  (CategoryDTO) cboCategory.getItemAt(i);
+                if(category.getId().equals(selectedProduct.getCategoryId())) {
                     cboCategory.setSelectedIndex(i);
                     break;
                 }
             }
 
-            if(productDetailDTO.getImage() != null ) {
+            if(selectedProduct.getImage() != null ) {
                 // Lấy đường dẫn gốc dự án
-                String fullImagePath = ImageHelper.getImagePath(productDetailDTO.getImage());
+                String fullImagePath = ImageHelper.getImagePath(selectedProduct.getImage());
                 fileChooser.setSelectedFile(new File(fullImagePath));
                 ImageIcon icon = new ImageIcon(fullImagePath);
                 lblImage.setIcon(ImageHelper.resizeImage(icon, lblImage.getWidth(), lblImage.getHeight()));
@@ -363,43 +347,13 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
             }
         }
     }
-
-    public void setProductDetailDTO(ProductDetailDTO productDetailDTO) {
-        this.productDetailDTO = productDetailDTO;
-    }
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 14));
-//        FlatLightLaf.setup();
-//
-//        //</editor-fold>
-//
-//        /* Create and display the dialog */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                AddProductDialog dialog = new AddProductDialog(new javax.swing.JFrame(), true, productService);
-//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-//                    @Override
-//                    public void windowClosing(java.awt.event.WindowEvent e) {
-//                        System.exit(0);
-//                    }
-//                });
-//                dialog.setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox<String> cboCategory;
+    private javax.swing.JComboBox<CategoryDTO> cboCategory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

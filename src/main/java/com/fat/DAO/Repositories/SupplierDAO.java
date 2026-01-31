@@ -1,8 +1,7 @@
 package com.fat.DAO.Repositories;
 import java.util.List;
 
-import com.fat.DTO.Suppliers.SupplierViewDTO;
-import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
+import com.fat.DTO.Suppliers.SupplierDTO;
 import com.fat.DAO.Abstractions.Repositories.ISupplierDAO;
 import com.fat.DAO.Utils.DbContext;
 import java.sql.Connection;
@@ -10,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import static org.apache.commons.math3.stat.StatUtils.product;
 
 
 public class SupplierDAO implements ISupplierDAO {
@@ -27,7 +25,7 @@ public class SupplierDAO implements ISupplierDAO {
     }
 
     @Override
-    public List<SupplierViewDTO> getAll() {
+    public List<SupplierDTO> getAll() {
         String sql = "Select * from Supplier";
         try (Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -35,7 +33,7 @@ public class SupplierDAO implements ISupplierDAO {
             ResultSet rs = null;
             rs = ps.executeQuery();
             if (rs != null) {
-                List<SupplierViewDTO> suppliers = new ArrayList<>();
+                List<SupplierDTO> suppliers = new ArrayList<>();
                 while (rs.next()) {
                     Integer id = rs.getInt("Id");
                     String name = rs.getString("Name");
@@ -43,7 +41,8 @@ public class SupplierDAO implements ISupplierDAO {
                     String address = rs.getString("Address");
                     String phoneNumber = rs.getString("PhoneNumber");
                     // Constructor order: (id, name, email, address, phoneNumber)
-                    SupplierViewDTO supplier = new SupplierViewDTO(id, name, email, address, phoneNumber);
+   
+                    SupplierDTO supplier = new SupplierDTO(id, email, phoneNumber, name, address);
                     suppliers.add(supplier);
                 }return suppliers;
             }return null;
@@ -54,7 +53,7 @@ public class SupplierDAO implements ISupplierDAO {
     }
 
     @Override
-    public SupplierViewDTO getById(Integer id) {
+    public SupplierDTO getById(Integer id) {
         String sql = "Select * from Supplier where Id = ?";
         try (Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -68,7 +67,8 @@ public class SupplierDAO implements ISupplierDAO {
                 String address = rs.getString("Address");
                 String phoneNumber = rs.getString("PhoneNumber");
                 // Constructor order: (id, name, email, address, phoneNumber)
-                SupplierViewDTO supplier = new SupplierViewDTO(id, name, email, address, phoneNumber);
+       
+                SupplierDTO supplier = new SupplierDTO(id, email, phoneNumber, name, address);
                 return supplier;
             }return null;
         } catch (SQLException e) {
@@ -78,7 +78,7 @@ public class SupplierDAO implements ISupplierDAO {
     }
 
     @Override
-    public Integer add(CreateOrUpdateSupplierDTO entity) {
+    public Integer add(SupplierDTO entity) {
         String sql = "Insert into Supplier (Email, PhoneNumber, Name, Address) values (?, ?, ?, ?)";
         try (Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -105,7 +105,7 @@ public class SupplierDAO implements ISupplierDAO {
     }
 
     @Override
-    public void update(CreateOrUpdateSupplierDTO entity) {
+    public void update(SupplierDTO entity) {
         String sql = "Update Supplier set Email = ?, PhoneNumber = ?, Name = ?, Address = ? where Id = ?";
         try (Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);

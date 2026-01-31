@@ -2,10 +2,7 @@ package com.fat.DAO.Repositories;
 
 import com.fat.DAO.Abstractions.Repositories.IStaffDAO;
 import com.fat.DAO.Utils.DbContext;
-import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
-import com.fat.DTO.Staffs.StaffDetailDTO;
-import com.fat.DTO.Staffs.StaffViewDTO;
-import org.apache.poi.hpsf.Decimal;
+import com.fat.DTO.Staffs.StaffDTO;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -28,17 +25,16 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
-    public List<StaffViewDTO> getAll() {
-        String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.RoleId, R.Name AS RoleName "
+    public List<StaffDTO> getAll() {
+        String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.Password, St.RoleId, St.CreatedAt, St.UpdatedAt "
                 + "FROM [Staff] AS St "
-                + "JOIN Role AS R "
-                + "ON St.RoleId = R.Id ORDER BY St.UpdatedAt DESC";
+                + "ORDER BY St.UpdatedAt DESC";
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);) {
             ResultSet rs = null;
             rs = ps.executeQuery();
             if(rs != null){
-                List<StaffViewDTO> staffs = new ArrayList<>();
+                List<StaffDTO> staffs = new ArrayList<>();
                 while(rs.next()){
                     Integer id = rs.getInt("Id");
                     String firstName = rs.getString("FirstName") ;
@@ -47,11 +43,11 @@ public class StaffDAO implements IStaffDAO {
                     BigDecimal salary = rs.getBigDecimal("Salary");
                     String phoneNumber = rs.getString("PhoneNumber");
                     String userName = rs.getString("UserName");
+                    String password = rs.getString("Password");
                     Integer roleId = rs.getInt("RoleId");
-                    String roleName = rs.getString("RoleName");
-                    StaffViewDTO staff = new StaffViewDTO( id,  firstName,
-                             lastName,  birthDate,  phoneNumber,
-                             salary,  roleId,  userName,  roleName);
+                    LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
+                    LocalDateTime updatedAt = rs.getTimestamp("UpdatedAt").toLocalDateTime();
+                    StaffDTO staff = new StaffDTO(id, firstName, lastName, birthDate, salary, phoneNumber, roleId, createdAt, updatedAt, userName, password);
                     staffs.add(staff);
                 }
                 return staffs;
@@ -67,15 +63,14 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
-    public List<StaffViewDTO> filter(String searchKey) {
+    public List<StaffDTO> filter(String searchKey) {
         return List.of();
     }
 
     @Override
-    public StaffDetailDTO getById(Integer id) {
-        String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.Password, St.RoleId, R.Name AS RoleName "
+    public StaffDTO getById(Integer id) {
+        String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.Password, St.RoleId, St.CreatedAt, St.UpdatedAt "
                 + "FROM [Staff] AS St "
-                + "JOIN Role AS R ON St.RoleId = R.Id "
                 + "WHERE St.Id = ?";
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -92,10 +87,9 @@ public class StaffDAO implements IStaffDAO {
                 String userName = rs.getString("UserName");
                 String password = rs.getString("Password");
                 Integer roleId = rs.getInt("RoleId");
-                String roleName = rs.getString("RoleName");
-                return new StaffDetailDTO( staffId,  roleId,  password,
-                         userName,  salary,  birthDate,
-                         phoneNumber,  lastName,  firstName, roleName);
+                LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
+                LocalDateTime updatedAt = rs.getTimestamp("UpdatedAt").toLocalDateTime();
+                return new StaffDTO(staffId, firstName, lastName, birthDate, salary, phoneNumber, roleId, createdAt, updatedAt, userName, password);
             }
             return null;
         } catch (SQLException sqlException) {
@@ -105,14 +99,14 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
-    public Integer add(CreateOrUpdateStaffDTO entity) {
+    public Integer add(StaffDTO entity) {
         String sql = "INSERT INTO [Staff] (FirstName, LastName,BirthDay,Salary,PhoneNumber,RoleId, CreatedAt, UpdatedAt,UserName,Password)" +
                 "VALUES (?,?,?,?,?,?,?,?,?,?)";
         try(Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);){
             ps.setString(1, entity.getFirstName());
             ps.setString(2, entity.getLastName());
-            ps.setObject(3, entity.getBirthDate());
+            ps.setObject(3, entity.getBirthday());
             ps.setBigDecimal(4,entity.getSalary());
             ps.setString(5, entity.getPhoneNumber());
             ps.setInt(6, entity.getRoleId());
@@ -134,22 +128,23 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
-    public void update(CreateOrUpdateStaffDTO entity) {
+    public void update(StaffDTO entity) {
         String sql = "UPDATE STAFF " +
-                "SET FirstName = ?, LastName = ?, Birthday = ?, Salary = ?, PhoneNumber = ?, UserName = ?, Password = ?, RoleId = ? " +
+                "SET FirstName = ?, LastName = ?, Birthday = ?, Salary = ?, PhoneNumber = ?, UserName = ?, Password = ?, RoleId = ?, UpdatedAt = ? " +
                 "WHERE Id = ?;";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
         ) {
             ps.setString(1, entity.getFirstName());
             ps.setString(2, entity.getLastName());
-            ps.setObject(3, entity.getBirthDate());
+            ps.setObject(3, entity.getBirthday());
             ps.setBigDecimal(4, entity.getSalary());
             ps.setString(5, entity.getPhoneNumber());
             ps.setString(6, entity.getUserName());
             ps.setString(7, entity.getPassword());
             ps.setInt(8, entity.getRoleId());
-            ps.setInt(9, entity.getId());
+            ps.setObject(9, entity.getUpdatedAt());
+            ps.setInt(10, entity.getId());
             ps.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -215,39 +210,70 @@ public class StaffDAO implements IStaffDAO {
     }
 
     @Override
-    public boolean isLoginSuccessful(String username, String password) {
-        String sql = "SELECT COUNT(*) AS Total FROM [Staff] WHERE UserName = ? AND Password = ?";
-        try (Connection conn = DbContext.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
+    public StaffDTO getByUserName(String username) {
+        String sql = "SELECT St.Id, St.FirstName, St.LastName, St.Birthday, St.Salary, St.PhoneNumber, St.UserName, St.Password, St.RoleId, St.CreatedAt, St.UpdatedAt "
+                + "FROM [Staff] AS St "
+                + "WHERE St.UserName = ?";
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
             ps.setString(1, username);
-            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()){
-                int count = rs.getInt("Total");
-                return count == 1;
+            while(rs.next()){
+                Integer staffId = rs.getInt("Id");
+                String firstName = rs.getString("FirstName") ;
+                String lastName =  rs.getString("LastName");
+                LocalDate birthDate = rs.getObject("Birthday",LocalDate.class);
+                BigDecimal salary = rs.getBigDecimal("Salary");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String userName = rs.getString("UserName");
+                String password = rs.getString("Password");
+                Integer roleId = rs.getInt("RoleId");
+                LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
+                LocalDateTime updatedAt = rs.getTimestamp("UpdatedAt").toLocalDateTime();
+                return new StaffDTO(staffId, firstName, lastName, birthDate, salary, phoneNumber, roleId, createdAt, updatedAt, userName, password);
             }
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            return null;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
         }
     }
 
-    @Override
-    public String getIdStaffOfLoginSuccessful(String username, String password) {
-        String sql = "SELECT Id FROM [Staff] WHERE UserName = ? AND Password = ?";
-        try (Connection conn = DbContext.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return String.valueOf(rs.getInt("Id")); 
-            }
+    // @Override
+    // public boolean isLoginSuccessful(String username, String password) {
+    //     String sql = "SELECT COUNT(*) AS Total FROM [Staff] WHERE UserName = ? AND Password = ?";
+    //     try (Connection conn = DbContext.getConnection();
+    //     PreparedStatement ps = conn.prepareStatement(sql)) {
+    //         ps.setString(1, username);
+    //         ps.setString(2, password);
+    //         ResultSet rs = ps.executeQuery();
+    //         if (rs.next()){
+    //             int count = rs.getInt("Total");
+    //             return count == 1;
+    //         }
+    //         return false;
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //         return false;
+    //     }
+    // }
+
+    // @Override
+    // public String getIdStaffOfLoginSuccessful(String username, String password) {
+    //     String sql = "SELECT Id FROM [Staff] WHERE UserName = ? AND Password = ?";
+    //     try (Connection conn = DbContext.getConnection();
+    //     PreparedStatement ps = conn.prepareStatement(sql)) {
+    //         ps.setString(1, username);
+    //         ps.setString(2, password);
+    //         ResultSet rs = ps.executeQuery();
+    //         if (rs.next()) {
+    //             return String.valueOf(rs.getInt("Id")); 
+    //         }
             
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return null;
+    // }
 }

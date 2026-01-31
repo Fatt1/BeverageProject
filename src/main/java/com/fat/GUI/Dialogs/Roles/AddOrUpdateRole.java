@@ -7,8 +7,7 @@ package com.fat.GUI.Dialogs.Roles;
 import com.fat.BUS.Services.RoleService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.ValidationException;
-import com.fat.DTO.Roles.CreateOrUpdateRoleDTO;
-import com.fat.DTO.Roles.RoleViewDTO;
+import com.fat.DTO.Roles.RoleDTO;
 
 import javax.swing.*;
 
@@ -23,10 +22,10 @@ public class AddOrUpdateRole extends javax.swing.JDialog {
     /**
      * Creates new form AddOrUpdateRole
      */
-    private RoleViewDTO selectedRole;
+    private RoleDTO selectedRole;
     private final RoleService roleService = RoleService.getInstance();
 
-    public AddOrUpdateRole(java.awt.Frame parent, boolean modal, RoleViewDTO selectedRole) {
+    public AddOrUpdateRole(java.awt.Frame parent, boolean modal, RoleDTO selectedRole) {
         super(parent, modal);
         initComponents();
         setTitle("THÊM VAI TRÒ");
@@ -89,25 +88,25 @@ public class AddOrUpdateRole extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(lblTitle))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
+                        .addGap(52, 52, 52)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel2)
                             .addComponent(txtRoleName)
-                            .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE))))
-                .addContainerGap(71, Short.MAX_VALUE))
+                            .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(lblTitle)
-                .addGap(47, 47, 47)
+                .addGap(45, 45, 45)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtRoleName, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
                 .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(111, Short.MAX_VALUE))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -136,17 +135,15 @@ public class AddOrUpdateRole extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         String roleName = txtRoleName.getText().trim();
-
-
             if(this.selectedRole == null) {
-                CreateOrUpdateRoleDTO dto = new CreateOrUpdateRoleDTO(roleName);
+                RoleDTO dto = new RoleDTO(null, roleName);
                 ValidatorUtil.validate(dto);
                 roleService.createRole(dto);
                 JOptionPane.showMessageDialog(this, "Thêm vai trò thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
             }
             else{
-                CreateOrUpdateRoleDTO dto = new CreateOrUpdateRoleDTO(selectedRole.getId(),roleName);
+                RoleDTO dto = new RoleDTO(selectedRole.getId(),roleName);
                 ValidatorUtil.validate(dto);
                 roleService.updateRole(dto);
                 JOptionPane.showMessageDialog(this, "Cập nhật vai trò thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);

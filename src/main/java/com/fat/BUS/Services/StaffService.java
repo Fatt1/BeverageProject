@@ -2,15 +2,9 @@ package com.fat.BUS.Services;
 
 import com.fat.BUS.Abstractions.Services.IStaffService;
 import com.fat.Contract.Exceptions.DuplicateStaffUserNameException;
-import com.fat.Contract.Exceptions.ValidationException;
-import com.fat.DAO.Abstractions.Repositories.IProductDAO;
 import com.fat.DAO.Abstractions.Repositories.IStaffDAO;
 import com.fat.DAO.Repositories.StaffDAO;
-
-import com.fat.DTO.Auths.UserSessionDTO;
-import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
-import com.fat.DTO.Staffs.StaffDetailDTO;
-import com.fat.DTO.Staffs.StaffViewDTO;
+import com.fat.DTO.Staffs.StaffDTO;
 import jakarta.inject.Inject;
 import org.mindrot.jbcrypt.BCrypt;
 import com.fat.BUS.Services.RoleService;
@@ -25,11 +19,13 @@ public class StaffService implements IStaffService {
     private static StaffService instance;
     private final IStaffDAO staffDAO = StaffDAO.getInstance();
     private final RoleService roleService = RoleService.getInstance();
-    private List<StaffViewDTO> staffsCache ;
+    private static List<StaffDTO> staffsCache = new ArrayList<>();
 
     @Inject
     private StaffService() {
-        staffsCache = new ArrayList<>();
+        if(staffsCache.isEmpty()) {
+            staffsCache = staffDAO.getAll();
+        }
     }
 
     public static StaffService getInstance() {
@@ -40,85 +36,41 @@ public class StaffService implements IStaffService {
     }
 
     @Override
-    public void createStaff(CreateOrUpdateStaffDTO dto) {
+    public void createStaff(StaffDTO dto) {
         boolean isExists = staffDAO.isExistByUserName(dto.getUserName(), null);
         if(isExists) {
             throw new DuplicateStaffUserNameException("Tên tài khoản đã tồn tại: " + dto.getUserName());
         }
         String hashedPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
-        CreateOrUpdateStaffDTO newDTO = new CreateOrUpdateStaffDTO(
-                dto.getFirstName(),
-                dto.getLastName(),
-                dto.getBirthDate(),
-                dto.getSalary(),
-                dto.getPhoneNumber(),
-                dto.getUserName(),
-                hashedPassword,
-                dto.getRoleId());
-        Integer id =  staffDAO.add(newDTO);
+        dto.setPassword(hashedPassword);
+        dto.setCreatedAt(LocalDateTime.now());
+        dto.setUpdatedAt(LocalDateTime.now());
+        Integer id = staffDAO.add(dto);
         if(id != null) {
-            StaffDetailDTO staffDetailDTO = staffDAO.getById(id);
-            if(staffDetailDTO != null) {
-                StaffViewDTO newStaff = new StaffViewDTO(
-                        id,
-                        dto.getFirstName(),
-                        dto.getLastName(),
-                        dto.getBirthDate(),
-                        dto.getPhoneNumber(),
-                        dto.getSalary(),
-                        dto.getRoleId(),
-                        dto.getUserName(),
-                        staffDetailDTO.getRoleName());
-                staffsCache.addFirst(newStaff);
-            } else {
-                // Nếu không lấy được detail, tạo StaffViewDTO với roleName tạm
-
-                var role = roleService.getRoleById(dto.getRoleId());
-                String roleName = role != null ? role.getName() : "Unknown";
-                StaffViewDTO newStaff = new StaffViewDTO(
-                        id,
-                        dto.getFirstName(),
-                        dto.getLastName(),
-                        dto.getBirthDate(),
-                        dto.getPhoneNumber(),
-                        dto.getSalary(),
-                        dto.getRoleId(),
-                        dto.getUserName(),
-                        roleName);
-                staffsCache.addFirst(newStaff);
-            }
+            dto.setId(id);
+            staffsCache.addFirst(dto);
         }
     }
 
     @Override
-    public void updateStaff(CreateOrUpdateStaffDTO dto) {
+    public void updateStaff(StaffDTO dto) {
         boolean isExist = staffDAO.isExistByUserName(dto.getUserName(), dto.getId());
         if(isExist){
             throw new DuplicateStaffUserNameException("Tên tài khoản đã tồn tại: " + dto.getUserName());
         }
-        String newPassword;
         if(dto.getPassword() != null && !dto.getPassword().trim().isEmpty()){
-            // Có password mới -> mã hóa
-            newPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
-        }else{
-            // Không có password mới -> giữ nguyên password cũ
-            StaffDetailDTO currentStaff = staffDAO.getById(dto.getId());
-            newPassword = currentStaff.getPassword();
+            String hashedPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
+            dto.setPassword(hashedPassword);
+        } else {
+            StaffDTO currentStaff = getStaffById(dto.getId());
+            if(currentStaff != null) {
+                dto.setPassword(currentStaff.getPassword());
+            }
         }
-        CreateOrUpdateStaffDTO updateDTO = new CreateOrUpdateStaffDTO(
-                dto.getId(),
-                dto.getFirstName(),
-                dto.getLastName(),
-                dto.getBirthDate(),
-                dto.getPhoneNumber(),
-                dto.getSalary(),
-                LocalDateTime.now() ,
-                dto.getUserName(),
-                dto.getRoleId(),
-                newPassword );
-        staffDAO.update(updateDTO);
-        staffsCache.clear();
-        staffsCache.addAll(staffDAO.getAll());
+        dto.setUpdatedAt(LocalDateTime.now());
+        staffDAO.update(dto);
+        staffsCache.removeIf(s -> s.getId().equals(dto.getId()));
+        staffsCache.addFirst(dto);
     }
 
     @Override
@@ -131,7 +83,7 @@ public class StaffService implements IStaffService {
     }
 
     @Override
-    public List<StaffViewDTO> getAllStaffs() {
+    public List<StaffDTO> getAllStaffs() {
         if(staffsCache.isEmpty()){
            staffsCache = staffDAO.getAll();
         }
@@ -140,7 +92,7 @@ public class StaffService implements IStaffService {
 
 
     @Override
-    public List<StaffViewDTO> filterStaffByList(String searchKey) {
+    public List<StaffDTO> filterStaffByList(String searchKey) {
         if(searchKey == null || searchKey.trim().isEmpty()){
             return staffsCache;
         }
@@ -153,13 +105,26 @@ public class StaffService implements IStaffService {
     }
 
     @Override
-    public StaffDetailDTO getStaffById(Integer id) {
-        return staffDAO.getById(id);
+    public StaffDTO getStaffById(Integer id) {
+        return staffsCache.stream()
+            .filter(s -> s.getId().equals(id))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
-    public void refreshCache() {
-        this.staffsCache = staffDAO.getAll();
+    public StaffDTO getStaffByUserName(String userName) {
+        return staffsCache.stream()
+            .filter(s -> s.getUserName().equals(userName))
+            .findFirst()
+            .orElse(null);
+    }
+
+    @Override
+    public boolean isDetectdStaff(String username, String password) {
+        StaffDTO staff = getStaffByUserName(username);
+        if (staff == null) return false;
+        return BCrypt.checkpw(password, staff.getPassword());
     }
 }
 

@@ -4,17 +4,111 @@
  */
 package com.fat.GUI.Panels.Promotion;
 
+import com.fat.BUS.Abstractions.Services.IPromotionService;
+import com.fat.BUS.Services.PromotionService;
+import com.fat.Contract.Shared.PagedResult;
+import com.fat.DTO.Promotions.PromotionDTO;
+import com.fat.GUI.MainForm;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  *
  * @author koro1
  */
 public class PromotionsPanel extends javax.swing.JPanel {
-
+    private IPromotionService promotionService;
+    private Integer selectedStatus = null;  // null = Tất cả, 0 = Sắp diễn ra, 1 = Đang diễn ra, 2 = Kết thúc
+    private String searchKey = null;
+    private int currentPage = 1;
+    private int pageSize = 10;
     /**
      * Creates new form PromotionsPanel
      */
     public PromotionsPanel() {
         initComponents();
+        promotionService = PromotionService.getInstance();
+        setupTable();
+        loadStatusComboBox();
+        loadData();
+    }
+    
+    private void setupTable() {
+        // Không cho phép edit bất kỳ ô nào
+        DefaultTableModel model = new DefaultTableModel(
+            new String[]{"ID", "Tên chương trình", "Trạng thái", "Ngày bắt đầu", "Ngày kết thúc"},
+            0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Không cho phép edit
+            }
+        };
+        jTable1.setModel(model);
+        
+        // Highlight cả dòng khi chọn với màu xanh
+        jTable1.setRowSelectionAllowed(true);
+        jTable1.setColumnSelectionAllowed(false);
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setSelectionBackground(new java.awt.Color(0, 120, 215));
+        jTable1.setSelectionForeground(java.awt.Color.WHITE);
+    }
+
+    private void loadStatusComboBox(){
+        cboCategory.removeAllItems();
+        cboCategory.addItem("Tất cả");
+        cboCategory.addItem("Sắp diễn ra");
+        cboCategory.addItem("Đang diễn ra");
+        cboCategory.addItem("Kết thúc");
+        cboCategory.setSelectedIndex(0);
+    }
+
+    private void loadData(){
+        PagedResult<PromotionDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage ,pageSize);
+        fillTable(result);
+    }
+    
+    /**
+     * Refresh dữ liệu từ bên ngoài (được gọi khi quay về từ Panel 2)
+     */
+    public void refreshData() {
+        loadData();
+    }
+
+    private void fillTable(PagedResult<PromotionDTO> result){
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate today = LocalDate.now();
+        for (PromotionDTO p : result.getItems()){
+            String status;
+            if (today.isBefore(p.getStartDate())){
+                status = "Sắp diễn ra";
+            } 
+            else if (today.isAfter(p.getEndDate())){
+                status = "Kết thúc";
+            }
+            else{
+                status = "Đang diễn ra";
+            }
+            model.addRow(new Object[]{
+                p.getId(),
+                p.getName(),
+                status,
+                p.getStartDate().format(formatter),
+                p.getEndDate().format(formatter)
+            });
+        }
+        int totalItems = result.getTotalItems();
+        if (totalItems == 0){
+            lblPage.setText("0 trên 0");
+        } else {
+            int from = (currentPage - 1) * pageSize + 1;
+            int to = Math.min(currentPage * pageSize, totalItems);
+            lblPage.setText(from + " - " + to + " trên " + totalItems);
+        }
     }
 
     /**
@@ -36,8 +130,6 @@ public class PromotionsPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         btnUpdate = new javax.swing.JButton();
-        btnImportExcel = new javax.swing.JButton();
-        btnExportExcel = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -85,9 +177,9 @@ public class PromotionsPanel extends javax.swing.JPanel {
         cboCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         cboCategory.addActionListener(this::cboCategoryActionPerformed);
 
-        jLabel1.setText("Tên sản phẩm");
+        jLabel1.setText("Tên chương trình");
 
-        jLabel2.setText("Nhóm sản phẩm");
+        jLabel2.setText("Trạng thái");
 
         btnUpdate.setBackground(new java.awt.Color(51, 51, 51));
         btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
@@ -95,20 +187,6 @@ public class PromotionsPanel extends javax.swing.JPanel {
         btnUpdate.setText("Chỉnh sửa");
         btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUpdate.addActionListener(this::btnUpdateActionPerformed);
-
-        btnImportExcel.setBackground(new java.awt.Color(46, 125, 50));
-        btnImportExcel.setForeground(new java.awt.Color(255, 255, 255));
-        btnImportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Microsoft Excel.png"))); // NOI18N
-        btnImportExcel.setText("Nhập Excel");
-        btnImportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImportExcel.addActionListener(this::btnImportExcelActionPerformed);
-
-        btnExportExcel.setBackground(new java.awt.Color(46, 125, 50));
-        btnExportExcel.setForeground(new java.awt.Color(255, 255, 255));
-        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Microsoft Excel.png"))); // NOI18N
-        btnExportExcel.setText("Xuất Excel");
-        btnExportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnExportExcel.addActionListener(this::btnExportExcelActionPerformed);
 
         btnAdd.setBackground(new java.awt.Color(51, 51, 51));
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
@@ -131,34 +209,32 @@ public class PromotionsPanel extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jLabel2)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtSearch)
-                            .addComponent(cboCategory, 0, 224, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnAdd)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addComponent(btnDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReset)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnImportExcel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnExportExcel)))
-                .addContainerGap())
+                        .addGap(269, 269, 269))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 12, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addGap(20, 20, 20)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,34 +242,25 @@ public class PromotionsPanel extends javax.swing.JPanel {
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51))
+                    .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1034, Short.MAX_VALUE)
+            .addGap(0, 1238, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 6, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 199, Short.MAX_VALUE)
+            .addGap(0, 208, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
@@ -222,7 +289,7 @@ public class PromotionsPanel extends javax.swing.JPanel {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(489, Short.MAX_VALUE)
+                .addContainerGap(693, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cboPageSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -257,7 +324,12 @@ public class PromotionsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-
+        txtSearch.setText("");
+        searchKey = null;
+        selectedStatus = null;
+        cboCategory.setSelectedIndex(0);
+        currentPage = 1;
+        loadData();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
@@ -265,60 +337,122 @@ public class PromotionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
-
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            String text = txtSearch.getText().trim();
+            if (text.isEmpty()) {
+                searchKey = null;
+            } else {
+                searchKey = text;
+            }
+            currentPage = 1;
+            loadData();
+        }
     }//GEN-LAST:event_txtSearchKeyPressed
 
     private void cboCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoryActionPerformed
-
+        int index = cboCategory.getSelectedIndex();
+        if (index == 0) {
+            selectedStatus = null;
+        } else {
+            selectedStatus = index - 1;
+        }
+        currentPage = 1;
+        loadData();
     }//GEN-LAST:event_cboCategoryActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một chương trình khuyến mãi!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Lấy ID từ cột đầu tiên (ẩn hoặc hiện)
+        int promotionId = (int) jTable1.getValueAt(selectedRow, 0);
+        
+        // Mở Panel 2 với chế độ Edit
+        MainForm mainForm = (MainForm) javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (mainForm != null) {
+            mainForm.showPromotionForm(promotionId);
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
-    private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
-
-    }//GEN-LAST:event_btnImportExcelActionPerformed
-
-    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-
-    }//GEN-LAST:event_btnExportExcelActionPerformed
-
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-
+        // Mở Panel 2 với chế độ Add (không có promotionId)
+        MainForm mainForm = (MainForm) javax.swing.SwingUtilities.getWindowAncestor(this);
+        if (mainForm != null) {
+            mainForm.showPromotionForm(null);
+        }
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một chương trình khuyến mãi!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        int promotionId = (int) jTable1.getValueAt(selectedRow, 0);
+        String promotionName = (String) jTable1.getValueAt(selectedRow, 1);
+        
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Bạn có chắc muốn xóa chương trình \"" + promotionName + "\"?",
+            "Xác nhận xóa", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                promotionService.deletePromotion(promotionId);
+                JOptionPane.showMessageDialog(this, "Xóa thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                loadData(); // Reload lại danh sách
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void cboPageSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboPageSizeActionPerformed
-        
+        String selected = (String) cboPageSize.getSelectedItem();
+        pageSize = Integer.parseInt(selected.replace(" Trang", ""));
+        currentPage = 1;
+        loadData();
     }//GEN-LAST:event_cboPageSizeActionPerformed
 
     private void firstBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstBtnActionPerformed
-       
+        if (currentPage > 1) {
+            currentPage = 1;
+            loadData();
+        }
     }//GEN-LAST:event_firstBtnActionPerformed
 
     private void prevBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prevBtnActionPerformed
-       
+        if (currentPage > 1) {
+            currentPage--;
+            loadData();
+        }
     }//GEN-LAST:event_prevBtnActionPerformed
 
     private void nextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBtnActionPerformed
-        
+        PagedResult<PromotionDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage, pageSize);
+        int totalPages = (int) Math.ceil((double) result.getTotalItems() / pageSize);
+        if (currentPage < totalPages) {
+            currentPage++;
+            loadData();
+        }
     }//GEN-LAST:event_nextBtnActionPerformed
 
     private void lastBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lastBtnActionPerformed
-
-       
+        PagedResult<PromotionDTO> result = promotionService.filterPromotionByList(searchKey, selectedStatus, currentPage, pageSize);
+        int totalPages = (int) Math.ceil((double) result.getTotalItems() / pageSize);
+        if (currentPage < totalPages) {
+            currentPage = totalPages;
+            loadData();
+        }
     }//GEN-LAST:event_lastBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnExportExcel;
-    private javax.swing.JButton btnImportExcel;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cboCategory;

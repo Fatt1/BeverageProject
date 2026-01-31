@@ -3,8 +3,7 @@ package com.fat.BUS.Services;
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.DAO.Abstractions.Repositories.ICategoryDAO;
 import com.fat.DAO.Repositories.CategoryDAO;
-import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Categories.CreateOrUpdateCategoryDTO;
+import com.fat.DTO.Categories.CategoryDTO;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 public class CategoryService implements ICategoryService {
     private static CategoryService instance;
     private final ICategoryDAO categoryDAO;
-    private List<CategoryViewDTO> categoriesCache = new ArrayList<>();
+    private static List<CategoryDTO> categoriesCache = new ArrayList<>();
 
     @Inject
     private CategoryService() {
@@ -29,7 +28,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public List<CategoryViewDTO> getAllCategories() {
+    public List<CategoryDTO> getAllCategories() {
         if(categoriesCache.isEmpty()){
             categoriesCache = categoryDAO.getAll();
 
@@ -38,13 +37,16 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryViewDTO getCategoryById(Integer id) {
-        return categoryDAO.getById(id);
+    public CategoryDTO getCategoryById(Integer id) {
+        return categoriesCache.stream()
+            .filter(c -> c.getId().equals(id))
+            .findFirst()
+            .orElse(null);
     }
 
 
     @Override
-    public List<CategoryViewDTO> filterCategoryByList(String keyword) {
+    public List<CategoryDTO> filterCategoryByList(String keyword) {
         if (keyword == null || keyword.trim().isEmpty())
             return getAllCategories();
         String searchKey = keyword.trim().toLowerCase();
@@ -54,7 +56,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public void createCategory(CreateOrUpdateCategoryDTO dto) {
+    public void createCategory(CategoryDTO dto) {
         String name = dto.getName();
         if(name == null || name.trim().isEmpty())
             throw new RuntimeException("Tên danh mục không được để trống");
@@ -65,12 +67,12 @@ public class CategoryService implements ICategoryService {
             throw new RuntimeException("Tên danh mục đã tồn tại");
         }
         Integer newId = categoryDAO.add(dto);
-        CategoryViewDTO newCategory = new CategoryViewDTO(newId, name);
+        CategoryDTO newCategory = new CategoryDTO(newId, name);
         categoriesCache.add(0, newCategory);
     }
 
     @Override
-    public void updateCategory(CreateOrUpdateCategoryDTO dto) {
+    public void updateCategory(CategoryDTO dto) {
         Integer id = dto.getId();
         String name = dto.getName();
         if(name == null || name.trim().isEmpty())
@@ -84,7 +86,7 @@ public class CategoryService implements ICategoryService {
         categoryDAO.update(dto);
         for (int i = 0; i < categoriesCache.size(); i++) {
             if (categoriesCache.get(i).getId().equals(id)) {
-                categoriesCache.set(i, new CategoryViewDTO(id, name));
+                categoriesCache.set(i, new CategoryDTO(id, name));
                 break;
             }
         }

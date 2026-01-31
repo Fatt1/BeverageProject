@@ -1,9 +1,7 @@
 package com.fat.DAO.Repositories;
 
-import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.ICustomerDAO;
-import com.fat.DTO.Customers.CreateOrUpdateCustomerDTO;
-import com.fat.DTO.Customers.CustomerViewDTO;
+import com.fat.DTO.Customers.CustomerDTO;
 
 import java.util.List;
 
@@ -21,23 +19,23 @@ public class CustomerDAO implements ICustomerDAO {
     }
 
     @Override
-    public List<CustomerViewDTO> getAll() {
+    public List<CustomerDTO> getAll() {
         return List.of();
     }
 
     @Override
-    public CustomerViewDTO getById(Integer id) {
+    public CustomerDTO getById(Integer id) {
         return null;
     }
 
 
     @Override
-    public Integer add(CreateOrUpdateCustomerDTO entity) {
+    public Integer add(CustomerDTO entity) {
         return null;
     }
 
     @Override
-    public void update(CreateOrUpdateCustomerDTO entity) {
+    public void update(CustomerDTO entity) {
 
     }
 

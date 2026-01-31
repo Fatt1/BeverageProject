@@ -1,29 +1,28 @@
 package com.fat.BUS.Services;
 
 import com.fat.BUS.Abstractions.Services.IProductService;
+import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.DuplicateProductNameException;
 import com.fat.Contract.Shared.PagedResult;
-import com.fat.DAO.Abstractions.Repositories.ICategoryDAO;
 import com.fat.DAO.Abstractions.Repositories.IProductDAO;
-import com.fat.DAO.Repositories.CategoryDAO;
 import com.fat.DAO.Repositories.ProductDAO;
-import com.fat.DTO.Products.CreateOrUpdateProductDTO;
-import com.fat.DTO.Products.ProductDetailDTO;
-import com.fat.DTO.Products.ProductViewDTO;
+import com.fat.DTO.Products.ProductDTO;
 import com.google.inject.Inject;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ProductService implements IProductService {
-    private static ProductService instance;
     private final IProductDAO productDAO = ProductDAO.getInstance();
-    private final ICategoryDAO categoryDAO = CategoryDAO.getInstance();
-    private List<ProductViewDTO> productsCache = new ArrayList<>();
-    @Inject
+    private static ProductService instance;
+    private static List<ProductDTO> productsCache = new ArrayList<>();
+
     private ProductService() {
-        productsCache = productDAO.getAll();
+        if(productsCache.isEmpty()) {
+            productsCache = productDAO.getAll();
+        }
     }
 
     public static ProductService getInstance() {
@@ -33,38 +32,36 @@ public class ProductService implements IProductService {
         return instance;
     }
 
-
     @Override
-    public void createProduct(CreateOrUpdateProductDTO dto) {
+    public void createProduct(ProductDTO dto) {
+        ValidatorUtil.validate(dto);
         boolean isExists = productDAO.isExistByName(dto.getName(), null);
-        if(isExists) {
+        if (isExists) {
             throw new DuplicateProductNameException("Tên sản phầm đã tồn tại: " + dto.getName());
         }
-
-       Integer id =  productDAO.add(dto);
-       if(id != null) {
-           ProductDetailDTO productDetailDTO = productDAO.getById(id);
-              ProductViewDTO newProduct = new ProductViewDTO(id, productDetailDTO.getCategoryName() ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
-              productsCache.addFirst(newProduct);
-       }
-
+        UploadImageService.uploadImage(dto.getImage(), dto.getImagePath());
+        Integer id = productDAO.add(dto);
+        if (id != null) {
+            dto.setId(id);
+            productsCache.addFirst(dto);
+        }
     }
 
     @Override
-    public void updateProduct(CreateOrUpdateProductDTO dto) {
+    public void updateProduct(ProductDTO dto) {
+        ValidatorUtil.validate(dto);
         boolean isExists = productDAO.isExistByName(dto.getName(), dto.getId());
-        if(isExists) {
+        if (isExists) {
             throw new DuplicateProductNameException("Tên sản phầm đã tồn tại: " + dto.getName());
+        }
+        var productOld = getProductById(dto.getId());
+        if (!productOld.getImagePath().equals(dto.getImagePath())) {
+            UploadImageService.uploadImage(dto.getImage(), dto.getImagePath());
         }
         productDAO.update(dto);
-        String categoryName = categoryDAO.getById(dto.getCategoryId()).getName();
-        productsCache.removeIf(p -> p.getId().equals(dto.getId()));
-        ProductViewDTO updatedProduct = new ProductViewDTO(dto.getId(), categoryName ,dto.getCategoryId(), 0, dto.getPrice(),dto.getName(), dto.getImage(), dto.getUnit());
-        productsCache.addFirst(updatedProduct);
-
+        productsCache.remove(productOld);
+        productsCache.addFirst(dto);
     }
-
-
 
     @Override
     public void deleteProduct(Integer id) {
@@ -72,48 +69,50 @@ public class ProductService implements IProductService {
         productsCache.removeIf(p -> p.getId().equals(id));
     }
 
+
 //    @Override
 //    public PagedResult<ProductViewDTO> filterProduct(String searchKey, Integer categoryId, int pageIndex, int pageSize) {
 //        return productDAO.filter(searchKey, categoryId, pageIndex, pageSize);
 //    }
 
     @Override
-    public PagedResult<ProductViewDTO> filterProductByList(String searchKey, Integer categoryId, int pageIndex, int pageSize) {
+    public PagedResult<ProductDTO> filterProductByList(String searchKey, Integer categoryId, int pageIndex, int pageSize) {
 
-       var stream =  productsCache.stream();
-       if(searchKey != null && !searchKey.isEmpty()) {
-           stream = stream.filter(p -> p.getName().toLowerCase().contains(searchKey.toLowerCase()));
-       }
-       if(categoryId != null)
-           stream = stream.filter(p -> p.getCategoryId() == categoryId);
+        var stream = productsCache.stream();
+        if (searchKey != null && !searchKey.isEmpty()) {
+            stream = stream.filter(p -> p.getName().toLowerCase().contains(searchKey.toLowerCase()));
+        }
+        if (categoryId != null)
+            stream = stream.filter(p -> p.getCategoryId().equals(categoryId));
 
-       return PagedResult.create(stream ,pageIndex, pageSize);
+        return PagedResult.create(stream, pageIndex, pageSize);
 
     }
 
     @Override
-    public ProductDetailDTO getProductById(Integer id) {
-
-        return productDAO.getById(id);
+    public ProductDTO getProductById(Integer id) {
+        return productsCache.stream()
+            .filter(p -> p.getId().equals(id))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
-    public List<ProductViewDTO> getAllProducts() {
-
-        return this.productsCache;
+    public List<ProductDTO> getAllProducts() {
+        return productsCache;
     }
 
     @Override
-    public PagedResult<ProductViewDTO> getAllProductPagination(int pageIndex, int pageSize) {
-        return PagedResult.create(this.productsCache.stream() ,pageIndex, pageSize);
+    public PagedResult<ProductDTO> getAllProductPagination(int pageIndex, int pageSize) {
+        return PagedResult.create(productsCache.stream(), pageIndex, pageSize);
 
     }
 
     @Override
     public void refreshProductList() {
-        this.productsCache = productDAO.getAll();
-
+        productsCache = productDAO.getAll();
     }
+
 
 }
 

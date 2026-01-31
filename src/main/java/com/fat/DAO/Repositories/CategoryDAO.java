@@ -2,8 +2,7 @@ package com.fat.DAO.Repositories;
 
 import com.fat.DAO.Abstractions.Repositories.ICategoryDAO;
 import com.fat.DAO.Utils.DbContext;
-import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Categories.CreateOrUpdateCategoryDTO;
+import com.fat.DTO.Categories.CategoryDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
 
 public class CategoryDAO implements ICategoryDAO {
     private static CategoryDAO instance;
@@ -27,7 +25,7 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public List<CategoryViewDTO> getAll() {
+    public List<CategoryDTO> getAll() {
         String sql = "SELECT Id, Name FROM Category;";
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
@@ -36,11 +34,11 @@ public class CategoryDAO implements ICategoryDAO {
             ResultSet resultSet = null;
             resultSet = ps.executeQuery();
             if(resultSet != null) {
-                List<CategoryViewDTO> categories = new java.util.ArrayList<>();
+                List<CategoryDTO> categories = new ArrayList<>();
                 while (resultSet.next()) {
                     Integer id = resultSet.getInt("Id");
                     String name = resultSet.getString("Name");
-                    CategoryViewDTO category = new CategoryViewDTO(id, name);
+                    CategoryDTO category = new CategoryDTO(id, name);
                     categories.add(category);
                 }
                 return categories;
@@ -54,7 +52,7 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public CategoryViewDTO getById(Integer id) {
+    public CategoryDTO getById(Integer id) {
 
         String sql = "SELECT Id, Name FROM Category WHERE Id = ?;";
         try(Connection conn = DbContext.getConnection();
@@ -66,7 +64,7 @@ public class CategoryDAO implements ICategoryDAO {
             if(rs.next()) {
                 Integer categoryId = rs.getInt("Id");
                 String name = rs.getString("Name");
-                return new CategoryViewDTO(categoryId, name);
+                return new CategoryDTO(categoryId, name);
             }
             return null;
 
@@ -79,7 +77,7 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public List<CategoryViewDTO> filter(String keyword) {
+    public List<CategoryDTO> filter(String keyword) {
         String sql = "SELECT Id, Name FROM Category WHERE Name LIKE ?";
         try(
             Connection conn = DbContext.getConnection();
@@ -88,11 +86,11 @@ public class CategoryDAO implements ICategoryDAO {
             String pattern = "%" + keyword + "%";
             ps.setString(1, pattern);
             ResultSet rs = ps.executeQuery();
-            List<CategoryViewDTO> categories = new ArrayList<>();
+            List<CategoryDTO> categories = new ArrayList<>();
             while(rs.next()){
                 Integer id = rs.getInt("Id");
                 String name = rs.getString("Name");
-                CategoryViewDTO category = new CategoryViewDTO(id, name);
+                CategoryDTO category = new CategoryDTO(id, name);
                 categories.add(category);
 
             }
@@ -124,7 +122,7 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public Integer add(CreateOrUpdateCategoryDTO entity) {
+    public Integer add(CategoryDTO entity) {
         String sql = "INSERT INTO Category (Name) VALUES (?)";
         try(
             Connection conn = DbContext.getConnection();
@@ -145,7 +143,7 @@ public class CategoryDAO implements ICategoryDAO {
     }
 
     @Override
-    public void update(CreateOrUpdateCategoryDTO entity) {
+    public void update(CategoryDTO entity) {
         String sql = "UPDATE CATEGORY " + 
         "SET NAME = ? WHERE Id = ?";
         try(

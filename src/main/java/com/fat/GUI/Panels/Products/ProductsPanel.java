@@ -11,10 +11,8 @@ import com.fat.BUS.Services.CategoryService;
 import com.fat.BUS.Services.ProductService;
 import com.fat.BUS.Services.UploadImageService;
 import com.fat.Contract.Shared.PagedResult;
-import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Products.CreateOrUpdateProductDTO;
-import com.fat.DTO.Products.ProductDetailDTO;
-import com.fat.DTO.Products.ProductViewDTO;
+import com.fat.DTO.Categories.CategoryDTO;
+import com.fat.DTO.Products.ProductDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
 import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.GUI.Utils.FormatterUtil;
@@ -33,6 +31,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -64,17 +63,16 @@ public class ProductsPanel extends javax.swing.JPanel {
             }
         });
 
-
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
             loadData(pageIndex, pageSize);
         });
 
-
     }
     private void updateDataOnShow() {
+
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         new Thread(() -> {
-            if(!isFirstLoad) productService.refreshProductList();
+            if(!isFirstLoad)  productService.refreshProductList();
             if(isFirstLoad) {
                 isFirstLoad = false;
             }
@@ -89,10 +87,10 @@ public class ProductsPanel extends javax.swing.JPanel {
     }
 
 
-    private void loadCategories(List<CategoryViewDTO> categories) {
+    private void loadCategories(List<CategoryDTO> categories) {
         DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
         model.removeAllElements();
-        CategoryViewDTO allCategory = new CategoryViewDTO(0, "Tất cả");
+        CategoryDTO allCategory = new CategoryDTO(0, "Tất cả");
         model.addElement(allCategory);
 
         for (var c : categories) {
@@ -105,13 +103,13 @@ public class ProductsPanel extends javax.swing.JPanel {
 
 
 
-    private void fillTable(List<ProductViewDTO> products) {
+    private void fillTable(List<ProductDTO> products) {
 
         DefaultTableModel model = (DefaultTableModel) tblProduct.getModel();
         model.setRowCount(0);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for (ProductViewDTO p : products) {
+        for (ProductDTO p : products) {
             Object[] row = new Object[]{
                     p.getId(),
                     ImageHelper.resizeImage(new ImageIcon(ImageHelper.getImagePath(p.getImage())), 60, 60),
@@ -119,7 +117,7 @@ public class ProductsPanel extends javax.swing.JPanel {
                     FormatterUtil.toVND(p.getPrice()),
                     p.getUnit(),
                     p.getStock(),
-                    p.getCategoryName(),
+                    categoryService.getCategoryById(p.getCategoryId()).getName(),
             };
             model.addRow(row);
 
@@ -187,7 +185,7 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void loadData(int pageIndex, int pageSize) {
 
-        PagedResult<ProductViewDTO> result = null;
+        PagedResult<ProductDTO> result = null;
         if(searchKey == null && selectedCategoryId == null) {
             result = productService.getAllProductPagination(pageIndex, pageSize);
         }
@@ -225,7 +223,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         btnExportExcel = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         paginationPanel1 = new com.fat.GUI.Components.PaginationPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -343,15 +340,10 @@ public class ProductsPanel extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtSearch)
                             .addComponent(cboCategory, 0, 224, Short.MAX_VALUE))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                                .addComponent(btnAdd)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnDelete))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(135, 135, 135)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addComponent(btnAdd)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -376,15 +368,10 @@ public class ProductsPanel extends javax.swing.JPanel {
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51))
         );
 
@@ -403,9 +390,9 @@ public class ProductsPanel extends javax.swing.JPanel {
         }
         Object idObj = tblProduct.getValueAt(selectedRow, 0); // Cột ID
         int id = Integer.parseInt(idObj.toString());
-        ProductDetailDTO productDetailDTO = productService.getProductById(id);
+        ProductDTO productDTO = productService.getProductById(id);
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productDetailDTO);
+        AddOrUpdateProductDialog updateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, productDTO);
         updateProductDialog.setLocationRelativeTo(parentFrame);
         updateProductDialog.setVisible(true);
 
@@ -417,18 +404,18 @@ public class ProductsPanel extends javax.swing.JPanel {
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         JTable table = new JTable();
-        List<ProductViewDTO> allProducts = productService.getAllProducts();
+        List<ProductDTO> allProducts = productService.getAllProducts();
         String[] columns = {"STT","ID", "Tên Sản Phẩm", "Giá Bán", "Đơn Vị Tính", "Tồn Kho", "Danh Mục"};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setColumnIdentifiers(columns);
-        for (ProductViewDTO p : allProducts) {
+        for (ProductDTO p : allProducts) {
             Object[] row = new Object[]{
                     p.getId(),
                     p.getName(),
                     FormatterUtil.toVND(p.getPrice()),
                     p.getUnit(),
                     p.getStock(),
-                    p.getCategoryName()
+                    categoryService.getCategoryById(p.getCategoryId()).getName()
             };
             model.addRow(row);
         }
@@ -439,7 +426,7 @@ public class ProductsPanel extends javax.swing.JPanel {
         var result =  ExcelHelper.readFromExcel();
         if(!result.isEmpty()) {
             String defaultImage = "no_image.jpg";
-            IUploadImageService uploadImageService = new UploadImageService();
+
             for(var row: result) {
                 try{
 
@@ -451,7 +438,7 @@ public class ProductsPanel extends javax.swing.JPanel {
                     File sourceImage = new File(image);
 
                     if(sourceImage.exists()) {
-                        String uploadedImageName = uploadImageService.uploadImage(sourceImage.getName(), sourceImage.toPath());
+                        String uploadedImageName = UploadImageService.uploadImage(sourceImage.getName(), sourceImage.toPath());
                         // Sử dụng tên file sau khi upload
                         image = uploadedImageName;
                     }
@@ -459,7 +446,16 @@ public class ProductsPanel extends javax.swing.JPanel {
                         image = defaultImage;
                     }
 
-                    CreateOrUpdateProductDTO product = new CreateOrUpdateProductDTO(name, image, unit, price, categoryId);
+                    ProductDTO product = new ProductDTO();
+                    product.setName(name);
+                    product.setPrice(price);
+                    product.setUnit(unit);
+                    product.setCategoryId(categoryId);
+                    product.setImage(image);
+                    product.setStock(0);
+                    product.setImagePath(sourceImage.toPath());
+                    product.setCreatedAt(LocalDateTime.now());
+                    product.setUpdatedAt(LocalDateTime.now());
                     productService.createProduct(product);
                 }
 
@@ -520,7 +516,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void cboCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoryActionPerformed
-        CategoryViewDTO selectedCategory = (CategoryViewDTO) cboCategory.getSelectedItem();
+        CategoryDTO selectedCategory = (CategoryDTO) cboCategory.getSelectedItem();
         if(selectedCategory != null && selectedCategory.getId() != 0) {
             selectedCategoryId = selectedCategory.getId();
         }
@@ -547,7 +543,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cboCategory;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

@@ -6,16 +6,18 @@ package com.fat.GUI.Panels.Staffs;
 
 import com.fat.BUS.Abstractions.Services.IRoleService;
 import com.fat.BUS.Abstractions.Services.IStaffService;
+import com.fat.BUS.Services.RoleService;
 import com.fat.BUS.Services.StaffService;
 import com.fat.BUS.Utils.ExcelHelper;
-import com.fat.DTO.Roles.RoleViewDTO;
-import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
-import com.fat.DTO.Staffs.StaffViewDTO;
+import com.fat.DTO.Roles.RoleDTO;
+import com.fat.DTO.Staffs.StaffDTO;
 import com.fat.GUI.Dialogs.Staffs.AddOrUpdateStaffDialog;
 import com.fat.GUI.Utils.FormatterUtil;
 import com.formdev.flatlaf.FlatClientProperties;
 import jakarta.validation.groups.Default;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -39,12 +41,18 @@ public class StaffsPanel extends javax.swing.JPanel {
     boolean isFirstLoad = true;
     public StaffsPanel() {
         this.staffService = StaffService.getInstance();
+        this.roleService = RoleService.getInstance();
         initComponents();
         initTable();
         setCss();
         
-        // Load dữ liệu ban đầu
-        loadData();
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                updateDataOnShow();
+            }
+        });
         
         // Lắng nghe sự kiện pagination
         paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
@@ -252,9 +260,16 @@ public class StaffsPanel extends javax.swing.JPanel {
                     String password = row.get(6).toString();
                     int roleId = (int) Double.parseDouble(row.get(7).toString());
 
-                    CreateOrUpdateStaffDTO staff = new CreateOrUpdateStaffDTO(
-                            firstName, lastName, birthDate, salary, phoneNumber,
-                            userName, password, roleId);
+                    StaffDTO staff = new StaffDTO();
+                    staff.setFirstName(firstName);
+                    staff.setLastName(lastName);
+                    staff.setBirthday(birthDate);
+                    staff.setSalary(salary);
+                    staff.setPhoneNumber(phoneNumber);
+                    staff.setRoleId(roleId);
+                    staff.setCreatedAt(java.time.LocalDateTime.now());
+                    staff.setUserName(userName);
+                    staff.setPassword(password);
                     
                     staffService.createStaff(staff);
                 } catch (Exception ex) {
@@ -273,7 +288,7 @@ public class StaffsPanel extends javax.swing.JPanel {
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         JTable table = new JTable();
-        List<StaffViewDTO> allStaffs = staffService.getAllStaffs();
+        List<StaffDTO> allStaffs = staffService.getAllStaffs();
         String[] columns = {"STT", "ID", "Họ và Tên", "Ngày Sinh", "Lương", "SĐT", "Tên Đăng Nhập", "Vai Trò"};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setColumnIdentifiers(columns);
@@ -281,16 +296,17 @@ public class StaffsPanel extends javax.swing.JPanel {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         int stt = 1;
         
-        for (StaffViewDTO s : allStaffs) {
+        for (StaffDTO s : allStaffs) {
             Object[] row = new Object[]{
                     stt++,
                     s.getId(),
                     s.getFullName(),
-                    s.getBirthDate() != null ? s.getBirthDate().format(formatter) : "",
+                    s.getBirthday() != null ? s.getBirthday().format(formatter) : "",
                     FormatterUtil.toVND(s.getSalary()),
                     s.getPhoneNumber(),
                     s.getUserName(),
-                    s.getRoleName()
+                    roleService.getRoleById(s.getRoleId()).getName()
+
             };
             model.addRow(row);
         }
@@ -369,22 +385,20 @@ public class StaffsPanel extends javax.swing.JPanel {
     private void updateDataOnShow() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         new Thread(() -> {
-            if(!isFirstLoad) staffService.refreshCache();
+//            if(!isFirstLoad) staffService.refreshCache();
             if(isFirstLoad) {
                 isFirstLoad = false;
             }
-
             SwingUtilities.invokeLater(() -> {
 
                 loadData();
                 setCursor(Cursor.getDefaultCursor());
             });
-
         }).start();
     }
 
     private void loadData(){
-        List<StaffViewDTO> result = null;
+        List<StaffDTO> result = null;
         if(searchKey == null) {
             result = staffService.getAllStaffs();
         }
@@ -396,7 +410,7 @@ public class StaffsPanel extends javax.swing.JPanel {
         fillTable(result);
 
     }
-    private void fillTable(List<StaffViewDTO> staffs) {
+    private void fillTable(List<StaffDTO> staffs) {
         DefaultTableModel model = (DefaultTableModel) tblStaff.getModel();
         model.setRowCount(0);
 
@@ -404,15 +418,15 @@ public class StaffsPanel extends javax.swing.JPanel {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
-        for (StaffViewDTO staff : staffs) {
+        for (StaffDTO staff : staffs) {
             Object[] row = new Object[]{
                     staff.getId(),
                     staff.getLastName() + " " + staff.getFirstName(),
-                    staff.getBirthDate().format(formatter),
+                    staff.getBirthday().format(formatter),
                     FormatterUtil.toVND(staff.getSalary()),
                     staff.getPhoneNumber(),
                     staff.getUserName(),
-                    staff.getRoleName()
+                    roleService.getRoleById(staff.getRoleId()).getName()
             };
             model.addRow(row);
         }
@@ -454,8 +468,6 @@ public class StaffsPanel extends javax.swing.JPanel {
         col.getColumn(6).setPreferredWidth(120);
         col.getColumn(6).setMaxWidth(150);
 
-        // Set row height
-        tblStaff.setRowHeight(40);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

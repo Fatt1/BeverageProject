@@ -1,10 +1,11 @@
 package com.fat.DAO.Abstractions.Repositories;
 
-import com.fat.DTO.Abstractions.CreateOrUpdateDTO;
+import java.util.List;
 
-public interface IDAO<TDTO extends CreateOrUpdateDTO<TKey>, TKey> {
-    TKey add(TDTO entity);
-    void update(TDTO entity);
-    void delete(TKey id);
-
+public interface IDAO<T> {
+    Integer add(T entity);
+    void update(T entity);
+    void delete(Integer id);
+    T getById(Integer id);
+    List<T> getAll();
 }

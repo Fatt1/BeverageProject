@@ -8,10 +8,12 @@ import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.ISupplierService;
 import com.fat.BUS.Services.SupplierService;
 import com.fat.BUS.Utils.ExcelHelper;
-import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
-import com.fat.DTO.Suppliers.SupplierViewDTO;
+import com.fat.Contract.Shared.PagedResult;
+import com.fat.DTO.Products.ProductDTO;
+import com.fat.DTO.Suppliers.SupplierDTO;
+import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
 import com.fat.GUI.Dialogs.Supplier.AddOrUpdateSupplierDialog;
-
+import com.fat.GUI.Utils.FormatterUtil;
 
 import java.util.List;
 
@@ -180,12 +182,12 @@ public class SupplierPanel extends javax.swing.JPanel {
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
-    private void filterTable(List<SupplierViewDTO> suppliers){
+    private void filterTable(List<SupplierDTO> suppliers){
         DefaultTableModel model = (DefaultTableModel)tblSupplier.getModel();
         model.setRowCount(0);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for(SupplierViewDTO eachSupplier : suppliers ){
+        for(SupplierDTO eachSupplier : suppliers ){
             Object[] row = new Object[] {
             eachSupplier.getId(),
             eachSupplier.getName(),
@@ -214,7 +216,7 @@ public class SupplierPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void loadData(){
-        List<SupplierViewDTO> suppliers = supplierService.getAllSuppliers();
+        List<SupplierDTO> suppliers = supplierService.getAllSuppliers();
         filterTable(suppliers);
     }
     
@@ -279,7 +281,7 @@ public class SupplierPanel extends javax.swing.JPanel {
                     String phoneNumber = row.get(2).toString();
                     String address = row.get(3).toString();
 
-                    CreateOrUpdateSupplierDTO supplier = new CreateOrUpdateSupplierDTO(null, name, email, phoneNumber, address);
+                    SupplierDTO supplier = new SupplierDTO(null, name, email, phoneNumber, address);
                     supplierService.createSupplier(supplier);
                 }
                 catch (Exception ex) {
@@ -296,11 +298,11 @@ public class SupplierPanel extends javax.swing.JPanel {
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         JTable table = new JTable();
-        List<SupplierViewDTO> allSuppliers = supplierService.getAllSuppliers();
+        List<SupplierDTO> allSuppliers = supplierService.getAllSuppliers();
         String[] columns = {"ID", "Tên Nhà Cung Cấp", "Email", "Số Điện Thoại", "Địa Chỉ"};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setColumnIdentifiers(columns);
-        for (SupplierViewDTO s : allSuppliers) {
+        for (SupplierDTO s : allSuppliers) {
             Object[] row = new Object[]{
                     s.getId(),
                     s.getName(),

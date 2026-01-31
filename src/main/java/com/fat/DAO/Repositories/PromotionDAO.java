@@ -34,7 +34,7 @@ public class PromotionDAO implements IPromotionDAO {
 
     @Override
     public List<PromotionDTO> getAll() {
-        String sql = "SELECT Id, Name, StartDate, EndDate, CreatedAt FROM Promotion ORDER BY CreatedAt DESC ";
+        String sql = "SELECT Id, Name, StartDate, EndDate FROM Promotion ORDER BY Id DESC ";
         try (Connection conn = DbContext.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery()){
@@ -44,9 +44,9 @@ public class PromotionDAO implements IPromotionDAO {
             String name = rs.getString("Name");
             LocalDate startDate = rs.getObject("StartDate", LocalDate.class);
             LocalDate endDate = rs.getObject("EndDate", LocalDate.class);
-            LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
-            PromotionDTO promotion = new PromotionDTO(promotionId, name, startDate, endDate, createdAt);
-            promotions.add(promotion);
+
+            //PromotionDTO promotion = new PromotionDTO(promotionId, name, startDate, endDate, createdAt);
+            //promotions.add(promotion);
         } 
         return promotions;
         }catch (SQLException e){
@@ -58,7 +58,7 @@ public class PromotionDAO implements IPromotionDAO {
 
     @Override
     public PromotionDTO getById(Integer id) {
-        String sql1 = "SELECT Id, Name, StartDate, EndDate, CreatedAt FROM Promotion where Id = ?";
+        String sql1 = "SELECT Id, Name, StartDate, EndDate FROM Promotion where Id = ?";
         try(Connection conn = DbContext.getConnection();
             PreparedStatement ps1 = conn.prepareStatement(sql1);
             ){
@@ -69,8 +69,8 @@ public class PromotionDAO implements IPromotionDAO {
                 String name = rs1.getString("Name");
                 LocalDate startDate = rs1.getObject("StartDate",LocalDate.class);
                 LocalDate endDate = rs1.getObject("EndDate",LocalDate.class);
-                LocalDateTime createdAt = rs1.getTimestamp("CreatedAt").toLocalDateTime();
-                return new PromotionDTO(Id, name, startDate, endDate, createdAt);
+
+                //return new PromotionDTO(Id, name, startDate, endDate, createdAt);
             }
             return null;
             }catch(SQLException e){
@@ -88,14 +88,13 @@ public class PromotionDAO implements IPromotionDAO {
 
     @Override
     public Integer add(PromotionDTO entity) {
-        String sql1 = "INSERT INTO Promotion (Name, StartDate, EndDate, CreatedAt) VALUES (?, ?, ?, ?)";
+        String sql1 = "INSERT INTO Promotion (Name, StartDate, EndDate) VALUES (?, ?, ?)";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps1 = conn.prepareStatement(sql1, PreparedStatement.RETURN_GENERATED_KEYS)
             ) {
             ps1.setString(1, entity.getName());
             ps1.setObject(2, entity.getStartDate());
             ps1.setObject(3, entity.getEndDate());
-            ps1.setObject(4, entity.getCreatedAt());
             ps1.executeUpdate();
             ResultSet rs1 = ps1.getGeneratedKeys();
             if (rs1.next()){

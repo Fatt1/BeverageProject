@@ -268,6 +268,8 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
             String imageName = selectedFile != null ? selectedFile.getName() : null;
             Path imagePath = selectedFile != null ? selectedFile.toPath() : null;
 
+
+
             if(selectedProduct == null) {
                 ProductDTO newProduct = new ProductDTO();
                 newProduct.setName(name);
@@ -284,14 +286,15 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
             }
             // Cho trường hợp cập nhật
            else{
-                selectedProduct.setName(name);
-                selectedProduct.setImage(imageName);
-                selectedProduct.setImagePath(imagePath);
-                selectedProduct.setCategoryId(categoryId);
-                selectedProduct.setPrice(price);
-                selectedProduct.setUnit(unit);
-                selectedProduct.setUpdatedAt(LocalDateTime.now());
-                productService.updateProduct(selectedProduct);
+                ProductDTO updatedProduct = new ProductDTO();
+                updatedProduct.setName(name);
+                updatedProduct.setImage(imageName);
+                updatedProduct.setImagePath(imagePath);
+                updatedProduct.setCategoryId(categoryId);
+                updatedProduct.setPrice(price);
+                updatedProduct.setUnit(unit);
+                updatedProduct.setUpdatedAt(LocalDateTime.now());
+                productService.updateProduct(updatedProduct);
                 JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             this.dispose();

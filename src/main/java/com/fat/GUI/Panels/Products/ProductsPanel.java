@@ -47,7 +47,6 @@ public class ProductsPanel extends javax.swing.JPanel {
     private ICategoryService categoryService;
     private Integer selectedCategoryId = null;
     private String searchKey = null;
-    private boolean isFirstLoad = true;
 
     @Inject
     public ProductsPanel() {
@@ -59,7 +58,17 @@ public class ProductsPanel extends javax.swing.JPanel {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                updateDataOnShow();
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+                new Thread(() -> {
+                    SwingUtilities.invokeLater(() -> {
+                        resetFilter();
+                        loadCategories(categoryService.getAllCategories());
+                        loadData(1, 10);
+                        setCursor(Cursor.getDefaultCursor());
+                    });
+
+                }).start();
             }
         });
 
@@ -68,24 +77,6 @@ public class ProductsPanel extends javax.swing.JPanel {
         });
 
     }
-    private void updateDataOnShow() {
-
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        new Thread(() -> {
-            if(!isFirstLoad)  productService.refreshProductList();
-            if(isFirstLoad) {
-                isFirstLoad = false;
-            }
-            var categoriesFromDB = categoryService.getAllCategories();
-            SwingUtilities.invokeLater(() -> {
-                loadCategories(categoriesFromDB);
-                loadData(1, 10);
-                setCursor(Cursor.getDefaultCursor());
-            });
-
-        }).start();
-    }
-
 
     private void loadCategories(List<CategoryDTO> categories) {
         DefaultComboBoxModel model = (DefaultComboBoxModel) cboCategory.getModel();
@@ -96,12 +87,15 @@ public class ProductsPanel extends javax.swing.JPanel {
         for (var c : categories) {
             model.addElement(c);
         }
-        // Chọn mặc định tất cả
         cboCategory.setSelectedIndex(0);
 
     }
 
-
+    private void resetFilter() {
+        txtSearch.setText("");
+        selectedCategoryId = null;
+        searchKey = null;
+    }
 
     private void fillTable(List<ProductDTO> products) {
 
@@ -473,10 +467,8 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnImportExcelActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        txtSearch.setText("");
+        resetFilter();
         cboCategory.setSelectedIndex(0);
-        selectedCategoryId = null;
-        searchKey = null;
         loadData(1, 10);
     }//GEN-LAST:event_btnResetActionPerformed
 

@@ -1,8 +1,10 @@
 package com.fat.DTO.Roles;
 
 import com.fat.DTO.Abstractions.BaseDTO;
+import jakarta.validation.constraints.NotBlank;
 
 public class RoleDTO extends BaseDTO {
+    @NotBlank(message = "Tên vai trò không được để trống")
     private String name;
 
     public RoleDTO() {

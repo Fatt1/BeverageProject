@@ -17,6 +17,7 @@ import com.fat.GUI.Panels.Promotion.PromotionsPanel;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
+import com.fat.GUI.Panels.Statistics.StatisticPanel;
 import com.fat.GUI.Panels.Supplier.SupplierPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -388,6 +389,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         mainContentPanel.add(new RolesPanel(), "ROLES");
         mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
+        mainContentPanel.add(new StatisticPanel(), "STATISTICS");
         //mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
     }
     
@@ -460,7 +462,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnRoleActionPerformed
 
     private void tbtnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStatisticActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "STATISTICS");
     }//GEN-LAST:event_tbtnStatisticActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

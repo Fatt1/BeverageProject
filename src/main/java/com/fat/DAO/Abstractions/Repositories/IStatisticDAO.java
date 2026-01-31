@@ -13,10 +13,10 @@ public interface IStatisticDAO {
 
     List<RevenueDTO> getRevenueStatisticsByDateInMonth(int month, int year);
 
-    List<CustomerStatisticDTO> getCustomerStatistic(String searchKey, LocalDate fromDate, LocalDate toDate);
+    List<CustomerStatisticDTO> getCustomerStatistic( LocalDate fromDate, LocalDate toDate);
 
-    PagedResult<StockStatisticDTO> getStockStatistic(String searchKey, LocalDate fromDate, LocalDate toDate, int pageIndex, int pageSize);
+    List<StockStatisticDTO> getStockStatistic(LocalDate fromDate, LocalDate toDate);
 
-    List<SupplierStatisticDTO> getSupplierStatistic(String searchKey, LocalDate fromDate, LocalDate toDate);
+    List<SupplierStatisticDTO> getSupplierStatistic(LocalDate fromDate, LocalDate toDate);
 
 }

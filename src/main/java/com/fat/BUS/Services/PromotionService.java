@@ -17,7 +17,6 @@ public class PromotionService implements IPromotionService {
     private static PromotionService instance;
     private final IPromotionDAO promotionDAO;
     private static List<PromotionDTO> promotionsCache = new ArrayList<>();
-    private static List<PromotionDetailDTO> promotionDetailActive = new ArrayList<>();
 
     private PromotionService() {
         this.promotionDAO = PromotionDAO.getInstance();
@@ -33,11 +32,8 @@ public class PromotionService implements IPromotionService {
         return instance;
     }
 
-
-
     @Override
     public void createPromotion(PromotionDTO dto) {
-        dto.setCreatedAt(LocalDateTime.now());
         Integer newId = promotionDAO.add(dto);
         if (newId != null){
             dto.setId(newId);
@@ -98,9 +94,6 @@ public class PromotionService implements IPromotionService {
         return null;
     }
 
-    @Override
-    public void loadActivePromotionsForSales() {
 
-    }
 }
 

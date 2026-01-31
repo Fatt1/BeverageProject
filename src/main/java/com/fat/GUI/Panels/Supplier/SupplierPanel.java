@@ -343,7 +343,6 @@ public class SupplierPanel extends javax.swing.JPanel {
         try {
             int id = Integer.parseInt(idObj.toString());
             supplierService.deleteSupplier(id);
-            supplierService.refreshCache();
             
             JOptionPane.showMessageDialog(this, 
                 "Xóa nhà cung cấp thành công!", 

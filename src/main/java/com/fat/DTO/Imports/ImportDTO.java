@@ -4,6 +4,7 @@ import com.fat.Contract.Enumerations.ImportStatus;
 import com.fat.DTO.Abstractions.BaseDTO;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ImportDTO extends BaseDTO {
     private String importCode;
@@ -13,12 +14,13 @@ public class ImportDTO extends BaseDTO {
     private LocalDateTime updatedAt;
     private ImportStatus status;
     private Integer staffId;
+    private List<ImportDetailDTO> importDetails;
 
     public ImportDTO() {
     }
 
     public ImportDTO(Integer id, String importCode, Integer supplierId, BigDecimal totalPrice, 
-                    LocalDateTime createdAt, LocalDateTime updatedAt, ImportStatus status, Integer staffId) {
+                    LocalDateTime createdAt, LocalDateTime updatedAt, ImportStatus status, Integer staffId, List<ImportDetailDTO> importDetails) {
         this.id = id;
         this.importCode = importCode;
         this.supplierId = supplierId;
@@ -27,6 +29,15 @@ public class ImportDTO extends BaseDTO {
         this.updatedAt = updatedAt;
         this.status = status;
         this.staffId = staffId;
+        this.importDetails = importDetails;
+    }
+
+    public List<ImportDetailDTO> getImportDetails() {
+        return importDetails;
+    }
+
+    public void setImportDetails(List<ImportDetailDTO> importDetails) {
+        this.importDetails = importDetails;
     }
 
     public String getImportCode() {

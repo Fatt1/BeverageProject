@@ -42,7 +42,7 @@ public class RoleDAO implements IRoleDAO {
             return roles;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw  new RuntimeException("Lấy danh sách role lỗi", sqlException);
         }
 
     }
@@ -65,7 +65,7 @@ public class RoleDAO implements IRoleDAO {
             return null;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw new RuntimeException("Lấy role theo id lỗi", sqlException);
         }
     }
 
@@ -88,7 +88,7 @@ public class RoleDAO implements IRoleDAO {
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw  new RuntimeException("Thêm role lỗi", sqlException);
         }
     }
 
@@ -103,6 +103,7 @@ public class RoleDAO implements IRoleDAO {
             ps.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            throw new RuntimeException("Cập nhật role lỗi", sqlException);
         }
     }
 
@@ -116,6 +117,7 @@ public class RoleDAO implements IRoleDAO {
             ps.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            throw new RuntimeException("Xóa role lỗi", sqlException);
         }
     }
 }

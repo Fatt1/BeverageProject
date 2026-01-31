@@ -1,5 +1,6 @@
 package com.fat.DTO.Inventories;
 
+import com.fat.Contract.Enumerations.InventoryType;
 import com.fat.DTO.Abstractions.BaseDTO;
 import java.time.LocalDateTime;
 
@@ -7,13 +8,13 @@ public class InventoryHistoryDTO extends BaseDTO {
     private Integer quantity;
     private Integer productId;
     private LocalDateTime createdAt;
-    private Integer type;
+    private InventoryType type;
     private Integer stockAfter;
 
     public InventoryHistoryDTO() {
     }
 
-    public InventoryHistoryDTO(Integer id, Integer quantity, Integer productId, LocalDateTime createdAt, Integer type, Integer stockAfter) {
+    public InventoryHistoryDTO(Integer id, Integer quantity, Integer productId, LocalDateTime createdAt, InventoryType type, Integer stockAfter) {
         this.id = id;
         this.quantity = quantity;
         this.productId = productId;
@@ -46,11 +47,11 @@ public class InventoryHistoryDTO extends BaseDTO {
         this.createdAt = createdAt;
     }
 
-    public Integer getType() {
+    public InventoryType getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(InventoryType type) {
         this.type = type;
     }
 

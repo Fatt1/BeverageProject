@@ -42,6 +42,7 @@ public class RolesPanel extends javax.swing.JPanel {
             public void componentShown(ComponentEvent e) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
               new Thread(() -> {
+                  txtSearch.setText("");
                   SwingUtilities.invokeLater(() -> {
                       loadData();
                       setCursor(Cursor.getDefaultCursor());
@@ -56,8 +57,7 @@ public class RolesPanel extends javax.swing.JPanel {
     }
 
     private void loadData() {
-        List<RoleDTO> roles = roleService.getAllRoles();
-        fillTable(roles);
+        fillTable(roleService.getAllRoles());
     }
     private void fillTable(List<RoleDTO> roles) {
         DefaultTableModel model = (DefaultTableModel) tblRole.getModel();

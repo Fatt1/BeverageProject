@@ -6,7 +6,7 @@ package com.fat.GUI.Dialogs.Supplier;
 
 import com.fat.BUS.Abstractions.Services.ISupplierService;
 import com.fat.BUS.Services.SupplierService;
-import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
+import com.fat.DTO.Suppliers.SupplierDTO;
 import com.formdev.flatlaf.FlatClientProperties;
 import javax.swing.JOptionPane;
 
@@ -307,7 +307,7 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
             }
 
             // Tạo DTO
-            CreateOrUpdateSupplierDTO dto = new CreateOrUpdateSupplierDTO(
+            SupplierDTO dto = new SupplierDTO(
                 supplierId,  // ID = null nếu thêm mới, có giá trị nếu chỉnh sửa
                 name,        // Tên nhà cung cấp
                 emailText,   // Email
@@ -332,7 +332,6 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
                     JOptionPane.INFORMATION_MESSAGE);
             }
 
-            supplierService.refreshCache();
 
             // Đóng dialog
             this.dispose();

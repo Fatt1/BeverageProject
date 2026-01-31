@@ -13,6 +13,5 @@ public interface IProductService {
     ProductDTO getProductById(Integer id);
     List<ProductDTO> getAllProducts();
     PagedResult<ProductDTO> getAllProductPagination(int pageIndex, int pageSize);
-     void refreshProductList();
-
+    void updateProductQuantity(Integer productId, Integer quantity);
 }

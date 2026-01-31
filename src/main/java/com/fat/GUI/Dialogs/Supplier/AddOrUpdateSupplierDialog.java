@@ -4,6 +4,12 @@
  */
 package com.fat.GUI.Dialogs.Supplier;
 
+import com.fat.BUS.Abstractions.Services.ISupplierService;
+import com.fat.BUS.Services.SupplierService;
+import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
+import com.formdev.flatlaf.FlatClientProperties;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author HuyKuhe
@@ -11,13 +17,58 @@ package com.fat.GUI.Dialogs.Supplier;
 public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateSupplierDialog.class.getName());
+    private final ISupplierService supplierService = SupplierService.getInstance();
+    private Integer supplierId = null; // null = thêm mới, có giá trị = chỉnh sửa
 
     /**
      * Creates new form AddOrUpdateSupplierDialog
+     * Sử dụng cho chức năng THÊM MỚI
      */
     public AddOrUpdateSupplierDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setCss();
+        this.supplierId = null;
+    }
+
+    /**
+     * Constructor cho chức năng CHỈNH SỬA
+     * @param parent Frame cha
+     * @param modal Modal
+     * @param supplierId ID của nhà cung cấp cần chỉnh sửa
+     * @param supplierName Tên nhà cung cấp
+     * @param supplierEmail Email nhà cung cấp
+     * @param supplierPhone Số điện thoại
+     * @param supplierAddress Địa chỉ
+     */
+    public AddOrUpdateSupplierDialog(java.awt.Frame parent, boolean modal, Integer supplierId,
+            String supplierName, String supplierEmail, String supplierPhone, String supplierAddress) {
+        super(parent, modal);
+        initComponents();
+        setCss();
+        this.supplierId = supplierId;
+        
+        // Điền dữ liệu vào các TextField
+        supplierID.setText(supplierId != null ? supplierId.toString() : "");
+        this.supplierName.setText(supplierName);
+        email.setText(supplierEmail);
+        phoneNumber.setText(supplierPhone);
+        address.setText(supplierAddress);
+        
+        // Disable supplierID vì nó không thay đổi được
+        supplierID.setEnabled(false);
+        
+        // Thay đổi text của button
+        addButton.setText("Cập Nhật");
+    }
+
+    private void setCss() {
+        supplierName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập tên nhà cung cấp");
+        supplierID.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Mã tự động");
+        supplierCooperator.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập nhóm đối tác");
+        phoneNumber.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập số điện thoại");
+        email.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập email");
+        address.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập địa chỉ");
     }
 
     /**
@@ -30,12 +81,12 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        supplierName = new javax.swing.JTextField();
+        supplierID = new javax.swing.JTextField();
+        supplierCooperator = new javax.swing.JTextField();
+        phoneNumber = new javax.swing.JTextField();
+        email = new javax.swing.JTextField();
+        address = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -43,16 +94,16 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
-        jTextField2.addActionListener(this::jTextField2ActionPerformed);
+        supplierID.addActionListener(this::supplierIDActionPerformed);
 
-        jTextField3.addActionListener(this::jTextField3ActionPerformed);
+        supplierCooperator.addActionListener(this::supplierCooperatorActionPerformed);
 
         jLabel1.setText("Tên nhà cung cấp");
 
@@ -76,32 +127,32 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
                         .addGap(44, 44, 44)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(supplierName, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(supplierID, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(supplierCooperator, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(phoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTextField6)
+                                .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(address)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(9, 9, 9)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(157, 157, 157)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(135, 135, 135)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(112, 112, 112)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(110, 110, 110)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(58, 58, 58)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(176, 176, 176)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(118, 118, 118)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(58, 58, 58)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(37, Short.MAX_VALUE))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,31 +164,33 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(supplierName, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(supplierID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(supplierCooperator, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(phoneNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(address, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
-        jButton1.setBackground(new java.awt.Color(0, 0, 0));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cập Nhật");
+        addButton.setBackground(new java.awt.Color(0, 0, 0));
+        addButton.setForeground(new java.awt.Color(255, 255, 255));
+        addButton.setText("Cập Nhật");
+        addButton.addActionListener(this::addButtonActionPerformed);
 
-        jButton2.setBackground(new java.awt.Color(153, 153, 153));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Hủy");
+        cancelButton.setBackground(new java.awt.Color(153, 153, 153));
+        cancelButton.setForeground(new java.awt.Color(255, 255, 255));
+        cancelButton.setText("Hủy");
+        cancelButton.addActionListener(this::cancelButtonActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -145,18 +198,18 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
+                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -165,7 +218,9 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,13 +234,122 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void supplierIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierIDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_supplierIDActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void supplierCooperatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierCooperatorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_supplierCooperatorActionPerformed
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        try {
+            // Validate dữ liệu
+            String name = supplierName.getText().trim();
+            String emailText = email.getText().trim();
+            String phone = phoneNumber.getText().trim();
+            String addr = address.getText().trim();
+
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Vui lòng nhập tên nhà cung cấp", 
+                    "Thiếu thông tin", 
+                    JOptionPane.WARNING_MESSAGE);
+                supplierName.requestFocus();
+                return;
+            }
+
+            if (emailText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Vui lòng nhập email", 
+                    "Thiếu thông tin", 
+                    JOptionPane.WARNING_MESSAGE);
+                email.requestFocus();
+                return;
+            }
+
+            // Validate email format
+            if (!emailText.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                JOptionPane.showMessageDialog(this, 
+                    "Email không hợp lệ", 
+                    "Định dạng sai", 
+                    JOptionPane.WARNING_MESSAGE);
+                email.requestFocus();
+                return;
+            }
+
+            if (phone.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Vui lòng nhập số điện thoại", 
+                    "Thiếu thông tin", 
+                    JOptionPane.WARNING_MESSAGE);
+                phoneNumber.requestFocus();
+                return;
+            }
+
+            // Validate phone number (10-11 số)
+            if (!phone.matches("^[0-9]{10,11}$")) {
+                JOptionPane.showMessageDialog(this, 
+                    "Số điện thoại phải có 10-11 chữ số", 
+                    "Định dạng sai", 
+                    JOptionPane.WARNING_MESSAGE);
+                phoneNumber.requestFocus();
+                return;
+            }
+
+            if (addr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Vui lòng nhập địa chỉ", 
+                    "Thiếu thông tin", 
+                    JOptionPane.WARNING_MESSAGE);
+                address.requestFocus();
+                return;
+            }
+
+            // Tạo DTO
+            CreateOrUpdateSupplierDTO dto = new CreateOrUpdateSupplierDTO(
+                supplierId,  // ID = null nếu thêm mới, có giá trị nếu chỉnh sửa
+                name,        // Tên nhà cung cấp
+                emailText,   // Email
+                phone,        // Số điện thoại
+                addr        // Địa chỉ
+            );
+
+            // Kiểm tra thêm mới hay chỉnh sửa
+            if (supplierId == null) {
+                // THÊM MỚI
+                supplierService.createSupplier(dto);
+                JOptionPane.showMessageDialog(this, 
+                    "Thêm nhà cung cấp thành công!", 
+                    "Thành công", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // CHỈNH SỬA
+                supplierService.updateSupplier(dto);
+                JOptionPane.showMessageDialog(this, 
+                    "Cập nhật nhà cung cấp thành công!", 
+                    "Thành công", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            supplierService.refreshCache();
+
+            // Đóng dialog
+            this.dispose();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                "Có lỗi xảy ra: " + ex.getMessage(), 
+                "Lỗi", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // Đóng dialog khi nhấn nút Hủy
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,8 +389,10 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton addButton;
+    private javax.swing.JTextField address;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField email;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -235,11 +401,9 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField phoneNumber;
+    private javax.swing.JTextField supplierCooperator;
+    private javax.swing.JTextField supplierID;
+    private javax.swing.JTextField supplierName;
     // End of variables declaration//GEN-END:variables
 }

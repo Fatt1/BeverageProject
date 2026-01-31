@@ -36,10 +36,12 @@ public class SupplierDAO implements ISupplierDAO {
                 List<SupplierDTO> suppliers = new ArrayList<>();
                 while (rs.next()) {
                     Integer id = rs.getInt("Id");
-                    String email = rs.getString("Email");
-                    String phoneNumber = rs.getString("PhoneNumber");
                     String name = rs.getString("Name");
+                    String email = rs.getString("Email");
                     String address = rs.getString("Address");
+                    String phoneNumber = rs.getString("PhoneNumber");
+                    // Constructor order: (id, name, email, address, phoneNumber)
+   
                     SupplierDTO supplier = new SupplierDTO(id, email, phoneNumber, name, address);
                     suppliers.add(supplier);
                 }return suppliers;
@@ -60,10 +62,12 @@ public class SupplierDAO implements ISupplierDAO {
             ResultSet rs = null;
             rs = ps.executeQuery();
             if (rs != null && rs.next()) {
-                String email = rs.getString("Email");
-                String phoneNumber = rs.getString("PhoneNumber");
                 String name = rs.getString("Name");
+                String email = rs.getString("Email");
                 String address = rs.getString("Address");
+                String phoneNumber = rs.getString("PhoneNumber");
+                // Constructor order: (id, name, email, address, phoneNumber)
+       
                 SupplierDTO supplier = new SupplierDTO(id, email, phoneNumber, name, address);
                 return supplier;
             }return null;

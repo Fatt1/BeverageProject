@@ -4,22 +4,31 @@ import com.fat.DTO.Abstractions.BaseDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PromotionDTO extends BaseDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalDateTime createdAt;
+    private List<PromotionDTO> promotionDetails;
 
     public PromotionDTO() {
     }
 
-    public PromotionDTO(Integer id, String name, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt) {
+    public PromotionDTO(Integer id, String name, LocalDate startDate, LocalDate endDate, List<PromotionDTO> promotionDetails) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.createdAt = createdAt;
+
+    }
+
+    public List<PromotionDTO> getPromotionDetails() {
+        return promotionDetails;
+    }
+
+    public void setPromotionDetails(List<PromotionDTO> promotionDetails) {
+        this.promotionDetails = promotionDetails;
     }
 
     public String getName() {
@@ -46,11 +55,4 @@ public class PromotionDTO extends BaseDTO {
         this.endDate = endDate;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }

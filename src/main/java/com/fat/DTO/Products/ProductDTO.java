@@ -1,14 +1,23 @@
 package com.fat.DTO.Products;
 
 import com.fat.DTO.Abstractions.BaseDTO;
+import jakarta.validation.constraints.*;
+import org.checkerframework.checker.index.qual.NonNegative;
+
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 public class ProductDTO extends BaseDTO {
+    @NotBlank(message = "Tên sản phẩm không được để trống")
     private String name;
+    @NotBlank(message = "Hình ảnh sản phẩm không được để trống")
     private String image;
+    @NotNull(message = "Giá sản phẩm không được để trống")
+    @Positive(message = "Giá sản phẩm phải là số dương")
+    @Digits(message = "Giá sản phẩm không hợp lệ", integer = 10, fraction = 2)
     private BigDecimal price;
+    @NotBlank(message = "Đơn vị sản phẩm không được để trống")
     private String unit;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

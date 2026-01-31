@@ -18,7 +18,6 @@ import javax.swing.*;
 public class AddOrUpdateRole extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateRole.class.getName());
-
     /**
      * Creates new form AddOrUpdateRole
      */
@@ -36,8 +35,6 @@ public class AddOrUpdateRole extends javax.swing.JDialog {
             setTitle("CẬP NHẬT VAI TRÒ");
             txtRoleName.setText(this.selectedRole.getName());
         }
-
-
     }
 
     /**
@@ -137,15 +134,12 @@ public class AddOrUpdateRole extends javax.swing.JDialog {
         String roleName = txtRoleName.getText().trim();
             if(this.selectedRole == null) {
                 RoleDTO dto = new RoleDTO(null, roleName);
-                ValidatorUtil.validate(dto);
                 roleService.createRole(dto);
                 JOptionPane.showMessageDialog(this, "Thêm vai trò thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-
             }
             else{
-                RoleDTO dto = new RoleDTO(selectedRole.getId(),roleName);
-                ValidatorUtil.validate(dto);
-                roleService.updateRole(dto);
+                selectedRole.setName(roleName);
+                roleService.updateRole(selectedRole);
                 JOptionPane.showMessageDialog(this, "Cập nhật vai trò thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             this.dispose();

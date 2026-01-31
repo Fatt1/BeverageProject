@@ -3,6 +3,7 @@ package com.fat.DTO.Receipts;
 import com.fat.DTO.Abstractions.BaseDTO;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReceiptDTO extends BaseDTO {
     private String code;
@@ -12,13 +13,14 @@ public class ReceiptDTO extends BaseDTO {
     private BigDecimal totalDiscountAmount;
     private BigDecimal totalAmount;
     private Integer customerId;
+    private List<ReceiptDetailDTO> receiptItems;
 
     public ReceiptDTO() {
     }
 
     public ReceiptDTO(Integer id, String code, LocalDateTime createdAt, Integer staffId, 
                      BigDecimal subTotalAmount, BigDecimal totalDiscountAmount, 
-                     BigDecimal totalAmount, Integer customerId) {
+                     BigDecimal totalAmount, Integer customerId, List<ReceiptDetailDTO> receiptItems) {
         this.id = id;
         this.code = code;
         this.createdAt = createdAt;
@@ -27,6 +29,15 @@ public class ReceiptDTO extends BaseDTO {
         this.totalDiscountAmount = totalDiscountAmount;
         this.totalAmount = totalAmount;
         this.customerId = customerId;
+        this.receiptItems = receiptItems;
+    }
+
+    public List<ReceiptDetailDTO> getReceiptItems() {
+        return receiptItems;
+    }
+
+    public void setReceiptItems(List<ReceiptDetailDTO> receiptItems) {
+        this.receiptItems = receiptItems;
     }
 
     public String getCode() {

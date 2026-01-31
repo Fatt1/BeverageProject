@@ -1,6 +1,7 @@
 package com.fat.BUS.Services;
 
 import com.fat.BUS.Abstractions.Services.IRoleService;
+import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Constants.Action;
 import com.fat.Contract.Constants.Permission;
 import com.fat.Contract.Exceptions.Roles.AdminRoleException;
@@ -43,6 +44,7 @@ public class RoleService implements IRoleService {
 
     @Override
     public void createRole(RoleDTO dto) {
+        ValidatorUtil.validate(dto);
         var isConflictName = rolesCache.stream().anyMatch(r -> r.getName().equalsIgnoreCase(dto.getName()));
         if(isConflictName) {
             throw new DuplicateRoleNameException("Tên vai trò đã tồn tại: " + dto.getName());
@@ -55,16 +57,15 @@ public class RoleService implements IRoleService {
 
     @Override
     public void updateRole(RoleDTO dto) {
+        ValidatorUtil.validate(dto);
         var roleOptional = rolesCache.stream()
                 .filter(r -> r.getId().equals(dto.getId()))
                 .findFirst();
         if(roleOptional.isPresent()) {
             var role = roleOptional.get();
-
             if(role.getName().equalsIgnoreCase("Admin")) {
                 throw new AdminRoleException("Không thể sửa vai trò Admin");
             }
-
             var isConflictName = rolesCache.stream()
                     .anyMatch(r -> r.getName().equalsIgnoreCase(dto.getName()) && !r.getId().equals(dto.getId()));
             if(isConflictName) {
@@ -85,7 +86,6 @@ public class RoleService implements IRoleService {
             }
             roleDAO.delete(id);
             rolesCache.remove(role);
-
             roleClaimsCache.stream()
                     .filter(rc -> rc.getRoleId() == id)
                     .toList()

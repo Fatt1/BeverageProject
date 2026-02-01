@@ -12,9 +12,10 @@ public interface IImportService {
     void updateImport(ImportDTO dto);
     void deleteImport(Integer id);
     List<ImportDTO> getAllImports();
-    PagedResult<ImportDTO> filterImportByList(String keyword, LocalDateTime from, LocalDateTime to,
-                                            ImportStatus status, Integer staffId, Integer supplierId,
-                                            int pageIndex, int pageSize); // Filter từ ArrayList
+    ImportDTO getImportByCode(String code);
+    List<ImportDTO> filterImportByList(String keyword, LocalDateTime from, LocalDateTime to,
+                                            ImportStatus status, Integer staffId, Integer supplierId
+                                            ); // Filter từ ArrayList
     ImportDTO getImportById(Integer id);
 }
 

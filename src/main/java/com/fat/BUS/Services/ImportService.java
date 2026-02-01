@@ -47,11 +47,16 @@ public class ImportService implements IImportService {
        return null;
     }
 
+    @Override
+    public ImportDTO getImportByCode(String code) {
+        return null;
+    }
+
 
     @Override
-    public PagedResult<ImportDTO> filterImportByList(String keyword, LocalDateTime from, LocalDateTime to,
-                                                   ImportStatus status, Integer staffId, Integer supplierId,
-                                                   int pageIndex, int pageSize) {
+    public List<ImportDTO> filterImportByList(String keyword, LocalDateTime from, LocalDateTime to,
+                                                   ImportStatus status, Integer staffId, Integer supplierId
+                                                   ) {
         return null;
     }
 

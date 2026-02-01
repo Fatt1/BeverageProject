@@ -14,9 +14,10 @@ public interface IReceiptService {
     void updateReceipt(ReceiptDTO dto);
     void deleteReceipt(Integer id);
     List<ReceiptDTO> getAllReceipts();
-    PagedResult<ReceiptDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
+
+    List<ReceiptDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
                                               Integer staffId, BigDecimal totalAmount,
-                                              int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy); // Filter từ ArrayList
+                                               SortOrder sortOrder, ReceiptSort sortBy); // Filter từ ArrayList
     ReceiptDTO getReceiptById(Integer id);
 }
 

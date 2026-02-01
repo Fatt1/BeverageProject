@@ -54,9 +54,9 @@ public class ReceiptService implements IReceiptService {
 
 
     @Override
-    public PagedResult<ReceiptDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
+    public List<ReceiptDTO> filterReceiptByList(String keyword, LocalDateTime from, LocalDateTime to,
                                                      Integer staffId, BigDecimal totalAmount,
-                                                     int pageIndex, int pageSize, SortOrder sortOrder, ReceiptSort sortBy) {
+                                                    SortOrder sortOrder, ReceiptSort sortBy) {
        return null;
     }
 

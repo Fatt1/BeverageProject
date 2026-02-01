@@ -47,12 +47,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryDTO> filterCategoryByList(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty())
-            return getAllCategories();
-        String searchKey = keyword.trim().toLowerCase();
-        return categoriesCache.stream()
-            .filter(c -> c.getName().toLowerCase().contains(searchKey))
-            .collect(Collectors.toList());
+        return categoryDAO.filter(keyword);
     }
 
     @Override

@@ -103,6 +103,18 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<ProductDTO> filterNoPagination(String searchKey, Integer categoryId) {
+        var stream = productsCache.stream();
+        if (searchKey != null && !searchKey.isEmpty()) {
+            stream = stream.filter(p -> p.getName().toLowerCase().contains(searchKey.toLowerCase()));
+        }
+        if (categoryId != null)
+            stream = stream.filter(p -> p.getCategoryId().equals(categoryId));
+        return stream.toList();
+
+    }
+
+    @Override
     public PagedResult<ProductDTO> getAllProductPagination(int pageIndex, int pageSize) {
         return PagedResult.create(productsCache.stream(), pageIndex, pageSize);
 

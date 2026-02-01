@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class StaffService implements IStaffService {
     private static StaffService instance;
     private final IStaffDAO staffDAO = StaffDAO.getInstance();
-    private final RoleService roleService = RoleService.getInstance();
     private static List<StaffDTO> staffsCache = new ArrayList<>();
 
     @Inject

@@ -12,6 +12,7 @@ public interface IProductService {
     PagedResult<ProductDTO> filterProductByList(String searchKey, Integer categoryId, int pageIndex, int pageSize); // Filter từ ArrayList
     ProductDTO getProductById(Integer id);
     List<ProductDTO> getAllProducts();
+    List<ProductDTO> filterNoPagination(String searchKey, Integer categoryId);
     PagedResult<ProductDTO> getAllProductPagination(int pageIndex, int pageSize);
     void updateProductQuantity(Integer productId, Integer quantity);
 }

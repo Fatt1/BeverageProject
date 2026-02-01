@@ -109,6 +109,13 @@
             <version>1.4</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- JFreeChart for charts -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version>
+        </dependency>
     </dependencies>
 
 </project>

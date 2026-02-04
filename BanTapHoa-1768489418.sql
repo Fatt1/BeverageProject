@@ -545,3 +545,4 @@ UUSE [GroceryDB]
  GO
  ALTER TABLE [dbo].[Staff] CHECK CONSTRAINT [Staff_fk6]
  GO
+ ALTER TABLE [dbo].[ImportDetail] ADD [ImportPrice] [decimal](18, 0) NOT NULL DEFAULT 0;

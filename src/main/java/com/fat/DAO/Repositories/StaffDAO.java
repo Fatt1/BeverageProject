@@ -77,7 +77,7 @@ public class StaffDAO implements IStaffDAO {
         ) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            if(rs.next()){
                 Integer staffId = rs.getInt("Id");
                 String firstName = rs.getString("FirstName") ;
                 String lastName =  rs.getString("LastName");

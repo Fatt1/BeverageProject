@@ -12,6 +12,7 @@ import com.fat.DI.AppModule;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.GUI.Panels.Categories.CategoriesPanel;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
+import com.fat.GUI.Panels.Import.ImportPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
 import com.fat.GUI.Panels.Promotion.PromotionsPanel;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
@@ -347,6 +348,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void tbtnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnImportActionPerformed
         // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "IMPORT");
     }//GEN-LAST:event_tbtnImportActionPerformed
 
     private void tbtnCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnCategoryActionPerformed
@@ -374,6 +376,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new RolesPanel(), "ROLES");
         mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
         mainContentPanel.add(new StatisticPanel(), "STATISTICS");
+        mainContentPanel.add(new ImportPanel(),"IMPORT");
         //mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
     }
     

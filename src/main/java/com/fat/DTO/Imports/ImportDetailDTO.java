@@ -1,19 +1,22 @@
 package com.fat.DTO.Imports;
 
+import java.math.BigDecimal;
+
 public class ImportDetailDTO {
     private Integer importId;
     private Integer quantity;
     private Integer productId;
-    private String unitName;
+    private BigDecimal importPrice;
+    private String productName;
 
     public ImportDetailDTO() {
     }
 
-    public ImportDetailDTO(Integer importId, Integer quantity, Integer productId, String unitName) {
+    public ImportDetailDTO(Integer importId, Integer quantity, Integer productId, BigDecimal importPrice) {
         this.importId = importId;
         this.quantity = quantity;
         this.productId = productId;
-        this.unitName = unitName;
+        this.importPrice = importPrice;
     }
 
     public Integer getImportId() {
@@ -40,11 +43,27 @@ public class ImportDetailDTO {
         this.productId = productId;
     }
 
-    public String getUnitName() {
-        return unitName;
+
+    
+
+    public BigDecimal getImportPrice() {
+        return importPrice;
     }
 
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
+    public void setImportPrice(BigDecimal importPrice) {
+        this.importPrice = importPrice;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+    
+    public BigDecimal getSubTotal() {
+        if (importPrice == null || quantity == null) return BigDecimal.ZERO;
+        return importPrice.multiply(BigDecimal.valueOf(quantity));
     }
 }

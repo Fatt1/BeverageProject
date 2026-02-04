@@ -9,8 +9,8 @@ import com.fat.BUS.Services.RoleService;
 import com.fat.Contract.Constants.Action;
 import com.fat.Contract.Constants.Function;
 import com.fat.Contract.Constants.Permission;
-import com.fat.DTO.Roles.CreateOrUpdateRoleClaimDTO;
-import com.fat.DTO.Roles.RoleViewDTO;
+import com.fat.DTO.Roles.RoleClaimDTO;
+import com.fat.DTO.Roles.RoleDTO;
 import com.fat.GUI.Utils.CheckboxRenderer;
 
 import javax.swing.*;
@@ -30,11 +30,11 @@ public class PermissionRoleDialog extends javax.swing.JDialog {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PermissionRoleDialog.class.getName());
     private List<String> functions;
     private final IRoleService roleService = RoleService.getInstance();
-    private RoleViewDTO role;
+    private RoleDTO role;
     /**
      * Creates new form PermissionRole
      */
-    public PermissionRoleDialog(java.awt.Frame parent, boolean modal, RoleViewDTO role) {
+    public PermissionRoleDialog(java.awt.Frame parent, boolean modal, RoleDTO role) {
         super(parent, modal);
         this.role = role;
         initComponents();
@@ -202,7 +202,7 @@ public class PermissionRoleDialog extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         DefaultTableModel model = (DefaultTableModel) tblPermission.getModel();
-        List<CreateOrUpdateRoleClaimDTO> permissions = new ArrayList<>();
+        List<RoleClaimDTO> permissions = new ArrayList<>();
         for (int row = 0; row < model.getRowCount(); row++) {
             String function = (String) model.getValueAt(row, 0);
             int permissionValue = 0;
@@ -223,7 +223,7 @@ public class PermissionRoleDialog extends javax.swing.JDialog {
             if ((Boolean) canUpdateObj != null && (Boolean) canUpdateObj) {
                 permissionValue |= Action.UPDATE;
             }
-            CreateOrUpdateRoleClaimDTO dto = new CreateOrUpdateRoleClaimDTO(
+            RoleClaimDTO dto = new RoleClaimDTO(
                     null,
                     role.getId(),
                     function,

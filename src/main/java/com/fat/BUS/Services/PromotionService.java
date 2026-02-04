@@ -4,24 +4,25 @@ import com.fat.BUS.Abstractions.Services.IPromotionService;
 import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IPromotionDAO;
 import com.fat.DAO.Repositories.PromotionDAO;
-import com.fat.DTO.Promotions.CreateOrUpdatePromotionDTO;
+import com.fat.DTO.Promotions.PromotionDTO;
 import com.fat.DTO.Promotions.PromotionDetailDTO;
-import com.fat.DTO.Promotions.PromotionItemDTO;
-import com.fat.DTO.Promotions.PromotionViewDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PromotionService implements IPromotionService {
     private static PromotionService instance;
     private final IPromotionDAO promotionDAO;
-    private  List<PromotionViewDTO> promotionsCache = new ArrayList<>();
+    private static List<PromotionDTO> promotionsCache = new ArrayList<>();
 
     private PromotionService() {
         this.promotionDAO = PromotionDAO.getInstance();
-        this.promotionsCache = promotionDAO.getAll();
+        if(promotionsCache.isEmpty()) {
+            promotionsCache = promotionDAO.getAll();
+        }
     }
 
     public static PromotionService getInstance() {
@@ -32,20 +33,19 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public void createPromotion(CreateOrUpdatePromotionDTO dto) {
+    public void createPromotion(PromotionDTO dto) {
         Integer newId = promotionDAO.add(dto);
         if (newId != null){
-            PromotionViewDTO newPromotion = new PromotionViewDTO(newId, dto.getName(), dto.getStartDate(), dto.getEndDate());
-            promotionsCache.addFirst(newPromotion);
+            dto.setId(newId);
+            promotionsCache.addFirst(dto);
         }
     }
 
     @Override
-    public void updatePromotion(CreateOrUpdatePromotionDTO dto) {
+    public void updatePromotion(PromotionDTO dto) {
         promotionDAO.update(dto);
         promotionsCache.removeIf(p -> p.getId().equals(dto.getId()));
-        PromotionViewDTO updatedPromotion = new PromotionViewDTO(dto.getId(), dto.getName(), dto.getStartDate(), dto.getEndDate());
-        promotionsCache.addFirst(updatedPromotion);
+        promotionsCache.addFirst(dto);
     }
 
     @Override
@@ -55,13 +55,13 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public List<PromotionViewDTO> getAllPromotions() {
-        return this.promotionsCache;
+    public List<PromotionDTO> getAllPromotions() {
+        return promotionsCache;
     }
 
 
     @Override
-    public PagedResult<PromotionViewDTO> filterPromotionByList(String searchKey, Integer status, int pageIndex, int pageSize) {
+    public PagedResult<PromotionDTO> filterPromotionByList(String searchKey, Integer status, int pageIndex, int pageSize) {
         var stream = promotionsCache.stream();
         LocalDate today = LocalDate.now();
         if (searchKey != null && !searchKey.isEmpty()){
@@ -82,8 +82,11 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public PagedResult<PromotionDetailDTO> getPromotionById(Integer id) {
-        return promotionDAO.getById(id);
+    public PromotionDTO getPromotionById(Integer id) {
+        return promotionsCache.stream()
+            .filter(p -> p.getId().equals(id))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
@@ -92,9 +95,5 @@ public class PromotionService implements IPromotionService {
     }
 
 
-    @Override
-    public void refreshCache() {
-        this.promotionsCache = promotionDAO.getAll();
-    }
 }
 

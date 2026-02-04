@@ -13,9 +13,8 @@ import com.fat.BUS.Services.UploadImageService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.DuplicateProductNameException;
 import com.fat.Contract.Exceptions.ValidationException;
-import com.fat.DTO.Categories.CategoryViewDTO;
-import com.fat.DTO.Products.CreateOrUpdateProductDTO;
-import com.fat.DTO.Products.ProductDetailDTO;
+import com.fat.DTO.Categories.CategoryDTO;
+import com.fat.DTO.Products.ProductDTO;
 import com.fat.GUI.Utils.ImageHelper;
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -25,6 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -36,17 +36,17 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
     private IProductService productService = ProductService.getInstance();
     private ICategoryService categoryService = CategoryService.getInstance();
     private JFileChooser fileChooser = new JFileChooser();
-    private ProductDetailDTO productDetailDTO = null;
+    private ProductDTO selectedProduct = null;
     /**
      * Creates new form AddProductDialog
      */
-    public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, ProductDetailDTO productDetailDTO) {
+    public AddOrUpdateProductDialog(java.awt.Frame parent, boolean modal, ProductDTO selectedProduct) {
         super(parent, modal);
 
         initComponents();
         loadCategories();
         setCss();
-        this.productDetailDTO = productDetailDTO;
+        this.selectedProduct = selectedProduct;
         initProductDetail();
         FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Hình ảnh", "jpg", "png", "jpeg");
         fileChooser.setFileFilter(imageFilter);
@@ -114,6 +114,7 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 btnSaveMouseClicked(evt);
             }
         });
+        btnSave.addActionListener(this::btnSaveActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -135,6 +136,8 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_END);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        txtName.addActionListener(this::txtNameActionPerformed);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Thông tin sản phẩm");
@@ -259,36 +262,39 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 price = new BigDecimal(priceText);
             }
 
-            CategoryViewDTO selectedCategory = (CategoryViewDTO) cboCategory.getSelectedItem();
+            CategoryDTO selectedCategory = (CategoryDTO) cboCategory.getSelectedItem();
             Integer categoryId = selectedCategory.getId();
             File selectedFile = fileChooser.getSelectedFile();
             String imageName = selectedFile != null ? selectedFile.getName() : null;
             Path imagePath = selectedFile != null ? selectedFile.toPath() : null;
 
-            if(productDetailDTO == null) {
-                CreateOrUpdateProductDTO newProduct = new CreateOrUpdateProductDTO(
-                        name,
-                        imageName,
-                        unit,
-                        price,
-                        categoryId,
-                        imagePath);
-                ValidatorUtil.validate(newProduct);
+
+
+            if(selectedProduct == null) {
+                ProductDTO newProduct = new ProductDTO();
+                newProduct.setName(name);
+                newProduct.setImage(imageName);
+                newProduct.setImagePath(imagePath);
+                newProduct.setCategoryId(categoryId);
+                newProduct.setPrice(price);
+                newProduct.setCreatedAt(LocalDateTime.now());
+                newProduct.setUpdatedAt(LocalDateTime.now());
+                newProduct.setStock(0);
+                newProduct.setUnit(unit);
                 productService.createProduct(newProduct);
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             // Cho trường hợp cập nhật
            else{
-                CreateOrUpdateProductDTO updateProduct = new CreateOrUpdateProductDTO(
-                        productDetailDTO.getId(),
-                        name,
-                        imageName,
-                        unit,
-                        price,
-                        categoryId,
-                        imagePath);
-                ValidatorUtil.validate(updateProduct);
-                productService.updateProduct(updateProduct);
+                ProductDTO updatedProduct = new ProductDTO();
+                updatedProduct.setName(name);
+                updatedProduct.setImage(imageName);
+                updatedProduct.setImagePath(imagePath);
+                updatedProduct.setCategoryId(categoryId);
+                updatedProduct.setPrice(price);
+                updatedProduct.setUnit(unit);
+                updatedProduct.setUpdatedAt(LocalDateTime.now());
+                productService.updateProduct(updatedProduct);
                 JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             this.dispose();
@@ -311,24 +317,32 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
 
     }//GEN-LAST:event_btnSaveMouseClicked
 
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSaveActionPerformed
+
     private void initProductDetail() {
-        if(productDetailDTO != null) {
+        if(selectedProduct != null) {
             setTitle("Cập nhật sản phẩm");
-            txtName.setText(productDetailDTO.getName());
-            txtUnit.setText(productDetailDTO.getUnit());
-            txtPrice.setText(productDetailDTO.getPrice().toString());
+            txtName.setText(selectedProduct.getName());
+            txtUnit.setText(selectedProduct.getUnit());
+            txtPrice.setText(selectedProduct.getPrice().toString());
             // Chọn danh mục tương ứng
             for(int i = 0; i < cboCategory.getItemCount(); i++) {
-                CategoryViewDTO category =  (CategoryViewDTO) cboCategory.getItemAt(i);
-                if(category.getId().equals(productDetailDTO.getCategoryId())) {
+                CategoryDTO category =  (CategoryDTO) cboCategory.getItemAt(i);
+                if(category.getId().equals(selectedProduct.getCategoryId())) {
                     cboCategory.setSelectedIndex(i);
                     break;
                 }
             }
 
-            if(productDetailDTO.getImage() != null ) {
+            if(selectedProduct.getImage() != null ) {
                 // Lấy đường dẫn gốc dự án
-                String fullImagePath = ImageHelper.getImagePath(productDetailDTO.getImage());
+                String fullImagePath = ImageHelper.getImagePath(selectedProduct.getImage());
                 fileChooser.setSelectedFile(new File(fullImagePath));
                 ImageIcon icon = new ImageIcon(fullImagePath);
                 lblImage.setIcon(ImageHelper.resizeImage(icon, lblImage.getWidth(), lblImage.getHeight()));
@@ -336,17 +350,13 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
             }
         }
     }
-
-    public void setProductDetailDTO(ProductDetailDTO productDetailDTO) {
-        this.productDetailDTO = productDetailDTO;
-    }
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox<CategoryViewDTO> cboCategory;
+    private javax.swing.JComboBox<CategoryDTO> cboCategory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

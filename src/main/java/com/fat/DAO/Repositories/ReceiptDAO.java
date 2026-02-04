@@ -97,12 +97,12 @@ public class ReceiptDAO implements IReceiptDAO {
     // }
 
     @Override
-    public ReceptDetailDTO getById(Integer id) {
+    public ReceiptDTO getById(Integer id) {
         return null;
     }
 
     @Override
-    public Integer add(CreateOrUpdateReceiptDTO entity) {
+    public Integer add(ReceiptDTO entity) {
         // TODO Auto-generated method stub
         // Nhớ thêm đơn hàng thì trừ tồn kho của sản phẩm tương ứng
         // Nhớ thêm lịch sử nhập xuất kho của từng sản pẩm
@@ -111,7 +111,7 @@ public class ReceiptDAO implements IReceiptDAO {
     }
 
     @Override
-    public void update(CreateOrUpdateReceiptDTO entity) {
+    public void update(ReceiptDTO entity) {
 
     }
 

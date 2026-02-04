@@ -11,9 +11,8 @@ import com.fat.BUS.Services.StaffService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.DuplicateStaffUserNameException;
 import com.fat.Contract.Exceptions.ValidationException;
-import com.fat.DTO.Roles.RoleViewDTO;
-import com.fat.DTO.Staffs.CreateOrUpdateStaffDTO;
-import com.fat.DTO.Staffs.StaffDetailDTO;
+import com.fat.DTO.Roles.RoleDTO;
+import com.fat.DTO.Staffs.StaffDTO;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
@@ -33,19 +32,19 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
 
     private IStaffService staffService = StaffService.getInstance();
     private IRoleService roleService = RoleService.getInstance();
-    private StaffDetailDTO staffDetailDTO = null;
+    private StaffDTO staffDTO = null;
     private boolean isConfirmed = false;
     
     /**
      * Creates new form AddOrUpdateStaffDialog
      */
-    public AddOrUpdateStaffDialog(java.awt.Frame parent, boolean modal, StaffDetailDTO staffDetailDTO) {
+    public AddOrUpdateStaffDialog(java.awt.Frame parent, boolean modal, StaffDTO staffDTO) {
         super(parent, modal);
         initComponents();
         loadRoles();
         setCss();
         
-        this.staffDetailDTO = staffDetailDTO;
+        this.staffDTO = staffDTO;
         initStaffDetail();
     }
 
@@ -226,7 +225,7 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
             String password = new String(txtPassword.getPassword()).trim();
             String salaryText = txtSalary.getText().trim();
             Date birthDateObj = dateChooserBirthDate.getDate();
-            RoleViewDTO selectedRole = (RoleViewDTO) cboRole.getSelectedItem();
+            RoleDTO selectedRole = (RoleDTO) cboRole.getSelectedItem();
             
             // 2. Parse và validate dữ liệu
             BigDecimal salary = null;
@@ -244,7 +243,7 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
             Integer roleId = selectedRole != null ? selectedRole.getId() : null;
             
             // 3. Tạo DTO và gọi service
-            if (staffDetailDTO == null) {
+            if (staffDTO == null) {
                 // CREATE - Truyền password gốc, service sẽ mã hóa
                 // Validate password không trống cho CREATE
                 if (password.isEmpty()) {
@@ -256,16 +255,16 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
                     return;
                 }
                 
-                CreateOrUpdateStaffDTO newStaff = new CreateOrUpdateStaffDTO(
-                        firstName,
-                        lastName,
-                        birthDate,
-                        salary,
-                        phoneNumber,
-                        userName,
-                        password,
-                        roleId
-                );
+                StaffDTO newStaff = new StaffDTO();
+                newStaff.setFirstName(firstName);
+                newStaff.setLastName(lastName);
+                newStaff.setBirthday(birthDate);
+                newStaff.setSalary(salary);
+                newStaff.setPhoneNumber(phoneNumber);
+                newStaff.setRoleId(roleId);
+                newStaff.setCreatedAt(java.time.LocalDateTime.now());
+                newStaff.setUserName(userName);
+                newStaff.setPassword(password);
                 
                 ValidatorUtil.validate(newStaff);
                 staffService.createStaff(newStaff);
@@ -277,18 +276,17 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
                 // UPDATE - Truyền null hoặc password mới
                 String passwordToUpdate = password.isEmpty() ? null : password;
                 
-                CreateOrUpdateStaffDTO updateStaff = new CreateOrUpdateStaffDTO(
-                        staffDetailDTO.getId(),
-                        firstName,
-                        lastName,
-                        birthDate,
-                        phoneNumber,
-                        salary,
-                        java.time.LocalDateTime.now(),
-                        userName,
-                        roleId,
-                        passwordToUpdate
-                );
+                StaffDTO updateStaff = new StaffDTO();
+                updateStaff.setId(staffDTO.getId());
+                updateStaff.setFirstName(firstName);
+                updateStaff.setLastName(lastName);
+                updateStaff.setBirthday(birthDate);
+                updateStaff.setSalary(salary);
+                updateStaff.setPhoneNumber(phoneNumber);
+                updateStaff.setRoleId(roleId);
+                updateStaff.setCreatedAt(staffDTO.getCreatedAt());
+                updateStaff.setUserName(userName);
+                updateStaff.setPassword(passwordToUpdate);
                 
                 ValidatorUtil.validate(updateStaff);
                 staffService.updateStaff(updateStaff);
@@ -334,7 +332,7 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
 
     private void loadRoles() {
         DefaultComboBoxModel model = (DefaultComboBoxModel) cboRole.getModel();
-        roleService.refreshCache();
+       // roleService.refreshCache();
         var roles = roleService.getAllRoles();
 
         for (var role : roles) {
@@ -358,24 +356,24 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
     }
     
     private void initStaffDetail() {
-        if (staffDetailDTO != null) {
+        if (staffDTO != null) {
             setTitle("Cập nhật nhân viên");
 
-            txtFirstName.setText(staffDetailDTO.getFirstName());
-            txtLastName.setText(staffDetailDTO.getLastName());
-            txtPhoneNumber.setText(staffDetailDTO.getPhoneNumber());
-            txtUserName.setText(staffDetailDTO.getUserName());
-            txtSalary.setText(staffDetailDTO.getSalary().toString());
+            txtFirstName.setText(staffDTO.getFirstName());
+            txtLastName.setText(staffDTO.getLastName());
+            txtPhoneNumber.setText(staffDTO.getPhoneNumber());
+            txtUserName.setText(staffDTO.getUserName());
+            txtSalary.setText(staffDTO.getSalary().toString());
 
             // Chuyển LocalDate sang Date cho JDateChooser
-            LocalDate birthDate = staffDetailDTO.getBirthDate();
+            LocalDate birthDate = staffDTO.getBirthday();
             Date date = Date.from(birthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             dateChooserBirthDate.setDate(date);
 
             // Chọn vai trò tương ứng
             for (int i = 0; i < cboRole.getItemCount(); i++) {
-                RoleViewDTO role = (RoleViewDTO) cboRole.getItemAt(i);
-                if (role.getId().equals(staffDetailDTO.getRoleId())) {
+                RoleDTO role = (RoleDTO) cboRole.getItemAt(i);
+                if (role.getId().equals(staffDTO.getRoleId())) {
                     cboRole.setSelectedIndex(i);
                     break;
                 }
@@ -390,8 +388,8 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
         }
     }
     
-    public void setStaffDetailDTO(StaffDetailDTO staffDetailDTO) {
-        this.staffDetailDTO = staffDetailDTO;
+    public void setStaffDTO(StaffDTO staffDTO) {
+        this.staffDTO = staffDTO;
     }
     
     public boolean isConfirmed() {
@@ -400,7 +398,7 @@ public class AddOrUpdateStaffDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave1;
-    private javax.swing.JComboBox<RoleViewDTO> cboRole;
+    private javax.swing.JComboBox<RoleDTO> cboRole;
     private com.toedter.calendar.JDateChooser dateChooserBirthDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;

@@ -8,10 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class UploadImageService implements IUploadImageService {
+public class UploadImageService {
 
-    @Override
-    public String uploadImage(String imageName, Path sourcePath) {
+
+    public static String uploadImage(String imageName, Path sourcePath) {
        try{
            // 1. Lấy đường dẫn gốc dự án
            String projectRoot = System.getProperty("user.dir"); // WaterManagementProject

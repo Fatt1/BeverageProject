@@ -2,8 +2,7 @@ package com.fat.DAO.Repositories;
 
 import com.fat.DAO.Abstractions.Repositories.IRoleDAO;
 import com.fat.DAO.Utils.DbContext;
-import com.fat.DTO.Roles.CreateOrUpdateRoleDTO;
-import com.fat.DTO.Roles.RoleViewDTO;
+import com.fat.DTO.Roles.RoleDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,31 +25,31 @@ public class RoleDAO implements IRoleDAO {
     }
 
     @Override
-    public List<RoleViewDTO> getAll() {
+    public List<RoleDTO> getAll() {
         String sql = "SELECT Id, Name FROM Role";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
         ) {
             ResultSet rs = ps.executeQuery();
-            List<RoleViewDTO> roles = new ArrayList<>();
+            List<RoleDTO> roles = new ArrayList<>();
             while (rs.next()) {
                 Integer id = rs.getInt("Id");
                 String name = rs.getString("Name");
-                RoleViewDTO role = new RoleViewDTO(id, name);
+                RoleDTO role = new RoleDTO(id, name);
                 roles.add(role);
             }
 
             return roles;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw  new RuntimeException("Lấy danh sách role lỗi", sqlException);
         }
 
     }
 
 
     @Override
-    public RoleViewDTO getById(Integer id) {
+    public RoleDTO getById(Integer id) {
         String sql = "SELECT Id, Name FROM Role WHERE Id = ?";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -60,19 +59,19 @@ public class RoleDAO implements IRoleDAO {
             if (rs.next()) {
                 Integer roleId = rs.getInt("Id");
                 String name = rs.getString("Name");
-                return new RoleViewDTO(roleId, name);
+                return new RoleDTO(roleId, name);
 
             }
             return null;
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw new RuntimeException("Lấy role theo id lỗi", sqlException);
         }
     }
 
 
     @Override
-    public Integer add(CreateOrUpdateRoleDTO entity) {
+    public Integer add(RoleDTO entity) {
         String sql = "INSERT INTO ROLE (Name) VALUES (?);";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
@@ -89,12 +88,12 @@ public class RoleDAO implements IRoleDAO {
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            return null;
+            throw  new RuntimeException("Thêm role lỗi", sqlException);
         }
     }
 
     @Override
-    public void update(CreateOrUpdateRoleDTO entity) {
+    public void update(RoleDTO entity) {
         String sql = "UPDATE ROLE SET Name = ? WHERE Id = ?";
         try (Connection conn = DbContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -104,6 +103,7 @@ public class RoleDAO implements IRoleDAO {
             ps.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            throw new RuntimeException("Cập nhật role lỗi", sqlException);
         }
     }
 
@@ -117,6 +117,7 @@ public class RoleDAO implements IRoleDAO {
             ps.executeUpdate();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            throw new RuntimeException("Xóa role lỗi", sqlException);
         }
     }
 }

@@ -1,41 +1,42 @@
 package com.fat.DTO.Promotions;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.math.BigDecimal;
 
 public class PromotionDetailDTO {
-    private Integer id;
-    private String name;
-    private LocalDate startDate;
-    private  LocalDate endDate;
-    private List<PromotionItemDetailDTO> promotionItems;
+    private Integer promotionId;
+    private Integer productId;
+    private BigDecimal discountPercentage;
 
-
-    public PromotionDetailDTO(Integer id, String name, LocalDate startDate, LocalDate endDate, List<PromotionItemDetailDTO> promotionItems) {
-        this.id = id;
-        this.name = name;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.promotionItems = promotionItems;
+    public PromotionDetailDTO() {
     }
 
-    public Integer getId() {
-        return id;
+    public PromotionDetailDTO(Integer promotionId, Integer productId, BigDecimal discountPercentage) {
+        this.promotionId = promotionId;
+        this.productId = productId;
+        this.discountPercentage = discountPercentage;
     }
 
-    public String getName() {
-        return name;
+    public Integer getPromotionId() {
+        return promotionId;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
+    public void setPromotionId(Integer promotionId) {
+        this.promotionId = promotionId;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public List<PromotionItemDetailDTO> getPromotionItems() {
-        return promotionItems;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public BigDecimal getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(BigDecimal discountPercentage) {
+        this.discountPercentage = discountPercentage;
     }
 }

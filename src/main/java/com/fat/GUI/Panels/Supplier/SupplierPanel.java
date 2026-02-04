@@ -5,21 +5,16 @@
 package com.fat.GUI.Panels.Supplier;
 
 import com.fat.BUS.Abstractions.Services.ICategoryService;
-import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.ISupplierService;
-import com.fat.BUS.Abstractions.Services.IUploadImageService;
 import com.fat.BUS.Services.SupplierService;
-import com.fat.BUS.Services.UploadImageService;
 import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.Contract.Shared.PagedResult;
-import com.fat.DTO.Products.CreateOrUpdateProductDTO;
-import com.fat.DTO.Suppliers.CreateOrUpdateSupplierDTO;
-import com.fat.DTO.Suppliers.SupplierViewDTO;
+import com.fat.DTO.Products.ProductDTO;
+import com.fat.DTO.Suppliers.SupplierDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
+import com.fat.GUI.Dialogs.Supplier.AddOrUpdateSupplierDialog;
 import com.fat.GUI.Utils.FormatterUtil;
 
-import java.io.File;
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -154,19 +149,19 @@ public class SupplierPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
                 .addComponent(btnAdd)
                 .addGap(18, 18, 18)
                 .addComponent(btnUpdate)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(btnDelete)
                 .addGap(18, 18, 18)
                 .addComponent(btnReset)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(btnImportExcel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(btnExportExcel)
-                .addGap(29, 29, 29))
+                .addGap(14, 14, 14))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,12 +182,12 @@ public class SupplierPanel extends javax.swing.JPanel {
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
-    private void filterTable(List<SupplierViewDTO> suppliers){
+    private void filterTable(List<SupplierDTO> suppliers){
         DefaultTableModel model = (DefaultTableModel)tblSupplier.getModel();
         model.setRowCount(0);
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for(SupplierViewDTO eachSupplier : suppliers ){
+        for(SupplierDTO eachSupplier : suppliers ){
             Object[] row = new Object[] {
             eachSupplier.getId(),
             eachSupplier.getName(),
@@ -203,49 +198,72 @@ public class SupplierPanel extends javax.swing.JPanel {
             model.addRow(row);
             
         }
-        // Căn giữa tất cả các cột ngoại trừ cột hình ảnh
+        // Căn giữa tất cả các cột
         for (int i = 0; i < tblSupplier.getColumnCount(); i++) {
-            if (i == 1) continue;
             tblSupplier.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
     }
     
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, null);
-        addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
+        AddOrUpdateSupplierDialog addOrUpdateSupplierDialog = new AddOrUpdateSupplierDialog(parentFrame, true);
+        addOrUpdateSupplierDialog.setLocationRelativeTo(parentFrame);
 
-        addOrUpdateProductDialog.setVisible(true);
+        addOrUpdateSupplierDialog.setVisible(true);
 
         // Sau khi đóng dialog, tải lại dữ liệu
         loadData();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void loadData(){
-        List<SupplierViewDTO> suppliers = supplierService.getAllSuppliers();
+        List<SupplierDTO> suppliers = supplierService.getAllSuppliers();
         filterTable(suppliers);
     }
     
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // int selectedRow = tblSupplier.getSelectedRow();
-        // if(selectedRow == -1) {
-        //     JOptionPane.showMessageDialog(this,
-        //             "Vui lòng chọn nhà cung cấp để chỉnh sửa.", "Chưa chọn nhà cung cấp", JOptionPane.WARNING_MESSAGE);
-        //     return;
-        // }
-        // Object idObj = tblSupplier.getValueAt(selectedRow, 0); // Cột ID
-        // int id = Integer.parseInt(idObj.toString());
-        
-        // SupplierViewDTO supplier = supplierService.getSupplierById(id);
-        // JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        // AddOrUpdateSupplierDialog updateDialog = new AddOrUpdateSupplierDialog(parentFrame, true, supplierService, supplier);
-        // updateDialog.setLocationRelativeTo(parentFrame);
-        // updateDialog.setVisible(true);
+        int selectedRow = tblSupplier.getSelectedRow();
+        if(selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "Vui lòng chọn nhà cung cấp để chỉnh sửa", 
+                "Chưa chọn nhà cung cấp", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        // // Sau khi đóng dialog, tải lại dữ liệu
-        // loadData();
+        try {
+            // Lấy dữ liệu từ bảng theo đúng thứ tự: ID, Tên, Email, SĐT, Địa chỉ
+            Object idObj = tblSupplier.getValueAt(selectedRow, 0);
+            String supplierName = tblSupplier.getValueAt(selectedRow, 1).toString();
+            String supplierEmail = tblSupplier.getValueAt(selectedRow, 2).toString();
+            String supplierPhone = tblSupplier.getValueAt(selectedRow, 3).toString();
+            String supplierAddress = tblSupplier.getValueAt(selectedRow, 4).toString();
+            Integer id = Integer.parseInt(idObj.toString());
 
+            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            // Truyền dữ liệu theo đúng thứ tự: parent, modal, id, name, email, phone, address
+            AddOrUpdateSupplierDialog addOrUpdateSupplierDialog = new AddOrUpdateSupplierDialog(
+                parentFrame, 
+                true, 
+                id, 
+                supplierName,       // Tên nhà cung cấp
+                supplierEmail,      // Email
+                supplierPhone,      // Số điện thoại
+                supplierAddress     // Địa chỉ
+            );
+            addOrUpdateSupplierDialog.setLocationRelativeTo(parentFrame);
+            addOrUpdateSupplierDialog.setVisible(true);
+
+            // Sau khi đóng dialog, tải lại dữ liệu
+            loadData();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                "Có lỗi xảy ra: " + ex.getMessage(), 
+                "Lỗi", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
+
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         txtSearch.setText("");
@@ -263,7 +281,7 @@ public class SupplierPanel extends javax.swing.JPanel {
                     String phoneNumber = row.get(2).toString();
                     String address = row.get(3).toString();
 
-                    CreateOrUpdateSupplierDTO supplier = new CreateOrUpdateSupplierDTO(null, name, email, phoneNumber, address);
+                    SupplierDTO supplier = new SupplierDTO(null, name, email, phoneNumber, address);
                     supplierService.createSupplier(supplier);
                 }
                 catch (Exception ex) {
@@ -280,11 +298,11 @@ public class SupplierPanel extends javax.swing.JPanel {
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         JTable table = new JTable();
-        List<SupplierViewDTO> allSuppliers = supplierService.getAllSuppliers();
+        List<SupplierDTO> allSuppliers = supplierService.getAllSuppliers();
         String[] columns = {"ID", "Tên Nhà Cung Cấp", "Email", "Số Điện Thoại", "Địa Chỉ"};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setColumnIdentifiers(columns);
-        for (SupplierViewDTO s : allSuppliers) {
+        for (SupplierDTO s : allSuppliers) {
             Object[] row = new Object[]{
                     s.getId(),
                     s.getName(),
@@ -299,19 +317,46 @@ public class SupplierPanel extends javax.swing.JPanel {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         int selectedRow = tblSupplier.getSelectedRow();
-       if(selectedRow == -1) {
-           JOptionPane.showConfirmDialog(this, "Vui lòng chọn nhà cung cấp để xóa", "Chưa chọn nhà cung cấp", JOptionPane.WARNING_MESSAGE);
-           return;
-       }
+        if(selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "Vui lòng chọn nhà cung cấp để xóa", 
+                "Chưa chọn nhà cung cấp", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        int choose = JOptionPane.showConfirmDialog(this, "Bạn có chăc muốn xóa nhà cung cấp này", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        // Lấy thông tin nhà cung cấp
+        Object idObj = tblSupplier.getValueAt(selectedRow, 0);
+        String supplierName = tblSupplier.getValueAt(selectedRow, 1).toString();
+
+        // Xác nhận xóa
+        int choose = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc muốn xóa nhà cung cấp \"" + supplierName + "\"?", 
+            "Xác nhận xóa", 
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+        
         if(choose != JOptionPane.YES_OPTION) {
             return;
         }
-       Object idObj = tblSupplier.getValueAt(selectedRow, 0);
-       int id = Integer.parseInt(idObj.toString());
-       supplierService.deleteSupplier(id);
-       loadData();
+
+        try {
+            int id = Integer.parseInt(idObj.toString());
+            supplierService.deleteSupplier(id);
+            
+            JOptionPane.showMessageDialog(this, 
+                "Xóa nhà cung cấp thành công!", 
+                "Thành công", 
+                JOptionPane.INFORMATION_MESSAGE);
+            
+            loadData();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+                "Có lỗi xảy ra khi xóa: " + ex.getMessage(), 
+                "Lỗi", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

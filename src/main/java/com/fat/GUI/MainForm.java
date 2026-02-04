@@ -10,16 +10,14 @@ import com.fat.BUS.Services.RoleService;
 import com.fat.Contract.Constants.Function;
 import com.fat.DI.AppModule;
 import com.fat.DTO.Auths.UserSessionDTO;
-import com.fat.GUI.Dialogs.ConfirmDialog.ConfirmDialog;
-import com.fat.GUI.Forms.LoginForm;
 import com.fat.GUI.Panels.Categories.CategoriesPanel;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
-import com.fat.GUI.Panels.Promotion.PromotionPanel2;
 import com.fat.GUI.Panels.Promotion.PromotionsPanel;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
+import com.fat.GUI.Panels.Statistics.StatisticPanel;
 import com.fat.GUI.Panels.Supplier.SupplierPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -76,7 +74,7 @@ public class MainForm extends javax.swing.JFrame {
         tbtnSupplier.setVisible(roleService.checkPermission(roleId, Function.SUPPLIER, com.fat.Contract.Constants.Action.READ));
         tbtnCustomer.setVisible(roleService.checkPermission(roleId, Function.CUSTOMER, com.fat.Contract.Constants.Action.READ));
         tbtnImport.setVisible(roleService.checkPermission(roleId, Function.IMPORT, com.fat.Contract.Constants.Action.READ));
-        tbtnSelling.setVisible(roleService.checkPermission(roleId, Function.SELL, com.fat.Contract.Constants.Action.READ));
+      
         tbtnReceipt.setVisible(roleService.checkPermission(roleId, Function.RECEIPT, com.fat.Contract.Constants.Action.READ));
         tbtnPromotion.setVisible(roleService.checkPermission(roleId, Function.PROMOTION, com.fat.Contract.Constants.Action.READ));
         tbtnStatistic.setVisible(roleService.checkPermission(roleId, Function.STATISTIC, com.fat.Contract.Constants.Action.READ));
@@ -101,7 +99,6 @@ public class MainForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         tbtnTrangChu = new javax.swing.JToggleButton();
-        tbtnSelling = new javax.swing.JToggleButton();
         tbtnReceipt = new javax.swing.JToggleButton();
         tbtnCategory = new javax.swing.JToggleButton();
         tbtnProduct = new javax.swing.JToggleButton();
@@ -175,21 +172,6 @@ public class MainForm extends javax.swing.JFrame {
         tbtnTrangChu.setPreferredSize(new java.awt.Dimension(210, 100));
         tbtnTrangChu.addActionListener(this::tbtnTrangChuActionPerformed);
         sidebarPandel.add(tbtnTrangChu);
-
-        tbtnSelling.setBackground(new java.awt.Color(217, 217, 217));
-        buttonGroup1.add(tbtnSelling);
-        tbtnSelling.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        tbtnSelling.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Get Cash.png"))); // NOI18N
-        tbtnSelling.setText("BÁN HÀNG");
-        tbtnSelling.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 5, 1, 1));
-        tbtnSelling.setBorderPainted(false);
-        tbtnSelling.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        tbtnSelling.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        tbtnSelling.setIconTextGap(10);
-        tbtnSelling.setMaximumSize(new java.awt.Dimension(32767, 60));
-        tbtnSelling.setPreferredSize(new java.awt.Dimension(210, 100));
-        tbtnSelling.addActionListener(this::tbtnSellingActionPerformed);
-        sidebarPandel.add(tbtnSelling);
 
         tbtnReceipt.setBackground(new java.awt.Color(217, 217, 217));
         buttonGroup1.add(tbtnReceipt);
@@ -391,7 +373,8 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         mainContentPanel.add(new RolesPanel(), "ROLES");
         mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
-        mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
+        mainContentPanel.add(new StatisticPanel(), "STATISTICS");
+        //mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
     }
     
     /**
@@ -416,27 +399,23 @@ public class MainForm extends javax.swing.JFrame {
      * @param promotionId null = Add mode, có giá trị = Edit mode
      */
     public void showPromotionForm(Integer promotionId) {
-        // Xóa panel cũ nếu có
-        for (java.awt.Component comp : mainContentPanel.getComponents()) {
-            if (comp instanceof PromotionPanel2) {
-                mainContentPanel.remove(comp);
-                break;
-            }
-        }
-        
-        // Thêm panel mới
-        if (promotionId == null) {
-            mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
-        } else {
-            mainContentPanel.add(new PromotionPanel2(promotionId), "ADD_PROMOTION");
-        }
-        
-        cardLayout.show(mainContentPanel, "ADD_PROMOTION");
+//        // Xóa panel cũ nếu có
+//        for (java.awt.Component comp : mainContentPanel.getComponents()) {
+//            if (comp instanceof PromotionPanel2) {
+//                mainContentPanel.remove(comp);
+//                break;
+//            }
+//        }
+//
+//        // Thêm panel mới
+//        if (promotionId == null) {
+//            mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
+//        } else {
+//            mainContentPanel.add(new PromotionPanel2(promotionId), "ADD_PROMOTION");
+//        }
+//
+//        cardLayout.show(mainContentPanel, "ADD_PROMOTION");
     }
-
-    private void tbtnSellingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnSellingActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbtnSellingActionPerformed
 
     private void tbtnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnTrangChuActionPerformed
         cardLayout.show(mainContentPanel, "DASHBOARD");
@@ -463,7 +442,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnRoleActionPerformed
 
     private void tbtnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStatisticActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "STATISTICS");
     }//GEN-LAST:event_tbtnStatisticActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -577,7 +556,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JToggleButton tbtnPromotion;
     private javax.swing.JToggleButton tbtnReceipt;
     private javax.swing.JToggleButton tbtnRole;
-    private javax.swing.JToggleButton tbtnSelling;
     private javax.swing.JToggleButton tbtnStaff;
     private javax.swing.JToggleButton tbtnStatistic;
     private javax.swing.JToggleButton tbtnSupplier;

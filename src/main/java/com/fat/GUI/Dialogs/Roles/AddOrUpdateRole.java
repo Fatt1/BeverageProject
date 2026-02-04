@@ -7,8 +7,7 @@ package com.fat.GUI.Dialogs.Roles;
 import com.fat.BUS.Services.RoleService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Exceptions.ValidationException;
-import com.fat.DTO.Roles.CreateOrUpdateRoleDTO;
-import com.fat.DTO.Roles.RoleViewDTO;
+import com.fat.DTO.Roles.RoleDTO;
 
 import javax.swing.*;
 
@@ -19,14 +18,13 @@ import javax.swing.*;
 public class AddOrUpdateRole extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddOrUpdateRole.class.getName());
-
     /**
      * Creates new form AddOrUpdateRole
      */
-    private RoleViewDTO selectedRole;
+    private RoleDTO selectedRole;
     private final RoleService roleService = RoleService.getInstance();
 
-    public AddOrUpdateRole(java.awt.Frame parent, boolean modal, RoleViewDTO selectedRole) {
+    public AddOrUpdateRole(java.awt.Frame parent, boolean modal, RoleDTO selectedRole) {
         super(parent, modal);
         initComponents();
         setTitle("THÊM VAI TRÒ");
@@ -37,8 +35,6 @@ public class AddOrUpdateRole extends javax.swing.JDialog {
             setTitle("CẬP NHẬT VAI TRÒ");
             txtRoleName.setText(this.selectedRole.getName());
         }
-
-
     }
 
     /**
@@ -136,19 +132,14 @@ public class AddOrUpdateRole extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         String roleName = txtRoleName.getText().trim();
-
-
             if(this.selectedRole == null) {
-                CreateOrUpdateRoleDTO dto = new CreateOrUpdateRoleDTO(roleName);
-                ValidatorUtil.validate(dto);
+                RoleDTO dto = new RoleDTO(null, roleName);
                 roleService.createRole(dto);
                 JOptionPane.showMessageDialog(this, "Thêm vai trò thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-
             }
             else{
-                CreateOrUpdateRoleDTO dto = new CreateOrUpdateRoleDTO(selectedRole.getId(),roleName);
-                ValidatorUtil.validate(dto);
-                roleService.updateRole(dto);
+                selectedRole.setName(roleName);
+                roleService.updateRole(selectedRole);
                 JOptionPane.showMessageDialog(this, "Cập nhật vai trò thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             this.dispose();

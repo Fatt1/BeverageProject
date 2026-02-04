@@ -30,7 +30,7 @@ public class StatisticPanel extends javax.swing.JPanel{
         
         // Tạo các subpanel cho mỗi loại thống kê
         RevenuePanel revenuePanel = new RevenuePanel();
-        InventoryPanel inventoryPanel = new InventoryPanel();
+        InventoryStatisticPanel inventoryPanel = new InventoryStatisticPanel();
         CustomerPanel customerPanel = new CustomerPanel();
         StaffPanel staffPanel = new StaffPanel();
         ProductPanel productPanel = new ProductPanel();

@@ -151,11 +151,95 @@ public class ReceiptDAO implements IReceiptDAO {
 
     @Override
     public Integer add(ReceiptDTO entity) {
-        // TODO Auto-generated method stub
-        // Nhớ thêm đơn hàng thì trừ tồn kho của sản phẩm tương ứng
-        // Nhớ thêm lịch sử nhập xuất kho của từng sản pẩm
-        // Sử dung transaction để đảm bảo tính toàn vẹn dữ liệu
-        return null;
+        String sqlReceipt = "INSERT INTO Receipt (Code, CreatedAt, StaffId, SubTotalAmount, TotalDiscountAmount, TotalAmount, CustomerId) " +
+                           "VALUES (?, GETDATE(), ?, ?, ?, ?, ?)";
+        String sqlDetail = "INSERT INTO ReceiptDetail (ReceiptId, ProductId, Quantity, Price, DiscountAmount, SubTotalAmount) " +
+                          "VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlUpdateStock = "UPDATE Product SET Stock = Stock - ? WHERE Id = ?";
+        String sqlGetStock = "SELECT Stock FROM Product WHERE Id = ?";
+        String sqlHistory = "INSERT INTO InventoryHistory (Quantity, ProductId, CreatedAt, Type, StockAfter) " +
+                           "VALUES (?, ?, GETDATE(), 2, ?)";
+        
+        Connection conn = null;
+        try {
+            conn = DbContext.getConnection();
+            conn.setAutoCommit(false); // Bật transaction
+            
+            // Bước 1: INSERT Receipt và lấy ID
+            PreparedStatement psReceipt = conn.prepareStatement(sqlReceipt, PreparedStatement.RETURN_GENERATED_KEYS);
+            psReceipt.setString(1, entity.getCode());
+            psReceipt.setInt(2, entity.getStaffId());
+            psReceipt.setBigDecimal(3, entity.getSubTotalAmount());
+            psReceipt.setBigDecimal(4, entity.getTotalDiscountAmount());
+            psReceipt.setBigDecimal(5, entity.getTotalAmount());
+            psReceipt.setInt(6, entity.getCustomerId());
+            psReceipt.executeUpdate();
+            
+            // Lấy ID Receipt vừa tạo
+            ResultSet rsKeys = psReceipt.getGeneratedKeys();
+            Integer receiptId = null;
+            if(rsKeys.next()){
+                receiptId = rsKeys.getInt(1);
+            }
+            
+            // Bước 2-4: Với từng sản phẩm -> INSERT Detail, UPDATE Stock, INSERT History
+            PreparedStatement psDetail = conn.prepareStatement(sqlDetail);
+            PreparedStatement psUpdateStock = conn.prepareStatement(sqlUpdateStock);
+            PreparedStatement psGetStock = conn.prepareStatement(sqlGetStock);
+            PreparedStatement psHistory = conn.prepareStatement(sqlHistory);
+            
+            for(ReceiptDetailDTO item : entity.getReceiptItems()){
+                // 2.1 INSERT ReceiptDetail
+                psDetail.setInt(1, receiptId);
+                psDetail.setInt(2, item.getProductId());
+                psDetail.setInt(3, item.getQuantity());
+                psDetail.setBigDecimal(4, item.getPrice());
+                psDetail.setBigDecimal(5, item.getDiscountAmount());
+                psDetail.setBigDecimal(6, item.getSubTotalAmount());
+                psDetail.executeUpdate();
+                
+                // 2.2 UPDATE Stock (trừ số lượng)
+                psUpdateStock.setInt(1, item.getQuantity());
+                psUpdateStock.setInt(2, item.getProductId());
+                psUpdateStock.executeUpdate();
+                
+                // 2.3 Lấy Stock sau khi trừ
+                psGetStock.setInt(1, item.getProductId());
+                ResultSet rsStock = psGetStock.executeQuery();
+                Integer stockAfter = 0;
+                if(rsStock.next()){
+                    stockAfter = rsStock.getInt("Stock");
+                }
+                
+                // 2.4 INSERT InventoryHistory (Type = 2: Xuất kho bán hàng)
+                psHistory.setInt(1, item.getQuantity());
+                psHistory.setInt(2, item.getProductId());
+                psHistory.setInt(3, stockAfter);
+                psHistory.executeUpdate();
+            }
+            
+            conn.commit(); // Lưu tất cả thay đổi
+            return receiptId;
+            
+        } catch (Exception e) {
+            if(conn != null){
+                try {
+                    conn.rollback(); // Hủy tất cả nếu có lỗi
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return null;
+        } finally {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

@@ -136,5 +136,32 @@ public class PromotionDAO implements IPromotionDAO {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Lấy phần trăm giảm giá của sản phẩm từ promotion đang active
+     */
+    public BigDecimal getDiscountPercentageByProductId(Integer productId) {
+        String sql = "SELECT pd.DiscountPercentage " +
+                    "FROM PromotionDetail pd " +
+                    "JOIN Promotion p ON pd.PromotionId = p.Id " +
+                    "WHERE pd.ProductId = ? " +
+                    "  AND p.StartDate <= GETDATE() " +
+                    "  AND p.EndDate >= GETDATE()";
+        
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            
+            ps.setInt(1, productId);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+                return rs.getBigDecimal("DiscountPercentage");
+            }
+            return BigDecimal.ZERO;
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            return BigDecimal.ZERO;
+        }
+    }
 }
-

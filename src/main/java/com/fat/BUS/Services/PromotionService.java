@@ -91,7 +91,19 @@ public class PromotionService implements IPromotionService {
 
     @Override
     public BigDecimal calculateDiscountPrice(Integer productId, BigDecimal originalPrice) {
-        return null;
+        if(productId == null || originalPrice == null) {
+            return BigDecimal.ZERO;
+        }
+        
+        // Lấy % giảm giá từ promotion đang active
+        BigDecimal discountPercentage = ((PromotionDAO)promotionDAO).getDiscountPercentageByProductId(productId);
+        
+        // Tính số tiền giảm: originalPrice * discountPercentage / 100
+        BigDecimal discountAmount = originalPrice
+                .multiply(discountPercentage)
+                .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
+        
+        return discountAmount;
     }
 
 

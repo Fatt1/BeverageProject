@@ -78,7 +78,6 @@ CREATE TABLE [dbo].[ImportDetail](
 	[ImportId] [int] NOT NULL,
 	[Quantity] [int] NOT NULL,
 	[ProductId] [int] NOT NULL,
-	[UnitName] [nvarchar](max) NOT NULL,
 	[ImportPrice] [decimal](18, 0) NOT NULL,
 PRIMARY KEY CLUSTERED
 (

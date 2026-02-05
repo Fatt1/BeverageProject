@@ -16,6 +16,8 @@ import com.fat.GUI.Dialogs.Supplier.AddOrUpdateSupplierDialog;
 import com.fat.GUI.Utils.FormatterUtil;
 
 import java.util.List;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,6 +41,7 @@ public class SupplierPanel extends javax.swing.JPanel {
     public SupplierPanel() {
         initComponents();
         loadData();
+        setupSearchHandler();
     }
 
     /**
@@ -218,6 +221,21 @@ public class SupplierPanel extends javax.swing.JPanel {
     private void loadData(){
         List<SupplierDTO> suppliers = supplierService.getAllSuppliers();
         filterTable(suppliers);
+    }
+
+    private void setupSearchHandler() {
+        txtSearch.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent evt) {
+                String keyword = txtSearch.getText().trim();
+                if (keyword.isEmpty() || "Tìm kiếm theo tên nhà cung cấp".equalsIgnoreCase(keyword)) {
+                    loadData();
+                    return;
+                }
+                List<SupplierDTO> suppliers = supplierService.filterSupplierByList(keyword);
+                filterTable(suppliers);
+            }
+        });
     }
     
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed

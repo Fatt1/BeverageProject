@@ -66,4 +66,6 @@ public class ImportDetailDTO {
         if (importPrice == null || quantity == null) return BigDecimal.ZERO;
         return importPrice.multiply(BigDecimal.valueOf(quantity));
     }
+
+
 }

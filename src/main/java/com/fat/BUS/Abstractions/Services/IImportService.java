@@ -17,5 +17,6 @@ public interface IImportService {
                                             ImportStatus status, Integer staffId, Integer supplierId
                                             ); // Filter từ ArrayList
     ImportDTO getImportById(Integer id);
+    void confirmImport(Integer id);
 }
 

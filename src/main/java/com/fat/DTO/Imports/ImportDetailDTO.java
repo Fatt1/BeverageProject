@@ -1,11 +1,18 @@
 package com.fat.DTO.Imports;
 
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
 public class ImportDetailDTO {
     private Integer importId;
+    @NotNull(message = "Số lượng không được để trống")
+    @Positive(message = "Số lượng phải là số dương")
     private Integer quantity;
+    @NotNull(message = "Sản phẩm không được để trống")
     private Integer productId;
+    @NotNull(message = "Giá nhập không được để trống")
+    @Positive(message = "Giá nhập phải là số dương")
+    @Digits(message = "Giá nhập không hợp lệ", integer = 10, fraction = 2)
     private BigDecimal importPrice;
     private String productName;
 

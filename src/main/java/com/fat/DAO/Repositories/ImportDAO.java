@@ -31,7 +31,10 @@ public class ImportDAO implements IImportDAO {
 
 
     public List<ImportDetailDTO> getImportDetails(Integer importId){
-        String sql = "SELECT id.ImportId, id.Quantity, id.ProductId,  id.ImportPrice from ImportDetail id WHERE id.ImportId = ?";
+        String sql = "SELECT id.ImportId, id.Quantity, id.ProductId, id.ImportPrice, p.Name AS ProductName " +
+                     "FROM ImportDetail id " +
+                     "INNER JOIN Product p ON id.ProductId = p.Id " +
+                     "WHERE id.ImportId = ?";
         try(Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, importId);
@@ -42,7 +45,10 @@ public class ImportDAO implements IImportDAO {
                 Integer quantity = rs.getInt("Quantity");
                 Integer productId = rs.getInt("ProductId");
                 BigDecimal importPrice = rs.getBigDecimal("ImportPrice");
+                String productName = rs.getString("ProductName");
+                
                 ImportDetailDTO importDetailDTO = new ImportDetailDTO(importId, quantity, productId, importPrice);
+                importDetailDTO.setProductName(productName);
                 importDetailDTOS.add(importDetailDTO);
             }
             return importDetailDTOS;

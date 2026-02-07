@@ -252,6 +252,28 @@ PRIMARY KEY CLUSTERED
 GO
 SET IDENTITY_INSERT [dbo].[Category] ON
 GO
+-- ===== DELETE OLD DATA =====
+DELETE FROM [dbo].[ReceiptDetail]
+GO
+DELETE FROM [dbo].[Receipt]
+GO
+DELETE FROM [dbo].[ImportDetail]
+GO
+DELETE FROM [dbo].[Import]
+GO
+DELETE FROM [dbo].[Customer]
+GO
+DBCC CHECKIDENT ('[dbo].[Receipt]', RESEED, 0)
+GO
+DBCC CHECKIDENT ('[dbo].[ReceiptDetail]', RESEED, 0)
+GO
+DBCC CHECKIDENT ('[dbo].[Import]', RESEED, 0)
+GO
+DBCC CHECKIDENT ('[dbo].[ImportDetail]', RESEED, 0)
+GO
+DBCC CHECKIDENT ('[dbo].[Customer]', RESEED, 0)
+GO
+
 INSERT [dbo].[Category] ([Id], [Name]) VALUES (1, N'Đồ uống')
 GO
 INSERT [dbo].[Category] ([Id], [Name]) VALUES (2, N'Thực phẩm khô')
@@ -365,6 +387,292 @@ GO
 INSERT [dbo].[Supplier] ([Id], [Email], [PhoneNumber], [Name], [Address]) VALUES (2, N'Fatt2', N'123@gmai.com', N'1233456780', N'123123')
 GO
 SET IDENTITY_INSERT [dbo].[Supplier] OFF
+GO
+-- ===== INSERT CUSTOMER =====
+SET IDENTITY_INSERT [dbo].[Customer] ON
+GO
+INSERT [dbo].[Customer] ([Id], [FirstName], [LastName], [Address], [PhoneNumber], [CreatedAt]) VALUES (1, N'Nguyễn', N'Văn A', N'123 Nguyễn Huệ, TP HCM', N'0912345678', GETDATE())
+GO
+INSERT [dbo].[Customer] ([Id], [FirstName], [LastName], [Address], [PhoneNumber], [CreatedAt]) VALUES (2, N'Trần', N'Thị B', N'456 Lê Lợi, TP HCM', N'0987654321', GETDATE())
+GO
+INSERT [dbo].[Customer] ([Id], [FirstName], [LastName], [Address], [PhoneNumber], [CreatedAt]) VALUES (3, N'Phạm', N'Văn C', N'789 Võ Văn Kiệt, TP HCM', N'0934567890', GETDATE())
+GO
+SET IDENTITY_INSERT [dbo].[Customer] OFF
+GO
+-- ===== INSERT RECEIPT (Năm 2023) =====
+SET IDENTITY_INSERT [dbo].[Receipt] ON
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (1, N'HD001-2023', CAST(N'2023-01-15T10:30:00' AS DateTime), 1, CAST(100000 AS Decimal(18, 0)), CAST(10000 AS Decimal(18, 0)), CAST(90000 AS Decimal(18, 0)), 1)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (2, N'HD002-2023', CAST(N'2023-02-20T14:15:00' AS DateTime), 2, CAST(150000 AS Decimal(18, 0)), CAST(15000 AS Decimal(18, 0)), CAST(135000 AS Decimal(18, 0)), 2)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (3, N'HD003-2023', CAST(N'2023-03-10T09:45:00' AS DateTime), 1, CAST(200000 AS Decimal(18, 0)), CAST(20000 AS Decimal(18, 0)), CAST(180000 AS Decimal(18, 0)), 3)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (4, N'HD004-2023', CAST(N'2023-06-25T11:20:00' AS DateTime), 1, CAST(250000 AS Decimal(18, 0)), CAST(25000 AS Decimal(18, 0)), CAST(225000 AS Decimal(18, 0)), 1)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (5, N'HD005-2023', CAST(N'2023-09-12T15:30:00' AS DateTime), 2, CAST(180000 AS Decimal(18, 0)), CAST(18000 AS Decimal(18, 0)), CAST(162000 AS Decimal(18, 0)), 2)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (6, N'HD006-2023', CAST(N'2023-12-30T16:45:00' AS DateTime), 1, CAST(300000 AS Decimal(18, 0)), CAST(30000 AS Decimal(18, 0)), CAST(270000 AS Decimal(18, 0)), 3)
+GO
+-- ===== INSERT RECEIPT (Năm 2024) =====
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (7, N'HD007-2024', CAST(N'2024-01-10T08:30:00' AS DateTime), 1, CAST(120000 AS Decimal(18, 0)), CAST(12000 AS Decimal(18, 0)), CAST(108000 AS Decimal(18, 0)), 1)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (8, N'HD008-2024', CAST(N'2024-04-15T13:00:00' AS DateTime), 2, CAST(170000 AS Decimal(18, 0)), CAST(17000 AS Decimal(18, 0)), CAST(153000 AS Decimal(18, 0)), 2)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (9, N'HD009-2024', CAST(N'2024-07-20T10:15:00' AS DateTime), 1, CAST(220000 AS Decimal(18, 0)), CAST(22000 AS Decimal(18, 0)), CAST(198000 AS Decimal(18, 0)), 3)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (10, N'HD010-2024', CAST(N'2024-10-05T14:30:00' AS DateTime), 2, CAST(280000 AS Decimal(18, 0)), CAST(28000 AS Decimal(18, 0)), CAST(252000 AS Decimal(18, 0)), 1)
+GO
+-- ===== INSERT RECEIPT (Năm 2025) =====
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (11, N'HD011-2025', CAST(N'2025-01-05T09:00:00' AS DateTime), 1, CAST(150000 AS Decimal(18, 0)), CAST(15000 AS Decimal(18, 0)), CAST(135000 AS Decimal(18, 0)), 1)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (12, N'HD012-2025', CAST(N'2025-01-15T10:30:00' AS DateTime), 2, CAST(180000 AS Decimal(18, 0)), CAST(18000 AS Decimal(18, 0)), CAST(162000 AS Decimal(18, 0)), 2)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (13, N'HD013-2025', CAST(N'2025-02-10T11:45:00' AS DateTime), 1, CAST(200000 AS Decimal(18, 0)), CAST(20000 AS Decimal(18, 0)), CAST(180000 AS Decimal(18, 0)), 3)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (14, N'HD014-2025', CAST(N'2025-03-20T13:20:00' AS DateTime), 2, CAST(220000 AS Decimal(18, 0)), CAST(22000 AS Decimal(18, 0)), CAST(198000 AS Decimal(18, 0)), 1)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (15, N'HD015-2025', CAST(N'2025-04-12T14:00:00' AS DateTime), 1, CAST(190000 AS Decimal(18, 0)), CAST(19000 AS Decimal(18, 0)), CAST(171000 AS Decimal(18, 0)), 2)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (16, N'HD016-2025', CAST(N'2025-05-08T09:30:00' AS DateTime), 2, CAST(240000 AS Decimal(18, 0)), CAST(24000 AS Decimal(18, 0)), CAST(216000 AS Decimal(18, 0)), 3)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (17, N'HD017-2025', CAST(N'2025-06-18T15:45:00' AS DateTime), 1, CAST(210000 AS Decimal(18, 0)), CAST(21000 AS Decimal(18, 0)), CAST(189000 AS Decimal(18, 0)), 1)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (18, N'HD018-2025', CAST(N'2025-07-25T10:00:00' AS DateTime), 2, CAST(270000 AS Decimal(18, 0)), CAST(27000 AS Decimal(18, 0)), CAST(243000 AS Decimal(18, 0)), 2)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (19, N'HD019-2025', CAST(N'2025-08-30T12:15:00' AS DateTime), 1, CAST(250000 AS Decimal(18, 0)), CAST(25000 AS Decimal(18, 0)), CAST(225000 AS Decimal(18, 0)), 3)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (20, N'HD020-2025', CAST(N'2025-09-14T13:30:00' AS DateTime), 2, CAST(180000 AS Decimal(18, 0)), CAST(18000 AS Decimal(18, 0)), CAST(162000 AS Decimal(18, 0)), 1)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (21, N'HD021-2025', CAST(N'2025-10-22T11:00:00' AS DateTime), 1, CAST(290000 AS Decimal(18, 0)), CAST(29000 AS Decimal(18, 0)), CAST(261000 AS Decimal(18, 0)), 2)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (22, N'HD022-2025', CAST(N'2025-11-10T16:20:00' AS DateTime), 2, CAST(230000 AS Decimal(18, 0)), CAST(23000 AS Decimal(18, 0)), CAST(207000 AS Decimal(18, 0)), 3)
+GO
+INSERT [dbo].[Receipt] ([Id], [Code], [CreatedAt], [StaffId], [SubTotalAmount], [TotalDiscountAmount], [TotalAmount], [CustomerId]) VALUES (23, N'HD023-2025', CAST(N'2025-12-28T17:45:00' AS DateTime), 1, CAST(320000 AS Decimal(18, 0)), CAST(32000 AS Decimal(18, 0)), CAST(288000 AS Decimal(18, 0)), 1)
+GO
+SET IDENTITY_INSERT [dbo].[Receipt] OFF
+GO
+-- ===== INSERT RECEIPT DETAIL =====
+SET IDENTITY_INSERT [dbo].[ReceiptDetail] ON
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (1, 1, 5, CAST(10000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(50000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (1, 2, 10, CAST(5000 AS Decimal(18, 0)), CAST(10000 AS Decimal(18, 0)), CAST(50000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (2, 1, 3, CAST(10000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(30000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (2, 4, 2, CAST(60000 AS Decimal(18, 0)), CAST(15000 AS Decimal(18, 0)), CAST(105000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (3, 2, 20, CAST(10000 AS Decimal(18, 0)), CAST(20000 AS Decimal(18, 0)), CAST(180000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (4, 1, 15, CAST(10000 AS Decimal(18, 0)), CAST(25000 AS Decimal(18, 0)), CAST(125000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (4, 4, 2, CAST(60000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(120000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (5, 7, 8, CAST(20000 AS Decimal(18, 0)), CAST(18000 AS Decimal(18, 0)), CAST(142000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (6, 1, 10, CAST(10000 AS Decimal(18, 0)), CAST(30000 AS Decimal(18, 0)), CAST(70000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (6, 4, 4, CAST(60000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(240000 AS Decimal(18, 0)))
+GO
+-- Insert cho 2024, 2025
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (7, 1, 6, CAST(10000 AS Decimal(18, 0)), CAST(12000 AS Decimal(18, 0)), CAST(48000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (7, 2, 12, CAST(5000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(60000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (8, 4, 2, CAST(85000 AS Decimal(18, 0)), CAST(17000 AS Decimal(18, 0)), CAST(153000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (9, 7, 10, CAST(20000 AS Decimal(18, 0)), CAST(22000 AS Decimal(18, 0)), CAST(198000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (10, 1, 14, CAST(10000 AS Decimal(18, 0)), CAST(28000 AS Decimal(18, 0)), CAST(112000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (10, 4, 2, CAST(84000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(168000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (11, 1, 5, CAST(10000 AS Decimal(18, 0)), CAST(15000 AS Decimal(18, 0)), CAST(35000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (11, 2, 23, CAST(5000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(115000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (12, 4, 2, CAST(90000 AS Decimal(18, 0)), CAST(18000 AS Decimal(18, 0)), CAST(162000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (13, 7, 10, CAST(20000 AS Decimal(18, 0)), CAST(20000 AS Decimal(18, 0)), CAST(180000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (14, 1, 10, CAST(10000 AS Decimal(18, 0)), CAST(22000 AS Decimal(18, 0)), CAST(78000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (14, 2, 28, CAST(5000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(140000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (15, 4, 2, CAST(95000 AS Decimal(18, 0)), CAST(19000 AS Decimal(18, 0)), CAST(171000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (16, 1, 12, CAST(10000 AS Decimal(18, 0)), CAST(24000 AS Decimal(18, 0)), CAST(96000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (16, 7, 5, CAST(24000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(120000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (17, 2, 22, CAST(8000 AS Decimal(18, 0)), CAST(21000 AS Decimal(18, 0)), CAST(155000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (17, 4, 1, CAST(54000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(54000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (18, 1, 10, CAST(10000 AS Decimal(18, 0)), CAST(27000 AS Decimal(18, 0)), CAST(73000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (18, 4, 3, CAST(66000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(198000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (19, 7, 12, CAST(20000 AS Decimal(18, 0)), CAST(25000 AS Decimal(18, 0)), CAST(215000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (20, 2, 25, CAST(6000 AS Decimal(18, 0)), CAST(18000 AS Decimal(18, 0)), CAST(132000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (20, 1, 3, CAST(10000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(30000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (21, 4, 2, CAST(100000 AS Decimal(18, 0)), CAST(29000 AS Decimal(18, 0)), CAST(171000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (21, 7, 5, CAST(24000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(120000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (22, 1, 11, CAST(10000 AS Decimal(18, 0)), CAST(23000 AS Decimal(18, 0)), CAST(87000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (22, 2, 28, CAST(5000 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(140000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (23, 1, 15, CAST(10000 AS Decimal(18, 0)), CAST(32000 AS Decimal(18, 0)), CAST(118000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ReceiptDetail] ([ReceiptId], [ProductId], [Quantity], [Price], [DiscountAmount], [SubTotalAmount]) VALUES (23, 4, 3, CAST(67333 AS Decimal(18, 0)), CAST(0 AS Decimal(18, 0)), CAST(202000 AS Decimal(18, 0)))
+GO
+SET IDENTITY_INSERT [dbo].[ReceiptDetail] OFF
+GO
+-- ===== INSERT IMPORT (Nhập hàng) =====
+SET IDENTITY_INSERT [dbo].[Import] ON
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (1, N'PH001-2023', 2, CAST(50000 AS Decimal(18, 0)), CAST(N'2023-01-10T08:00:00' AS DateTime), CAST(N'2023-01-10T08:00:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (2, N'PH002-2023', 2, CAST(75000 AS Decimal(18, 0)), CAST(N'2023-02-15T09:30:00' AS DateTime), CAST(N'2023-02-15T09:30:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (3, N'PH003-2023', 2, CAST(100000 AS Decimal(18, 0)), CAST(N'2023-03-05T10:00:00' AS DateTime), CAST(N'2023-03-05T10:00:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (4, N'PH004-2023', 2, CAST(120000 AS Decimal(18, 0)), CAST(N'2023-06-20T11:15:00' AS DateTime), CAST(N'2023-06-20T11:15:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (5, N'PH005-2023', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2023-09-08T14:45:00' AS DateTime), CAST(N'2023-09-08T14:45:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (6, N'PH006-2023', 2, CAST(150000 AS Decimal(18, 0)), CAST(N'2023-12-25T16:00:00' AS DateTime), CAST(N'2023-12-25T16:00:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (7, N'PH007-2024', 2, CAST(60000 AS Decimal(18, 0)), CAST(N'2024-01-08T08:30:00' AS DateTime), CAST(N'2024-01-08T08:30:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (8, N'PH008-2024', 2, CAST(85000 AS Decimal(18, 0)), CAST(N'2024-04-10T13:00:00' AS DateTime), CAST(N'2024-04-10T13:00:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (9, N'PH009-2024', 2, CAST(110000 AS Decimal(18, 0)), CAST(N'2024-07-15T10:00:00' AS DateTime), CAST(N'2024-07-15T10:00:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (10, N'PH010-2024', 2, CAST(140000 AS Decimal(18, 0)), CAST(N'2024-10-01T14:30:00' AS DateTime), CAST(N'2024-10-01T14:30:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (11, N'PH011-2025', 2, CAST(75000 AS Decimal(18, 0)), CAST(N'2025-01-03T09:00:00' AS DateTime), CAST(N'2025-01-03T09:00:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (12, N'PH012-2025', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2025-01-12T10:30:00' AS DateTime), CAST(N'2025-01-12T10:30:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (13, N'PH013-2025', 2, CAST(100000 AS Decimal(18, 0)), CAST(N'2025-02-08T11:45:00' AS DateTime), CAST(N'2025-02-08T11:45:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (14, N'PH014-2025', 2, CAST(110000 AS Decimal(18, 0)), CAST(N'2025-03-18T13:20:00' AS DateTime), CAST(N'2025-03-18T13:20:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (15, N'PH015-2025', 2, CAST(95000 AS Decimal(18, 0)), CAST(N'2025-04-10T14:00:00' AS DateTime), CAST(N'2025-04-10T14:00:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (16, N'PH016-2025', 2, CAST(120000 AS Decimal(18, 0)), CAST(N'2025-05-05T09:30:00' AS DateTime), CAST(N'2025-05-05T09:30:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (17, N'PH017-2025', 2, CAST(105000 AS Decimal(18, 0)), CAST(N'2025-06-15T15:45:00' AS DateTime), CAST(N'2025-06-15T15:45:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (18, N'PH018-2025', 2, CAST(135000 AS Decimal(18, 0)), CAST(N'2025-07-22T10:00:00' AS DateTime), CAST(N'2025-07-22T10:00:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (19, N'PH019-2025', 2, CAST(125000 AS Decimal(18, 0)), CAST(N'2025-08-28T12:15:00' AS DateTime), CAST(N'2025-08-28T12:15:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (20, N'PH020-2025', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2025-09-10T13:30:00' AS DateTime), CAST(N'2025-09-10T13:30:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (21, N'PH021-2025', 2, CAST(145000 AS Decimal(18, 0)), CAST(N'2025-10-20T11:00:00' AS DateTime), CAST(N'2025-10-20T11:00:00' AS DateTime), N'Hoàn thành', 1)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (22, N'PH022-2025', 2, CAST(115000 AS Decimal(18, 0)), CAST(N'2025-11-08T16:20:00' AS DateTime), CAST(N'2025-11-08T16:20:00' AS DateTime), N'Hoàn thành', 2)
+GO
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (23, N'PH023-2025', 2, CAST(160000 AS Decimal(18, 0)), CAST(N'2025-12-26T17:45:00' AS DateTime), CAST(N'2025-12-26T17:45:00' AS DateTime), N'Hoàn thành', 1)
+GO
+SET IDENTITY_INSERT [dbo].[Import] OFF
+GO
+-- ===== INSERT IMPORT DETAIL =====
+SET IDENTITY_INSERT [dbo].[ImportDetail] ON
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (1, 1, 5, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (2, 2, 15, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (2, 4, 1, CAST(30000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (3, 1, 10, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (3, 7, 2, CAST(10000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (4, 4, 2, CAST(50000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (4, 2, 6, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (5, 1, 8, CAST(8500 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (5, 7, 1, CAST(15000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (6, 4, 2, CAST(55000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (6, 1, 5, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (7, 1, 6, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (7, 2, 4, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (8, 4, 2, CAST(40000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (8, 7, 1, CAST(5000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (9, 7, 10, CAST(10000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (10, 1, 14, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (10, 4, 1, CAST(60000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (11, 1, 5, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (11, 2, 15, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (12, 4, 2, CAST(40000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (12, 1, 3, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (13, 7, 10, CAST(10000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (14, 1, 10, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (14, 2, 8, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (15, 4, 2, CAST(42000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (15, 7, 1, CAST(11000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (16, 1, 12, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (16, 7, 1, CAST(24000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (17, 2, 15, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (17, 4, 1, CAST(60000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (18, 1, 10, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (18, 4, 3, CAST(45000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (19, 7, 12, CAST(9500 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (20, 2, 25, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (20, 1, 3, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (21, 4, 2, CAST(65000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (21, 7, 1, CAST(15000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (22, 1, 11, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (22, 2, 15, CAST(3000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (23, 1, 15, CAST(8000 AS Decimal(18, 0)))
+GO
+INSERT [dbo].[ImportDetail] ([ImportId], [ProductId], [Quantity], [ImportPrice]) VALUES (23, 4, 2, CAST(60000 AS Decimal(18, 0)))
+GO
+SET IDENTITY_INSERT [dbo].[ImportDetail] OFF
 GO
 /****** Object:  Index [UQ__Category__3214EC065CB284E4]    Script Date: 2/4/2026 4:24:14 PM ******/
 ALTER TABLE [dbo].[Category] ADD UNIQUE NONCLUSTERED

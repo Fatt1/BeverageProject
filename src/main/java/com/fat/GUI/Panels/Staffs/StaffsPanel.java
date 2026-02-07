@@ -54,10 +54,7 @@ public class StaffsPanel extends javax.swing.JPanel {
             }
         });
         
-        // Lắng nghe sự kiện pagination
-        paginationPanel1.addPaginationEventListener((pageIndex, pageSize) -> {
-            loadData();
-        });
+      
     }
 
 
@@ -67,7 +64,6 @@ public class StaffsPanel extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblStaff = new javax.swing.JTable();
-        paginationPanel1 = new com.fat.GUI.Components.PaginationPanel();
         jPanel1 = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         txtSearch = new javax.swing.JTextField();
@@ -95,9 +91,6 @@ public class StaffsPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblStaff);
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        paginationPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        add(paginationPanel1, java.awt.BorderLayout.PAGE_END);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -203,7 +196,7 @@ public class StaffsPanel extends javax.swing.JPanel {
         searchKey = null;
         loadData();
 
-    }//GEN-LAST:event_btnResetActionPerformed
+    }                                        
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
@@ -476,12 +469,10 @@ public class StaffsPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnImportExcel;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<String> cboRole;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblStaff;
-    private com.fat.GUI.Components.PaginationPanel paginationPanel1;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

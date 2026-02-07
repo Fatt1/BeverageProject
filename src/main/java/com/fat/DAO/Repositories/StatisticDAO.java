@@ -5,12 +5,10 @@ import com.fat.DAO.Utils.DbContext;
 
 import com.fat.DTO.Statistics.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticDAO implements IStatisticDAO {
@@ -278,5 +276,46 @@ public class StatisticDAO implements IStatisticDAO {
     @Override
     public List<SupplierStatisticDTO> getSupplierStatistic( LocalDate fromDate, LocalDate toDate) {
         return List.of();
+    }
+
+    @Override
+    public List<ProductStatisticDTO> getProductStatistic(LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime start = fromDate.atStartOfDay();
+        LocalDateTime end = toDate.atTime(23, 59, 59);
+        String sql = """
+                SELECT  
+                p.id As productId,
+                p.name AS productName,
+                ISNULL(SUM(rd.quantity), 0) AS totalSoldQuantity,
+                ISNULL(SUM(rd.subTotalAmount - rd.DiscountAmount), 0) AS totalSalesAmount
+                FROM Product p
+                LEFT JOIN ReceiptDetail rd ON p.id = rd.productId
+                LEFT JOIN Receipt r ON rd.receiptId = r.id
+                AND r.CreatedAt BETWEEN ? AND ?
+                GROUP BY p.id, p.name
+                ORDER BY totalSalesAmount DESC
+            """;
+        try(Connection conn = DbContext.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setObject(1, start);
+            ps.setObject(2, end);
+            var rs = ps.executeQuery();
+            List<ProductStatisticDTO> productStatistics = new ArrayList<>();
+            while(rs.next()){
+                ProductStatisticDTO dto = new ProductStatisticDTO(
+                        rs.getInt("productId"),
+                        rs.getString("productName"),
+                        rs.getInt("totalSoldQuantity"),
+                        rs.getBigDecimal("totalSalesAmount")
+                );
+                productStatistics.add(dto);
+            }
+            return productStatistics;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm");
+        }
+
     }
 }

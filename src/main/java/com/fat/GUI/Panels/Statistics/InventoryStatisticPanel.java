@@ -6,9 +6,15 @@ package com.fat.GUI.Panels.Statistics;
 
 import com.fat.BUS.Abstractions.Services.IStatisticService;
 import com.fat.BUS.Services.StatisticService;
+import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.DTO.Statistics.StockStatisticDTO;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +28,13 @@ public class InventoryStatisticPanel extends javax.swing.JPanel {
      */
     public InventoryStatisticPanel() {
         initComponents();
-        initTable(statisticService.getStockStatistic(null, null));
+        dateFrom.setDate(new Date());
+        dateTo.setDate(new Date());
+        initTable(statisticService.getStockStatistic(dateFrom.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate(), dateTo.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()));
     }
 
     /**
@@ -37,12 +49,10 @@ public class InventoryStatisticPanel extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         btnSearchInventory = new javax.swing.JButton();
         btnExportExcelInventory = new javax.swing.JButton();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        dateTo = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        dateFrom = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblInventory = new javax.swing.JTable();
 
@@ -54,7 +64,7 @@ public class InventoryStatisticPanel extends javax.swing.JPanel {
 
         btnSearchInventory.setBackground(new java.awt.Color(51, 51, 51));
         btnSearchInventory.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearchInventory.setText("Tìm kiếm");
+        btnSearchInventory.setText("Thống kê");
         btnSearchInventory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSearchInventory.addActionListener(this::btnSearchInventoryActionPerformed);
 
@@ -69,47 +79,39 @@ public class InventoryStatisticPanel extends javax.swing.JPanel {
 
         jLabel2.setText("Từ ngày");
 
-        jLabel1.setText("Tìm kiếm sản phẩm");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(14, 14, 14)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnExportExcelInventory)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSearchInventory, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                    .addComponent(dateTo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
-                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExportExcelInventory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSearchInventory, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(288, Short.MAX_VALUE))
+                .addContainerGap(388, Short.MAX_VALUE))
         );
 
         add(jPanel2, java.awt.BorderLayout.WEST);
@@ -140,11 +142,21 @@ public class InventoryStatisticPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchInventoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchInventoryActionPerformed
-
+        LocalDate fromDate = dateFrom.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        LocalDate toDate = dateTo.getDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        if (fromDate.isAfter(toDate)) {
+            JOptionPane.showMessageDialog(this, "Ngày bắt đầu không được sau ngày kết thúc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        initTable(statisticService.getStockStatistic(fromDate, toDate));
     }//GEN-LAST:event_btnSearchInventoryActionPerformed
 
     private void btnExportExcelInventoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelInventoryActionPerformed
-
+        ExcelHelper.exportToExcel(tblInventory, "Báo cáo tồn kho", "Báo cáo tồn kho");
     }//GEN-LAST:event_btnExportExcelInventoryActionPerformed
     private void initTable(List<StockStatisticDTO> list) {
         DefaultTableModel model = (DefaultTableModel) tblInventory.getModel();
@@ -162,20 +174,23 @@ public class InventoryStatisticPanel extends javax.swing.JPanel {
             };
             model.addRow(row);
         }
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < tblInventory.getColumnCount(); i++) {
+            tblInventory.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExportExcelInventory;
     private javax.swing.JButton btnSearchInventory;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
-    private javax.swing.JLabel jLabel1;
+    private com.toedter.calendar.JDateChooser dateFrom;
+    private com.toedter.calendar.JDateChooser dateTo;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTable tblInventory;
     // End of variables declaration//GEN-END:variables
 }

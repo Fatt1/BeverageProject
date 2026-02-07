@@ -4,7 +4,6 @@ import com.fat.BUS.Abstractions.Services.IImportService;
 import com.fat.BUS.Utils.ValidatorUtil;
 import com.fat.Contract.Enumerations.ImportStatus;
 import com.fat.Contract.Exceptions.ValidationException;
-import com.fat.Contract.Shared.PagedResult;
 import com.fat.DAO.Abstractions.Repositories.IImportDAO;
 import com.fat.DAO.Repositories.ImportDAO;
 import com.fat.DTO.Imports.ImportDTO;
@@ -128,6 +127,11 @@ public class ImportService implements IImportService {
         existingImport.setUpdatedAt(LocalDateTime.now());
         importsCache.removeIf(importDTO -> importDTO.getId().equals(id));
         importsCache.addFirst(existingImport);
+        // Update product cache
+        for(ImportDetailDTO detail : existingImport.getImportDetails()){
+            ProductService.getInstance().updateProductStock(detail.getProductId(), detail.getQuantity());
+        }
+
     }
 
 }

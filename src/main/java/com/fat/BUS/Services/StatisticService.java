@@ -3,6 +3,7 @@ package com.fat.BUS.Services;
 import com.fat.BUS.Abstractions.Services.IStatisticService;
 import com.fat.DAO.Abstractions.Repositories.IStatisticDAO;
 import com.fat.DAO.Repositories.StatisticDAO;
+import com.fat.DTO.Statistics.ProductStatisticDTO;
 import com.fat.DTO.Statistics.RevenueDTO;
 import com.fat.DTO.Statistics.StockStatisticDTO;
 
@@ -42,6 +43,11 @@ public class StatisticService implements IStatisticService{
     @Override
     public List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter) {
         return statisticDAO.getRevenueStatisticsByQuarter(year, quarter);
+    }
+
+    @Override
+    public List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate) {
+        return statisticDAO.getProductStatistic(fromDate, toDate);
     }
 
 }

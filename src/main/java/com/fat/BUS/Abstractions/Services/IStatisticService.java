@@ -1,5 +1,6 @@
 package com.fat.BUS.Abstractions.Services;
 
+import com.fat.DTO.Statistics.ProductStatisticDTO;
 import com.fat.DTO.Statistics.RevenueDTO;
 import com.fat.DTO.Statistics.StockStatisticDTO;
 
@@ -12,5 +13,6 @@ public interface IStatisticService {
     List<RevenueDTO> getRevenueStatisticsByYear(int startYear, int endYear);
     List<RevenueDTO> getRevenueStatisticsByDay(int year, int month);
     List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter);
+    List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate);
 
 }

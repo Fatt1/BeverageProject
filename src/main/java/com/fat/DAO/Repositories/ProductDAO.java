@@ -241,24 +241,6 @@ public class ProductDAO implements IProductDAO {
             }
         }
 
-    @Override
-    public void updateQuantity(Integer productId, Integer quantity) {
-        String sql = "UPDATE PRODUCT " +
-                "SET Stock = Quantity ? " +
-                "WHERE Id = ?;";
-        try (Connection conn = DbContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-        ) {
-            ps.setInt(1, quantity);
-            ps.setInt(2, productId);
-            ps.executeUpdate();
-
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            throw new RuntimeException("Xảy ra lỗi khi cập nhật số lượng sản phẩm", sqlException);
-        }
-    }
-
 
     @Override
     public Integer add(ProductDTO entity) {

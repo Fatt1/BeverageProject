@@ -24,7 +24,7 @@ public class StatisticService implements IStatisticService{
 
     @Override
     public List<StockStatisticDTO> getStockStatistic(LocalDate fromDate, LocalDate toDate) {
-        stockStatistics = statisticDAO.getStockStatistic(LocalDate.of(2025,12,1), LocalDate.of(2025,12,31));
+        stockStatistics = statisticDAO.getStockStatistic(fromDate, toDate);
         return stockStatistics;
     }
     @Override

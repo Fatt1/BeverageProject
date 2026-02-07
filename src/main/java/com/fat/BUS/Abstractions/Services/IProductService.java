@@ -14,5 +14,5 @@ public interface IProductService {
     List<ProductDTO> getAllProducts();
     List<ProductDTO> filterNoPagination(String searchKey, Integer categoryId);
     PagedResult<ProductDTO> getAllProductPagination(int pageIndex, int pageSize);
-    void updateProductQuantity(Integer productId, Integer quantity);
+    void updateProductStock(Integer productId, Integer quantity);
 }

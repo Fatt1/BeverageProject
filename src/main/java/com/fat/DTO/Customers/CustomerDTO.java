@@ -1,12 +1,20 @@
 package com.fat.DTO.Customers;
 
 import com.fat.DTO.Abstractions.BaseDTO;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 
 public class CustomerDTO extends BaseDTO {
+    @NotBlank(message = "Tên không được để trống")
     private String firstName;
+    @NotBlank(message = "Họ không được để trống")
     private String lastName;
+    @NotBlank(message = "Địa chỉ không được để trống")
     private String address;
+    @NotBlank(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "^(\\+84|0)\\d{9}$", message = "Số điện thoại phải đủ 10 chữ số và bắt đầu bằng +84 hoặc 0")
     private String phoneNumber;
     private LocalDateTime createdAt;
 
@@ -63,6 +71,6 @@ public class CustomerDTO extends BaseDTO {
     }
 
     public String getFullName() {
-        return firstName + " " + lastName;
+        return lastName + " " + firstName;
     }
 }

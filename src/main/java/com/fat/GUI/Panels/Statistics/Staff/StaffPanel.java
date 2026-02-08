@@ -67,7 +67,7 @@ public class StaffPanel extends javax.swing.JPanel {
                 jTextField1ActionPerformed(evt);
             }
         });
-
+//
         jLabel2.setText("Từ Ngày");
 
         jLabel3.setText("Đến Ngày");

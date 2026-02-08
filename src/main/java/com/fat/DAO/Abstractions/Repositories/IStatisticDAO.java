@@ -19,7 +19,7 @@ public interface IStatisticDAO {
 
     List<StockStatisticDTO> getStockStatistic(LocalDate fromDate, LocalDate toDate);
 
-    List<SupplierStatisticDTO> getSupplierStatistic(LocalDate fromDate, LocalDate toDate);
+    List<StaffStatisticDTO> getSupplierStatistic(LocalDate fromDate, LocalDate toDate);
 
     List<ProductStatisticDTO> getProductStatistic(LocalDate fromDate, LocalDate toDate);
 

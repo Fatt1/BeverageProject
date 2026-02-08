@@ -7,6 +7,7 @@ package com.fat.GUI.Dialogs.Receipt;
 import com.fat.BUS.Abstractions.Services.ICustomerService;
 import com.fat.BUS.Services.CustomerService;
 import com.fat.DTO.Customers.CustomerDTO;
+import com.fat.GUI.Dialogs.Customers.AddOrUpdateCustomerDialog;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
@@ -67,6 +68,7 @@ public class CustomersSelectionDialog extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        btnAdd = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
@@ -155,6 +157,13 @@ public class CustomersSelectionDialog extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        btnAdd.setBackground(new java.awt.Color(51, 51, 51));
+        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Xbox Cross.png"))); // NOI18N
+        btnAdd.setText("Thêm mới");
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.addActionListener(this::btnAddActionPerformed);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -162,9 +171,14 @@ public class CustomersSelectionDialog extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(txtSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(txtSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAdd)
+                        .addGap(28, 28, 28))))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
@@ -176,7 +190,9 @@ public class CustomersSelectionDialog extends javax.swing.JDialog {
                 .addGap(17, 17, 17)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))
         );
@@ -252,6 +268,17 @@ public class CustomersSelectionDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // Mở dialog thêm khách hàng mới
+        java.awt.Frame parentFrame = (java.awt.Frame) SwingUtilities.getWindowAncestor(this);
+        AddOrUpdateCustomerDialog dialog = new AddOrUpdateCustomerDialog(parentFrame, true, null);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        
+        // Sau khi đóng dialog, reload danh sách khách hàng
+        loadData();
+    }//GEN-LAST:event_btnAddActionPerformed
+
     public boolean isConfirmed() {
         return isConfirmed;
     }
@@ -299,6 +326,7 @@ public class CustomersSelectionDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
+    private javax.swing.JButton btnAdd;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

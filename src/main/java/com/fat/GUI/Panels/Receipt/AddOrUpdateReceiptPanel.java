@@ -909,10 +909,16 @@ public class AddOrUpdateReceiptPanel extends javax.swing.JPanel {
                 return;
             }
             
+            // Bắt buộc chọn khách hàng (DB không cho NULL)
+            if (selectedCustomer == null) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng trước khi tạo hóa đơn", "Chưa chọn khách hàng", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
             // Tạo ReceiptDTO
             ReceiptDTO dto = new ReceiptDTO();
             dto.setCode(txtImportID4.getText());
-            dto.setCustomerId(selectedCustomer != null ? selectedCustomer.getId() : null);
+            dto.setCustomerId(selectedCustomer.getId());
             dto.setStaffId(currentStaff.getId());
             dto.setReceiptItems(new ArrayList<>(receiptDetails));
             

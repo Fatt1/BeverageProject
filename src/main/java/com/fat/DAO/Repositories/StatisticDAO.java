@@ -228,6 +228,11 @@ public class StatisticDAO implements IStatisticDAO {
     }
 
     @Override
+    public List<StaffStatisticDTO> getStaffStatistic(LocalDate fromDate, LocalDate toDate) {
+        return List.of();
+    }
+
+    @Override
     public List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter) {
         String sql = """
             WITH QuarterRange AS (
@@ -273,10 +278,6 @@ public class StatisticDAO implements IStatisticDAO {
         }
     }
 
-    @Override
-    public List<SupplierStatisticDTO> getSupplierStatistic( LocalDate fromDate, LocalDate toDate) {
-        return List.of();
-    }
 
     @Override
     public List<ProductStatisticDTO> getProductStatistic(LocalDate fromDate, LocalDate toDate) {

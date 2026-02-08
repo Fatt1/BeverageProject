@@ -1,12 +1,14 @@
 package com.fat.DTO.Statistics;
 
+import java.math.BigDecimal;
+
 public class StaffStatisticDTO {
     private Integer staffId;
     private String staffName;
     private int totalReceipts; // Tổng số hóa đơn
-    private double totalAmount; // Tổng số tiền
+    private BigDecimal totalAmount; // Tổng số tiền
 
-    public StaffStatisticDTO(Integer staffId, String staffName, int totalReceipts, double totalAmount) {
+    public StaffStatisticDTO(Integer staffId, String staffName, int totalReceipts, BigDecimal totalAmount) {
         this.staffId = staffId;
         this.staffName = staffName;
         this.totalReceipts = totalReceipts;
@@ -25,7 +27,7 @@ public class StaffStatisticDTO {
         return totalReceipts;
     }
 
-    public double getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 }

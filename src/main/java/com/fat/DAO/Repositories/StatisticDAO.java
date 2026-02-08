@@ -1,18 +1,14 @@
 package com.fat.DAO.Repositories;
 
-import com.fat.Contract.Shared.PagedResult;
-import com.fat.DAO.Abstractions.Repositories.IStaffDAO;
 import com.fat.DAO.Abstractions.Repositories.IStatisticDAO;
 import com.fat.DAO.Utils.DbContext;
-import com.fat.DTO.Auths.UserSessionDTO;
 
 import com.fat.DTO.Statistics.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticDAO implements IStatisticDAO {
@@ -35,12 +31,129 @@ public class StatisticDAO implements IStatisticDAO {
 
     @Override
     public List<RevenueDTO> getRevenueStatisticsByMonth(int year) {
-        return List.of();
+        String sql = """
+            WITH MonthRange AS (
+                SELECT 1 AS month
+                UNION ALL
+                SELECT month + 1 FROM MonthRange WHERE month < 12
+            )
+            SELECT 
+                CONCAT(DATENAME(MONTH, DATEFROMPARTS(?, mr.month, 1)), ' ', ?) AS timeLabel,
+                ISNULL(SUM(r.TotalAmount), 0) AS revenue,
+                ISNULL(SUM(i.TotalPrice), 0) AS cost,
+                ISNULL(SUM(r.TotalAmount), 0) - ISNULL(SUM(i.TotalPrice), 0) AS profit
+            FROM MonthRange mr
+            LEFT JOIN Receipt r ON YEAR(r.CreatedAt) = ? AND MONTH(r.CreatedAt) = mr.month
+            LEFT JOIN Import i ON YEAR(i.CreatedAt) = ? AND MONTH(i.CreatedAt) = mr.month
+            GROUP BY mr.month
+            ORDER BY mr.month
+        """;
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setInt(1, year);
+            ps.setInt(2, year);
+            ps.setInt(3, year);
+            ps.setInt(4, year);
+            var rs = ps.executeQuery();
+            List<RevenueDTO> revenues = new java.util.ArrayList<>();
+            while (rs.next()){
+                RevenueDTO dto = new RevenueDTO(
+                        rs.getString("timeLabel"),
+                        new java.math.BigDecimal(rs.getLong("revenue")),
+                        new java.math.BigDecimal(rs.getLong("profit")),
+                        new java.math.BigDecimal(rs.getLong("cost"))
+                );
+                revenues.add(dto);
+            }
+            return revenues;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public List<RevenueDTO> getRevenueStatisticsByYear(int startYear, int endYear) {
-        return List.of();
+        String sql = """
+            WITH YearRange AS (
+                SELECT ? AS year
+                UNION ALL
+                SELECT year + 1 FROM YearRange WHERE year < ?
+            )
+            SELECT 
+                CAST(yr.year AS VARCHAR(4)) AS timeLabel,
+                ISNULL(SUM(r.TotalAmount), 0) AS revenue,
+                ISNULL(SUM(i.TotalPrice), 0) AS cost,
+                ISNULL(SUM(r.TotalAmount), 0) - ISNULL(SUM(i.TotalPrice), 0) AS profit
+            FROM YearRange yr
+            LEFT JOIN Receipt r ON YEAR(r.CreatedAt) = yr.year
+            LEFT JOIN Import i ON YEAR(i.CreatedAt) = yr.year
+            GROUP BY yr.year
+            ORDER BY yr.year
+        """;
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setInt(1, startYear);
+            ps.setInt(2, endYear);
+            var rs = ps.executeQuery();
+            List<RevenueDTO> revenues = new java.util.ArrayList<>();
+            while (rs.next()){
+                RevenueDTO dto = new RevenueDTO(
+                        rs.getString("timeLabel"),
+                        new java.math.BigDecimal(rs.getLong("revenue")),
+                        new java.math.BigDecimal(rs.getLong("profit")),
+                        new java.math.BigDecimal(rs.getLong("cost"))
+                );
+                revenues.add(dto);
+            }
+            return revenues;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<RevenueDTO> getRevenueStatisticsByDay(int year, int month) {
+        String sql = """
+            SELECT 
+                CAST(r.CreatedAt AS DATE) AS receiptDate,
+                ISNULL(SUM(r.TotalAmount), 0) AS totalSales,
+                0 AS totalImport,
+                ISNULL(SUM(r.TotalAmount), 0) AS revenue,
+                0 AS cost,
+                ISNULL(SUM(r.TotalAmount), 0) AS profit
+            FROM Receipt r
+            WHERE YEAR(r.CreatedAt) = ? AND MONTH(r.CreatedAt) = ?
+            GROUP BY CAST(r.CreatedAt AS DATE)
+            ORDER BY CAST(r.CreatedAt AS DATE)
+        """;
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setInt(1, year);
+            ps.setInt(2, month);
+            var rs = ps.executeQuery();
+            List<RevenueDTO> revenues = new java.util.ArrayList<>();
+            while (rs.next()){
+                RevenueDTO dto = new RevenueDTO(
+                        rs.getDate("receiptDate").toLocalDate(),
+                        new java.math.BigDecimal(rs.getLong("revenue")),
+                        new java.math.BigDecimal(rs.getLong("profit")),
+                        new java.math.BigDecimal(rs.getLong("cost"))
+                );
+                revenues.add(dto);
+            }
+            return revenues;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -115,7 +228,94 @@ public class StatisticDAO implements IStatisticDAO {
     }
 
     @Override
-    public List<StaffStatisticDTO> getSupplierStatistic( LocalDate fromDate, LocalDate toDate) {
+    public List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter) {
+        String sql = """
+            WITH QuarterRange AS (
+                SELECT 1 AS qtr
+                UNION ALL
+                SELECT qtr + 1 FROM QuarterRange WHERE qtr < 4
+            )
+            SELECT 
+                'Q' + CAST(qr.qtr AS VARCHAR(1)) + ' ' + CAST(? AS VARCHAR(4)) AS timeLabel,
+                ISNULL(SUM(r.TotalAmount), 0) AS revenue,
+                ISNULL(SUM(i.TotalPrice), 0) AS cost,
+                ISNULL(SUM(r.TotalAmount), 0) - ISNULL(SUM(i.TotalPrice), 0) AS profit
+            FROM QuarterRange qr
+            LEFT JOIN Receipt r ON YEAR(r.CreatedAt) = ? 
+                AND CEILING(CAST(MONTH(r.CreatedAt) AS FLOAT) / 3) = qr.qtr
+            LEFT JOIN Import i ON YEAR(i.CreatedAt) = ? 
+                AND CEILING(CAST(MONTH(i.CreatedAt) AS FLOAT) / 3) = qr.qtr
+            GROUP BY qr.qtr
+            ORDER BY qr.qtr
+        """;
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setInt(1, year);
+            ps.setInt(2, year);
+            ps.setInt(3, year);
+            var rs = ps.executeQuery();
+            List<RevenueDTO> revenues = new java.util.ArrayList<>();
+            while (rs.next()){
+                RevenueDTO dto = new RevenueDTO(
+                        rs.getString("timeLabel"),
+                        new java.math.BigDecimal(rs.getLong("revenue")),
+                        new java.math.BigDecimal(rs.getLong("profit")),
+                        new java.math.BigDecimal(rs.getLong("cost"))
+                );
+                revenues.add(dto);
+            }
+            return revenues;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<SupplierStatisticDTO> getSupplierStatistic( LocalDate fromDate, LocalDate toDate) {
         return List.of();
+    }
+
+    @Override
+    public List<ProductStatisticDTO> getProductStatistic(LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime start = fromDate.atStartOfDay();
+        LocalDateTime end = toDate.atTime(23, 59, 59);
+        String sql = """
+                SELECT  
+                p.id As productId,
+                p.name AS productName,
+                ISNULL(SUM(rd.quantity), 0) AS totalSoldQuantity,
+                ISNULL(SUM(rd.subTotalAmount - rd.DiscountAmount), 0) AS totalSalesAmount
+                FROM Product p
+                LEFT JOIN ReceiptDetail rd ON p.id = rd.productId
+                LEFT JOIN Receipt r ON rd.receiptId = r.id
+                AND r.CreatedAt BETWEEN ? AND ?
+                GROUP BY p.id, p.name
+                ORDER BY totalSalesAmount DESC
+            """;
+        try(Connection conn = DbContext.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setObject(1, start);
+            ps.setObject(2, end);
+            var rs = ps.executeQuery();
+            List<ProductStatisticDTO> productStatistics = new ArrayList<>();
+            while(rs.next()){
+                ProductStatisticDTO dto = new ProductStatisticDTO(
+                        rs.getInt("productId"),
+                        rs.getString("productName"),
+                        rs.getInt("totalSoldQuantity"),
+                        rs.getBigDecimal("totalSalesAmount")
+                );
+                productStatistics.add(dto);
+            }
+            return productStatistics;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm");
+        }
+
     }
 }

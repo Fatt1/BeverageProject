@@ -122,13 +122,12 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public void updateProductQuantity(Integer productId, Integer quantity) {
+    public void updateProductStock(Integer productId, Integer quantity) {
         var product = getProductById(productId);
         int changedQuantity = product.getStock() + quantity;
         if(changedQuantity < 0) {
             throw new RuntimeException("Số lượng sản phẩm không đủ để thực hiện thao tác này.");
         }
-        productDAO.updateQuantity(productId, quantity);
         product.setStock(changedQuantity);
     }
 

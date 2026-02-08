@@ -2,18 +2,30 @@ package com.fat.DTO.Imports;
 
 import com.fat.Contract.Enumerations.ImportStatus;
 import com.fat.DTO.Abstractions.BaseDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class ImportDTO extends BaseDTO {
+    @NotBlank(message = "Mã phiếu nhập không được để trống")
     private String importCode;
+    @NotNull(message = "Nhà cung cấp không được để trống")
     private Integer supplierId;
+    @NotNull(message = "Tổng tiền không được để trống")
+    @PositiveOrZero(message = "Tổng tiền phải là số không âm")
+    @Digits(message = "Tổng tiền không hợp lệ", integer = 15, fraction = 2)
     private BigDecimal totalPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @NotNull(message = "Trạng thái không được để trống")
     private ImportStatus status;
+    @NotNull(message = "Nhân viên không được để trống")
     private Integer staffId;
+    @NotNull(message = "Chi tiết phiếu nhập không được để trống")
+    @NotEmpty(message = "Phiếu nhập phải có ít nhất một sản phẩm")
+    @Valid
     private List<ImportDetailDTO> importDetails;
 
     public ImportDTO() {

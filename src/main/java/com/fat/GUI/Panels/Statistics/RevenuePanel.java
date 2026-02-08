@@ -1,14 +1,22 @@
 package com.fat.GUI.Panels.Statistics;
 
+import com.fat.BUS.Services.StatisticService;
+import com.fat.DTO.Statistics.RevenueDTO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.math.BigDecimal;
+import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public class RevenuePanel extends javax.swing.JPanel {
+    private DefaultTableModel tableModel;
+    private JTable tableData;
+    private ChartPanel chartPanelComponent;
+    private StatisticService statisticService = StatisticService.getInstance();
     
     public RevenuePanel() {
         initComponents();
@@ -34,6 +42,12 @@ public class RevenuePanel extends javax.swing.JPanel {
         splitPane.setBottomComponent(createTablePanel());
         
         this.add(splitPane, BorderLayout.CENTER);
+    }
+    
+    // ===== FORMAT HELPER =====
+    private String formatCurrency(BigDecimal amount) {
+        if (amount == null) return "0đ";
+        return String.format("%,dđ", amount.longValue());
     }
     
     /**
@@ -135,6 +149,11 @@ public class RevenuePanel extends javax.swing.JPanel {
         btnStat.setBackground(new Color(76, 175, 80));
         btnStat.setForeground(Color.WHITE);
         btnStat.setBorderPainted(false);
+        btnStat.addActionListener(e -> {
+            int startYear = (Integer) cbFrom.getSelectedItem();
+            int endYear = (Integer) cbTo.getSelectedItem();
+            loadAndDisplayRevenueByYear(startYear, endYear);
+        });
         panel.add(btnStat);
         
         JButton btnExcel = new JButton("Xuất Excel");
@@ -160,6 +179,17 @@ public class RevenuePanel extends javax.swing.JPanel {
         panel.add(cbYear);
         
         panel.add(Box.createHorizontalGlue());
+        
+        JButton btnStat = new JButton("Thống kê");
+        btnStat.setPreferredSize(new Dimension(100, 30));
+        btnStat.setBackground(new Color(76, 175, 80));
+        btnStat.setForeground(Color.WHITE);
+        btnStat.setBorderPainted(false);
+        btnStat.addActionListener(e -> {
+            int year = (Integer) cbYear.getSelectedItem();
+            loadAndDisplayRevenueByMonth(year);
+        });
+        panel.add(btnStat);
         
         JButton btnExcel = new JButton("Xuất Excel");
         btnExcel.setPreferredSize(new Dimension(110, 30));
@@ -199,6 +229,11 @@ public class RevenuePanel extends javax.swing.JPanel {
         btnStat.setBackground(new Color(76, 175, 80));
         btnStat.setForeground(Color.WHITE);
         btnStat.setBorderPainted(false);
+        btnStat.addActionListener(e -> {
+            int year = (Integer) cbYear.getSelectedItem();
+            int month = (Integer) cbMonth.getSelectedItem();
+            loadAndDisplayRevenueByDay(year, month);
+        });
         panel.add(btnStat);
         
         JButton btnExcel = new JButton("Xuất Excel");
@@ -235,6 +270,11 @@ public class RevenuePanel extends javax.swing.JPanel {
         btnStat.setBackground(new Color(76, 175, 80));
         btnStat.setForeground(Color.WHITE);
         btnStat.setBorderPainted(false);
+        btnStat.addActionListener(e -> {
+            int year = (Integer) cbYear.getSelectedItem();
+            int quarter = cbQuarterLocal.getSelectedIndex() + 1; // Quý 1-4
+            loadAndDisplayRevenueByQuarter(year, quarter);
+        });
         panel.add(btnStat);
         
         JButton btnExcel = new JButton("Xuất Excel");
@@ -326,7 +366,7 @@ public class RevenuePanel extends javax.swing.JPanel {
         chart.getLegend().setBackgroundPaint(new Color(255, 255, 255));
         chart.getLegend().setItemPaint(new Color(80, 80, 80));
         
-        ChartPanel chartPanelComponent = new ChartPanel(chart);
+        chartPanelComponent = new ChartPanel(chart);
         chartPanelComponent.setPreferredSize(new Dimension(800, 300));
         panel.add(chartPanelComponent, BorderLayout.CENTER);
         
@@ -339,7 +379,7 @@ public class RevenuePanel extends javax.swing.JPanel {
         panel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200)));
         
         // Create table model
-        DefaultTableModel tableModel = new DefaultTableModel(
+        tableModel = new DefaultTableModel(
             new Object[]{"Năm", "Vốn", "Doanh thu", "Lợi nhuận"},
             0
         ){
@@ -357,7 +397,7 @@ public class RevenuePanel extends javax.swing.JPanel {
         tableModel.addRow(new Object[]{"2022", "0đ", "0đ", "0đ"});
         tableModel.addRow(new Object[]{"2023", "604,200,000đ", "683,560,000đ", "79,360,000đ"});
         
-        JTable tableData = new JTable(tableModel);
+        tableData = new JTable(tableModel);
         tableData.setRowHeight(25);
         tableData.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         
@@ -365,5 +405,123 @@ public class RevenuePanel extends javax.swing.JPanel {
         panel.add(scrollPane, BorderLayout.CENTER);
         
         return panel;
+    }
+    
+    // ===== DATA LOADING METHODS =====
+    private void loadAndDisplayRevenueByYear(int startYear, int endYear) {
+        try {
+            List<RevenueDTO> revenues = statisticService.getRevenueStatisticsByYear(startYear, endYear);
+            updateTableWithRevenueData(revenues);
+            updateChartWithRevenueData(revenues, "Năm");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadAndDisplayRevenueByMonth(int year) {
+        try {
+            List<RevenueDTO> revenues = statisticService.getRevenueStatisticsByMonth(year);
+            updateTableWithRevenueData(revenues);
+            updateChartWithRevenueData(revenues, "Tháng");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadAndDisplayRevenueByDay(int year, int month) {
+        try {
+            List<RevenueDTO> revenues = statisticService.getRevenueStatisticsByDay(year, month);
+            updateTableWithRevenueData(revenues);
+            updateChartWithRevenueData(revenues, "Ngày");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadAndDisplayRevenueByQuarter(int year, int quarter) {
+        try {
+            List<RevenueDTO> revenues = statisticService.getRevenueStatisticsByQuarter(year, quarter);
+            updateTableWithRevenueData(revenues);
+            updateChartWithRevenueData(revenues, "Quý");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
+    
+    private void updateTableWithRevenueData(List<RevenueDTO> revenues) {
+        // Clear existing rows
+        tableModel.setRowCount(0);
+        
+        if (revenues == null || revenues.isEmpty()) {
+            System.err.println("WARN: Không có dữ liệu thống kê để hiển thị");
+            return;
+        }
+        
+        // Add data to table
+        for (RevenueDTO dto : revenues) {
+            String timeLabel = dto.getTimeLabel() != null ? dto.getTimeLabel() : dto.getDate().toString();
+            tableModel.addRow(new Object[]{
+                    timeLabel,
+                    formatCurrency(dto.getCost()),
+                    formatCurrency(dto.getRevenue()),
+                    formatCurrency(dto.getProfit())
+            });
+        }
+    }
+    
+    private void updateChartWithRevenueData(List<RevenueDTO> revenues, String categoryLabel) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        
+        if (revenues != null && !revenues.isEmpty()) {
+            for (RevenueDTO dto : revenues) {
+                String label = dto.getTimeLabel() != null ? dto.getTimeLabel() : dto.getDate().toString();
+                dataset.addValue(dto.getCost().longValue(), "Vốn", label);
+                dataset.addValue(dto.getRevenue().longValue(), "Doanh thu", label);
+                dataset.addValue(dto.getProfit().longValue(), "Lợi nhuận", label);
+            }
+        }
+        
+        JFreeChart chart = ChartFactory.createBarChart(
+                "",
+                categoryLabel,
+                "Giá trị",
+                dataset,
+                org.jfree.chart.plot.PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+        
+        chart.setBackgroundPaint(Color.WHITE);
+        
+        org.jfree.chart.plot.CategoryPlot plot = chart.getCategoryPlot();
+        plot.setBackgroundPaint(new Color(250, 250, 250));
+        plot.setOutlinePaint(new Color(200, 200, 200));
+        plot.setRangeGridlinePaint(new Color(220, 220, 220));
+        plot.setRangeGridlinesVisible(true);
+        
+        org.jfree.chart.renderer.category.BarRenderer renderer = 
+            (org.jfree.chart.renderer.category.BarRenderer) plot.getRenderer();
+        renderer.setSeriesPaint(0, new Color(255, 107, 107));  // Red - Vốn
+        renderer.setSeriesPaint(1, new Color(66, 165, 245));   // Blue - Doanh thu
+        renderer.setSeriesPaint(2, new Color(76, 175, 80));    // Green - Lợi nhuận
+        renderer.setShadowVisible(false);
+        
+        plot.getDomainAxis().setLabelPaint(new Color(80, 80, 80));
+        plot.getRangeAxis().setLabelPaint(new Color(80, 80, 80));
+        plot.getDomainAxis().setTickLabelPaint(new Color(100, 100, 100));
+        plot.getRangeAxis().setTickLabelPaint(new Color(100, 100, 100));
+        
+        org.jfree.chart.axis.NumberAxis rangeAxis = (org.jfree.chart.axis.NumberAxis) plot.getRangeAxis();
+        rangeAxis.setNumberFormatOverride(new java.text.DecimalFormat("#,##0"));
+        
+        chart.getLegend().setBackgroundPaint(new Color(255, 255, 255));
+        chart.getLegend().setItemPaint(new Color(80, 80, 80));
+        
+        chartPanelComponent.setChart(chart);
     }
 }

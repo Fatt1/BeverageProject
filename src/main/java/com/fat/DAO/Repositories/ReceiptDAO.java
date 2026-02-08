@@ -46,7 +46,7 @@ public class ReceiptDAO implements IReceiptDAO {
                 BigDecimal subTotalAmount = rs.getBigDecimal("SubTotalAmount");
                 BigDecimal totalDiscountAmount = rs.getBigDecimal("TotalDiscountAmount");
                 BigDecimal totalAmount = rs.getBigDecimal("TotalAmount");
-                Integer customerId = rs.getInt("CustomerId");
+                Integer customerId = rs.getObject("CustomerId") != null ? rs.getInt("CustomerId") : null;
                 
                 // Không load receiptItems ở getAll() để tăng performance
                 ReceiptDTO receipt = new ReceiptDTO(id, code, createdAt, staffId, 
@@ -115,7 +115,7 @@ public class ReceiptDAO implements IReceiptDAO {
                 BigDecimal subTotalAmount = rs1.getBigDecimal("SubTotalAmount");
                 BigDecimal totalDiscountAmount = rs1.getBigDecimal("TotalDiscountAmount");
                 BigDecimal totalAmount = rs1.getBigDecimal("TotalAmount");
-                Integer customerId = rs1.getInt("CustomerId");
+                Integer customerId = rs1.getObject("CustomerId") != null ? rs1.getInt("CustomerId") : null;
                 
                 // Query 2 receiptDetail
                 ResultSet rs2 = ps2.executeQuery();
@@ -172,7 +172,11 @@ public class ReceiptDAO implements IReceiptDAO {
             psReceipt.setBigDecimal(3, entity.getSubTotalAmount());
             psReceipt.setBigDecimal(4, entity.getTotalDiscountAmount());
             psReceipt.setBigDecimal(5, entity.getTotalAmount());
-            psReceipt.setInt(6, entity.getCustomerId());
+            if (entity.getCustomerId() != null) {
+                psReceipt.setInt(6, entity.getCustomerId());
+            } else {
+                psReceipt.setNull(6, java.sql.Types.INTEGER);
+            }
             psReceipt.executeUpdate();
             
             // Lấy ID Receipt vừa tạo

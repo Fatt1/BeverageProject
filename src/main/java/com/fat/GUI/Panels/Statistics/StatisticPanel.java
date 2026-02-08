@@ -1,6 +1,7 @@
 package com.fat.GUI.Panels.Statistics;
 
 import com.fat.GUI.Panels.Statistics.Staff.StaffPanel;
+import com.fat.GUI.Panels.Statistics.Products.ProductStatisticPanel;
 import javax.swing.*;
 import java.awt.*;
 
@@ -34,7 +35,7 @@ public class StatisticPanel extends javax.swing.JPanel{
         InventoryStatisticPanel inventoryPanel = new InventoryStatisticPanel();
         CustomerPanel customerPanel = new CustomerPanel();
         StaffPanel staffPanel = new StaffPanel();
-        ProductPanel productPanel = new ProductPanel();
+        ProductStatisticPanel productPanel = new ProductStatisticPanel();
         
         // Add các subpanel vào CardLayout
         contentPanel.add(revenuePanel, "DOANHTHU");

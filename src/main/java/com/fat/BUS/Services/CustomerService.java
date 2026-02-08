@@ -28,6 +28,11 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public CustomerDTO getCustomerById(Integer id) {
+        if (id == null) return null;
+        // Đảm bảo cache đã được populate
+        if (customersCache.isEmpty()) {
+            getAllCustomers();
+        }
         return customersCache.stream()
             .filter(c -> c.getId().equals(id))
             .findFirst()

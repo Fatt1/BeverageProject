@@ -3,6 +3,8 @@ package com.fat.BUS.Services;
 import com.fat.BUS.Abstractions.Services.IStatisticService;
 import com.fat.DAO.Abstractions.Repositories.IStatisticDAO;
 import com.fat.DAO.Repositories.StatisticDAO;
+import com.fat.DTO.Statistics.ProductStatisticDTO;
+import com.fat.DTO.Statistics.RevenueDTO;
 import com.fat.DTO.Statistics.StockStatisticDTO;
 
 import java.time.LocalDate;
@@ -23,7 +25,29 @@ public class StatisticService implements IStatisticService{
 
     @Override
     public List<StockStatisticDTO> getStockStatistic(LocalDate fromDate, LocalDate toDate) {
-        stockStatistics = statisticDAO.getStockStatistic(LocalDate.of(2025,12,1), LocalDate.of(2025,12,31));
+        stockStatistics = statisticDAO.getStockStatistic(fromDate, toDate);
         return stockStatistics;
     }
+    @Override
+    public List<RevenueDTO> getRevenueStatisticsByMonth(int year) {
+        return statisticDAO.getRevenueStatisticsByMonth(year);
+    }
+    @Override
+    public List<RevenueDTO> getRevenueStatisticsByYear(int startYear, int endYear) {
+        return statisticDAO.getRevenueStatisticsByYear(startYear, endYear);
+    }
+    @Override
+    public List<RevenueDTO> getRevenueStatisticsByDay(int year, int month) {
+        return statisticDAO.getRevenueStatisticsByDay(year, month);
+    }
+    @Override
+    public List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter) {
+        return statisticDAO.getRevenueStatisticsByQuarter(year, quarter);
+    }
+
+    @Override
+    public List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate) {
+        return statisticDAO.getProductStatistic(fromDate, toDate);
+    }
+
 }

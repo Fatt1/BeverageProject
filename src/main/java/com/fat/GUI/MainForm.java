@@ -19,6 +19,7 @@ import com.fat.GUI.Panels.Promotion.PromotionsPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
 import com.fat.GUI.Panels.Statistics.StatisticPanel;
+import com.fat.GUI.Panels.Receipt.ReceiptPanel;
 import com.fat.GUI.Panels.Supplier.SupplierPanel;
 import com.fat.GUI.Utils.GlobalExceptionHandler;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -356,7 +357,14 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnCategoryActionPerformed
 
     private void tbtnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnReceiptActionPerformed
-        // TODO add your handling code here:
+        // Refresh ReceiptPanel data khi chuyển tab
+        for (java.awt.Component comp : mainContentPanel.getComponents()) {
+            if (comp instanceof ReceiptPanel) {
+                ((ReceiptPanel) comp).loadData();
+                break;
+            }
+        }
+        cardLayout.show(mainContentPanel, "RECEIPT");
     }//GEN-LAST:event_tbtnReceiptActionPerformed
 
     private void tbtnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnProductActionPerformed
@@ -377,6 +385,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
         mainContentPanel.add(new StatisticPanel(), "STATISTICS");
         mainContentPanel.add(new ImportPanel(),"IMPORT");
+        mainContentPanel.add(new ReceiptPanel(), "RECEIPT");
         //mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
     }
     

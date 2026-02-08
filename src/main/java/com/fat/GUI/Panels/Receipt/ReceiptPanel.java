@@ -8,14 +8,12 @@ import com.fat.BUS.Abstractions.Services.ICustomerService;
 import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.IReceiptService;
 import com.fat.BUS.Abstractions.Services.IStaffService;
-import com.fat.BUS.Services.CustomerService;
-import com.fat.BUS.Services.ProductService;
-import com.fat.BUS.Services.ReceiptService;
-import com.fat.BUS.Services.StaffService;
+import com.fat.BUS.Services.*;
 import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.Contract.Enumerations.ReceiptSort;
 import com.fat.Contract.Enumerations.SortOrder;
 import com.fat.DTO.Customers.CustomerDTO;
+import com.fat.DTO.PdfData;
 import com.fat.DTO.Products.ProductDTO;
 import com.fat.DTO.Receipts.ReceiptDTO;
 import com.fat.DTO.Receipts.ReceiptDetailDTO;
@@ -777,12 +775,50 @@ public class ReceiptPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchKeyPressed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // In hóa đơn - chức năng mở rộng
-        if (selectedReceipt == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn", "Chưa chọn", JOptionPane.WARNING_MESSAGE);
-            return;
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu hóa đơn PDF");
+        fileChooser.setSelectedFile(new java.io.File("hoadon_"  + ".pdf"));
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PDF Files", "pdf"));
+
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+
+            // Thêm đuôi .pdf nếu chưa có
+            if (!filePath.toLowerCase().endsWith(".pdf")) {
+                filePath += ".pdf";
+            }
+            // Chuẩn bị dữ liệu
+            List<String> info = new ArrayList<>();
+            info.add("Khách hàng: Nguyễn Văn A");
+            info.add("Địa chỉ: Hà Nội");
+            info.add("Nhân viên bán hàng: Trần Văn Sales"); // Có tên nhân viên như bạn yêu cầu
+
+            String[] headers = {"STT", "Tên hàng", "ĐVT", "SL", "Đơn giá", "Thành tiền"};
+
+            List<String[]> rows = new ArrayList<>();
+            rows.add(new String[]{"1", "Laptop Dell", "Chiếc", "1", "10.000.000", "10.000.000"});
+            rows.add(new String[]{"2", "Chuột Logitech", "Cái", "2", "200.000", "400.000"});
+
+            // Tạo object data
+            PdfData invoiceData = new PdfData(
+                    "HÓA ĐƠN BÁN HÀNG",
+                    Color.RED,          // Hóa đơn thường màu đỏ
+                    info,
+                    headers,
+                    rows,
+                    "10.400.000 đ",
+                    "Mười triệu bốn trăm nghìn đồng",
+                    "Người mua hàng",   // Chữ ký trái
+                    "Người bán hàng"    // Chữ ký phải
+            );
+
+            // Gọi hàm in
+            PdfService printer = new PdfService();
+            printer.exportPdf(filePath, invoiceData);
         }
-        JOptionPane.showMessageDialog(this, "Chức năng in hóa đơn đang phát triển", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed

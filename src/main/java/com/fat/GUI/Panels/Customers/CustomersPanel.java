@@ -28,6 +28,7 @@ public class CustomersPanel extends javax.swing.JPanel {
      * Creates new form CustomersPanel
      */
     private final ICustomerService customerService;
+
     public CustomersPanel() {
         this.customerService = CustomerService.getInstance();
         initComponents();
@@ -117,65 +118,65 @@ public class CustomersPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnAdd)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDelete)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnUpdate)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnReset)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnImportExcel)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnExportExcel)))
-                .addContainerGap())
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel1)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(txtSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
+                                                .addGap(26, 26, 26)
+                                                .addComponent(btnAdd)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(btnDelete)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(btnUpdate)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(btnReset)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(btnImportExcel)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(btnExportExcel)))
+                                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(56, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
         tblCustomer.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "ID", "HỌ TÊN", "SỐ ĐIỆN THOẠI", "NGÀY KHỞI TẠO", "ĐỊA CHỈ"
-            }
+                new Object[][]{
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null}
+                },
+                new String[]{
+                        "ID", "HỌ TÊN", "SỐ ĐIỆN THOẠI", "NGÀY KHỞI TẠO", "ĐỊA CHỈ"
+                }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+            boolean[] canEdit = new boolean[]{
+                    false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         tblCustomer.getTableHeader().setReorderingAllowed(false);
@@ -195,8 +196,8 @@ public class CustomersPanel extends javax.swing.JPanel {
         var model = (DefaultTableModel) tblCustomer.getModel();
         model.setRowCount(0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-        for(var customer : customers) {
-            Object[] row = new Object[] {
+        for (var customer : customers) {
+            Object[] row = new Object[]{
                     customer.getId(),
                     customer.getFullName(),
                     customer.getPhoneNumber(),
@@ -211,12 +212,13 @@ public class CustomersPanel extends javax.swing.JPanel {
             tblCustomer.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
     }
+
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
-        if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
             String keyword = txtSearch.getText().trim();
             List<CustomerDTO> filteredCustomers = customerService.filterCustomerByList(keyword);
             fillTable(filteredCustomers);
@@ -233,7 +235,7 @@ public class CustomersPanel extends javax.swing.JPanel {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         int selectedRow = tblCustomer.getSelectedRow();
-        if(selectedRow == -1){
+        if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần chỉnh sửa.");
             return;
         }
@@ -241,17 +243,16 @@ public class CustomersPanel extends javax.swing.JPanel {
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa khách hàng này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             customerService.deleteCustomer(customerId);
-            JOptionPane.showMessageDialog(this,"Xóa khách hàng thành công.");
+            JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công.");
             fillTable(customerService.getAllCustomers());
         }
-
 
 
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         int selectedRow = tblCustomer.getSelectedRow();
-        if(selectedRow == -1){
+        if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần chỉnh sửa.");
             return;
         }
@@ -270,7 +271,27 @@ public class CustomersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
+        var result = ExcelHelper.readFromExcel();
+        if (!result.isEmpty()) {
+            for (var row : result) {
+                try{
+                    CustomerDTO customerDTO = new CustomerDTO();
+                    customerDTO.setLastName(row.get(0).toString());
+                    customerDTO.setFirstName(row.get(1).toString());
+                    customerDTO.setPhoneNumber( row.get(2).toString());
+                    customerDTO.setAddress(row.get(3).toString());
+                    customerService.createCustomer(customerDTO);
+                }
+                catch (Exception ex){
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Lỗi khi nhập dữ liệu từ Excel: " + ex.getMessage());
+                    return;
+                }
 
+            }
+            JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ Excel thành công.");
+            fillTable(customerService.getAllCustomers());
+        }
     }//GEN-LAST:event_btnImportExcelActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed

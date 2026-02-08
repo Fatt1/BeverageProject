@@ -4,21 +4,22 @@
  */
 package com.fat.GUI.Panels.Statistics.Staff;
 
-import com.fat.BUS.Utils.ExcelHelper;
-
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
- * @author nghia
+ * @author HuyKuhe
  */
-public class StaffPanel extends javax.swing.JPanel {
+public class StaffQuarter extends javax.swing.JPanel {
 
     /**
-     * Creates new form StaffPanel
+     * Creates new form StaffQuarter
      */
-    public StaffPanel() {
+    public StaffQuarter() {
         initComponents();
     }
 
@@ -31,8 +32,6 @@ public class StaffPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        JTablePanel = new javax.swing.JTabbedPane();
-        staffYearPanel1 = new com.fat.GUI.Panels.Statistics.Staff.StaffYearPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -45,65 +44,59 @@ public class StaffPanel extends javax.swing.JPanel {
         btnReset = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         StaffTable = new javax.swing.JTable();
-        staffMonthOfYear1 = new com.fat.GUI.Panels.Statistics.Staff.StaffMonthOfYear();
-        staffDayToDay1 = new com.fat.GUI.Panels.Statistics.Staff.StaffDayToDay();
-        staffQuarter1 = new com.fat.GUI.Panels.Statistics.Staff.StaffQuarter();
 
-        setBackground(new java.awt.Color(255, 255, 255));
-
-        JTablePanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        staffYearPanel1.setBackground(new java.awt.Color(193, 242, 250));
-        staffMonthOfYear1.setBackground(new java.awt.Color(193, 242, 250));
-        staffDayToDay1.setBackground(new java.awt.Color(193, 242, 250));
-        staffQuarter1.setBackground(new java.awt.Color(193, 242, 250));
+        setBackground(new java.awt.Color(193, 242, 250));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setText("Tìm Kiếm khách Hàng");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+        jTextField1.setText("Tìm kiếm theo tên");
+        jTextField1.setForeground(new java.awt.Color(169, 169, 169));
+        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (jTextField1.getText().equals("Tìm kiếm theo tên")) {
+                    jTextField1.setText("");
+                    jTextField1.setForeground(new java.awt.Color(0, 0, 0));
+                }
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (jTextField1.getText().isEmpty()) {
+                    jTextField1.setText("Tìm kiếm theo tên");
+                    jTextField1.setForeground(new java.awt.Color(169, 169, 169));
+                }
             }
         });
+        jTextField1.addActionListener(this::jTextField1ActionPerformed);
 
         jLabel2.setText("Từ Ngày");
 
         jLabel3.setText("Đến Ngày");
+        
+        // Add date change listeners for validation
+        txtFromDate1.addPropertyChangeListener("date", e -> validateAndShowError());
+        txtFromDate.addPropertyChangeListener("date", e -> validateAndShowError());
 
         btnImportExcel.setBackground(new java.awt.Color(46, 125, 50));
         btnImportExcel.setForeground(new java.awt.Color(255, 255, 255));
         btnImportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Microsoft Excel.png"))); // NOI18N
         btnImportExcel.setText("Nhập Excel");
         btnImportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImportExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImportExcelActionPerformed(evt);
-            }
-        });
+        btnImportExcel.addActionListener(this::btnImportExcelActionPerformed);
 
         btnExportExcel.setBackground(new java.awt.Color(46, 125, 50));
         btnExportExcel.setForeground(new java.awt.Color(255, 255, 255));
         btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Microsoft Excel.png"))); // NOI18N
         btnExportExcel.setText("Xuất Excel");
         btnExportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnExportExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportExcelActionPerformed(evt);
-            }
-        });
+        btnExportExcel.addActionListener(this::btnExportExcelActionPerformed);
 
         btnReset.setBackground(new java.awt.Color(141, 141, 141));
         btnReset.setForeground(new java.awt.Color(255, 255, 255));
         btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Reset.png"))); // NOI18N
         btnReset.setText("Hoàn tác lọc");
         btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetActionPerformed(evt);
-            }
-        });
+        btnReset.addActionListener(this::btnResetActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -158,6 +151,12 @@ public class StaffPanel extends javax.swing.JPanel {
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
                 {null, null, null, null}
             },
             new String [] {
@@ -166,93 +165,119 @@ public class StaffPanel extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(StaffTable);
 
-        JTablePanel.addTab("Năm", staffYearPanel1);
-
-        JTablePanel.addTab("Tháng Trong Năm", staffMonthOfYear1);
-        JTablePanel.addTab("Ngày đến Ngày", staffDayToDay1);
-        JTablePanel.addTab("Qúy", staffQuarter1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(JTablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(JTablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
-        var result = ExcelHelper.readFromExcel();
-        if (result.isEmpty()) {
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        filterTableByStaffName();
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void filterTableByStaffName() {
+        String searchText = jTextField1.getText().trim().toLowerCase();
+        
+        // Ignore placeholder text
+        if (searchText.equals("tìm kiếm theo tên")) {
+            searchText = "";
+        }
+        
+        DefaultTableModel model = (DefaultTableModel) StaffTable.getModel();
+        TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>(model);
+        StaffTable.setRowSorter(rowSorter);
+        
+        if (searchText.isEmpty()) {
+            rowSorter.setRowFilter(null);
             return;
         }
-
-        DefaultTableModel model = (DefaultTableModel) StaffTable.getModel();
-        model.setRowCount(0);
-
-        for (var row : result) {
-            if (row.size() < 4) {
-                continue;
+        
+        // Filter by staff name (column 1)
+        String finalSearchText = searchText;
+        rowSorter.setRowFilter(new javax.swing.RowFilter<DefaultTableModel, Integer>() {
+            @Override
+            public boolean include(javax.swing.RowFilter.Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                String staffName = entry.getValue(1) != null ? 
+                    entry.getValue(1).toString().toLowerCase() : "";
+                return staffName.contains(finalSearchText);
             }
+        });
+    }
 
-            Object idValue = row.get(0);
-            Object nameValue = row.get(1);
-            Object totalProductsValue = row.get(2);
-            Object totalAmountValue = row.get(3);
-
-            Integer staffId = null;
-            if (idValue != null && !idValue.toString().isBlank()) {
-                staffId = (int) Double.parseDouble(idValue.toString());
+    private boolean validateDateRange() {
+        java.util.Date fromDate = txtFromDate1.getDate();
+        java.util.Date toDate = txtFromDate.getDate();
+        
+        if (fromDate != null && toDate != null) {
+            if (toDate.before(fromDate)) {
+                JOptionPane.showMessageDialog(this,
+                    "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.",
+                    "Lỗi xác thực", JOptionPane.ERROR_MESSAGE);
+                return false;
             }
-
-            String staffName = nameValue != null ? nameValue.toString() : "";
-            int totalProducts = totalProductsValue != null
-                ? (int) Double.parseDouble(totalProductsValue.toString())
-                : 0;
-            double totalAmount = totalAmountValue != null
-                ? Double.parseDouble(totalAmountValue.toString())
-                : 0.0;
-
-            model.addRow(new Object[]{staffId, staffName, totalProducts, totalAmount});
         }
+        return true;
+    }
+
+    private void validateAndShowError() {
+        java.util.Date fromDate = txtFromDate1.getDate();
+        java.util.Date toDate = txtFromDate.getDate();
+        
+        if (fromDate != null && toDate != null && toDate.before(fromDate)) {
+            JOptionPane.showMessageDialog(this,
+                "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.",
+                "Lỗi xác thực", JOptionPane.ERROR_MESSAGE);
+            txtFromDate.setDate(null);
+        }
+    }
+
+    private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
+        if (!validateDateRange()) {
+            return;
+        }
+        // TODO: Implement staff statistics import functionality
+        JOptionPane.showMessageDialog(this,
+            "Chức năng nhập Excel cho thống kê nhân viên chưa được triển khai.",
+            "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnImportExcelActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        if (StaffTable.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this,
-                "Không có dữ liệu để xuất Excel.",
-                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        if (!validateDateRange()) {
             return;
         }
-
-        ExcelHelper.exportToExcel(StaffTable, "Thong_ke_nhan_vien", "Thong_ke_nhan_vien");
+        // TODO: Implement staff statistics export functionality
+        JOptionPane.showMessageDialog(this,
+            "Chức năng xuất Excel cho thống kê nhân viên chưa được triển khai.",
+            "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        jTextField1.setText("");
+        // Reset search field and filters
+        jTextField1.setText("Tìm kiếm theo tên");
+        jTextField1.setForeground(new java.awt.Color(169, 169, 169));
         txtFromDate.setDate(null);
         txtFromDate1.setDate(null);
-
-        // Keep current data but reset any user-entered filters
-        StaffTable.clearSelection();
+        // TODO: Reload staff statistics data
     }//GEN-LAST:event_btnResetActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTabbedPane JTablePanel;
     private javax.swing.JTable StaffTable;
     private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnImportExcel;
@@ -263,10 +288,6 @@ public class StaffPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private com.fat.GUI.Panels.Statistics.Staff.StaffDayToDay staffDayToDay1;
-    private com.fat.GUI.Panels.Statistics.Staff.StaffMonthOfYear staffMonthOfYear1;
-    private com.fat.GUI.Panels.Statistics.Staff.StaffQuarter staffQuarter1;
-    private com.fat.GUI.Panels.Statistics.Staff.StaffYearPanel staffYearPanel1;
     private com.toedter.calendar.JDateChooser txtFromDate;
     private com.toedter.calendar.JDateChooser txtFromDate1;
     // End of variables declaration//GEN-END:variables

@@ -115,7 +115,7 @@ public class StatisticDAO implements IStatisticDAO {
     }
 
     @Override
-    public List<SupplierStatisticDTO> getSupplierStatistic( LocalDate fromDate, LocalDate toDate) {
+    public List<StaffStatisticDTO> getSupplierStatistic( LocalDate fromDate, LocalDate toDate) {
         return List.of();
     }
 }

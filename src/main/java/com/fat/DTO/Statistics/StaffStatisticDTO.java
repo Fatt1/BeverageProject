@@ -1,28 +1,28 @@
 package com.fat.DTO.Statistics;
 
-public class SupplierStatisticDTO {
-    private Integer supplierId;
-    private String supplierName;
-    private int totalImports; // Tổng số đơn hàng
+public class StaffStatisticDTO {
+    private Integer staffId;
+    private String staffName;
+    private int totalReceipts; // Tổng số hóa đơn
     private double totalAmount; // Tổng số tiền
 
-    public SupplierStatisticDTO(Integer supplierId, String supplierName, int totalImports, double totalAmount) {
-        this.supplierId = supplierId;
-        this.supplierName = supplierName;
-        this.totalImports = totalImports;
+    public StaffStatisticDTO(Integer staffId, String staffName, int totalReceipts, double totalAmount) {
+        this.staffId = staffId;
+        this.staffName = staffName;
+        this.totalReceipts = totalReceipts;
         this.totalAmount = totalAmount;
     }
 
-    public Integer getSupplierId() {
-        return supplierId;
+    public Integer getStaffId() {
+        return staffId;
     }
 
-    public String getSupplierName() {
-        return supplierName;
+    public String getStaffName() {
+        return staffName;
     }
 
-    public int getTotalImports() {
-        return totalImports;
+    public int getTotalReceipts() {
+        return totalReceipts;
     }
 
     public double getTotalAmount() {

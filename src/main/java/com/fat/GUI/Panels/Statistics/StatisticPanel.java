@@ -1,5 +1,6 @@
 package com.fat.GUI.Panels.Statistics;
 
+import com.fat.GUI.Panels.Statistics.Staff.StaffPanel;
 import javax.swing.*;
 import java.awt.*;
 

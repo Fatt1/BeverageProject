@@ -11,6 +11,7 @@ import com.fat.Contract.Constants.Function;
 import com.fat.DI.AppModule;
 import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.GUI.Panels.Categories.CategoriesPanel;
+import com.fat.GUI.Panels.Customers.CustomersPanel;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Import.ImportPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
@@ -18,6 +19,7 @@ import com.fat.GUI.Panels.Promotion.PromotionsPanel;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
+import com.fat.GUI.Panels.Statistics.CustomerPanel;
 import com.fat.GUI.Panels.Statistics.StatisticPanel;
 import com.fat.GUI.Panels.Receipt.ReceiptPanel;
 import com.fat.GUI.Panels.Supplier.SupplierPanel;
@@ -386,6 +388,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new StatisticPanel(), "STATISTICS");
         mainContentPanel.add(new ImportPanel(),"IMPORT");
         mainContentPanel.add(new ReceiptPanel(), "RECEIPT");
+        mainContentPanel.add(new CustomersPanel(), "CUSTOMERS");
         //mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
     }
     
@@ -442,7 +445,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tbtnPromotionActionPerformed
 
     private void tbtnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnCustomerActionPerformed
-        // TODO add your handling code here:
+        cardLayout.show(mainContentPanel, "CUSTOMERS");
     }//GEN-LAST:event_tbtnCustomerActionPerformed
 
     private void tbtnStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnStaffActionPerformed

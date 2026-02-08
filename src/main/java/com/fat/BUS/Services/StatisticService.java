@@ -5,6 +5,7 @@ import com.fat.DAO.Abstractions.Repositories.IStatisticDAO;
 import com.fat.DAO.Repositories.StatisticDAO;
 import com.fat.DTO.Statistics.ProductStatisticDTO;
 import com.fat.DTO.Statistics.RevenueDTO;
+import com.fat.DTO.Statistics.StaffStatisticDTO;
 import com.fat.DTO.Statistics.StockStatisticDTO;
 
 import java.time.LocalDate;
@@ -48,6 +49,11 @@ public class StatisticService implements IStatisticService{
     @Override
     public List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate) {
         return statisticDAO.getProductStatistic(fromDate, toDate);
+    }
+
+    @Override
+    public List<StaffStatisticDTO> getStaffStatistics(LocalDate fromDate, LocalDate toDate) {
+        return List.of();
     }
 
 }

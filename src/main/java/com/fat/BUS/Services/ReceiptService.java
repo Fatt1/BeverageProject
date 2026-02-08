@@ -55,6 +55,8 @@ public class ReceiptService implements IReceiptService {
         Integer newID = receiptDAO.add(dto);
         if(newID != null){
             dto.setId(newID);
+            // Set createdAt vì DB dùng GETDATE() nhưng không trả về
+            dto.setCreatedAt(LocalDateTime.now());
 
             //thêm vào đầu vì cái này là cái mới nhứt
             receiptsCache.addFirst(dto);

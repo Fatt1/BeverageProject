@@ -56,9 +56,9 @@ public class CustomerService implements ICustomerService {
         if(!keyword.isEmpty() && keyword != null) {
             String lowerKeyword = keyword.toLowerCase().trim();
             return customersCache.stream()
-                    .filter(cus -> cus.getFirstName().equals(lowerKeyword) ||
-                            cus.getLastName().equals(lowerKeyword) ||
-                            cus.getPhoneNumber().equals(lowerKeyword)).toList();
+                    .filter(cus -> cus.getFirstName().toLowerCase().contains(lowerKeyword) ||
+                            cus.getLastName().toLowerCase().contains(lowerKeyword) ||
+                            cus.getPhoneNumber().toLowerCase().contains(lowerKeyword)).toList();
         }
         return customersCache;
     }

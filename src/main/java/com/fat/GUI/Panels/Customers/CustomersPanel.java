@@ -6,8 +6,10 @@ package com.fat.GUI.Panels.Customers;
 
 import com.fat.BUS.Abstractions.Services.ICustomerService;
 import com.fat.BUS.Services.CustomerService;
+import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.DTO.Customers.CustomerDTO;
 import com.fat.GUI.Dialogs.Customers.AddOrUpdateCustomerDialog;
+import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -29,6 +31,7 @@ public class CustomersPanel extends javax.swing.JPanel {
     public CustomersPanel() {
         this.customerService = CustomerService.getInstance();
         initComponents();
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tên khách hàng hoặc số điện thoại ...");
         tblCustomer.getColumnModel().getColumn(0).setMaxWidth(70);
         fillTable(customerService.getAllCustomers());
 
@@ -109,7 +112,7 @@ public class CustomersPanel extends javax.swing.JPanel {
         btnExportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcel.addActionListener(this::btnExportExcelActionPerformed);
 
-        jLabel1.setText("Tên khách hàng");
+        jLabel1.setText("Tìm kiếm");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -213,7 +216,11 @@ public class CustomersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchActionPerformed
 
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
-
+        if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            String keyword = txtSearch.getText().trim();
+            List<CustomerDTO> filteredCustomers = customerService.filterCustomerByList(keyword);
+            fillTable(filteredCustomers);
+        }
     }//GEN-LAST:event_txtSearchKeyPressed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -225,6 +232,20 @@ public class CustomersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int selectedRow = tblCustomer.getSelectedRow();
+        if(selectedRow == -1){
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần chỉnh sửa.");
+            return;
+        }
+        Integer customerId = (Integer) tblCustomer.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa khách hàng này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            customerService.deleteCustomer(customerId);
+            JOptionPane.showMessageDialog(this,"Xóa khách hàng thành công.");
+            fillTable(customerService.getAllCustomers());
+        }
+
+
 
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -244,7 +265,8 @@ public class CustomersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-
+        txtSearch.setText("");
+        fillTable(customerService.getAllCustomers());
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
@@ -252,7 +274,7 @@ public class CustomersPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnImportExcelActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-
+        ExcelHelper.exportToExcel(tblCustomer, "Danh_sach_khach_hang.xlsx", "Danh sách khách hàng");
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
 

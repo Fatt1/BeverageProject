@@ -33,13 +33,10 @@ public class StaffQuarter extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        txtFromDate1 = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        txtFromDate1 = new com.toedter.calendar.JDateChooser();
         txtFromDate = new com.toedter.calendar.JDateChooser();
-        btnImportExcel = new javax.swing.JButton();
         btnExportExcel = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -49,26 +46,6 @@ public class StaffQuarter extends javax.swing.JPanel {
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setText("Tìm Kiếm khách Hàng");
-
-        jTextField1.setText("Tìm kiếm theo tên");
-        jTextField1.setForeground(new java.awt.Color(169, 169, 169));
-        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().equals("Tìm kiếm theo tên")) {
-                    jTextField1.setText("");
-                    jTextField1.setForeground(new java.awt.Color(0, 0, 0));
-                }
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (jTextField1.getText().isEmpty()) {
-                    jTextField1.setText("Tìm kiếm theo tên");
-                    jTextField1.setForeground(new java.awt.Color(169, 169, 169));
-                }
-            }
-        });
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
-
         jLabel2.setText("Từ Ngày");
 
         jLabel3.setText("Đến Ngày");
@@ -76,13 +53,6 @@ public class StaffQuarter extends javax.swing.JPanel {
         // Add date change listeners for validation
         txtFromDate1.addPropertyChangeListener("date", e -> validateAndShowError());
         txtFromDate.addPropertyChangeListener("date", e -> validateAndShowError());
-
-        btnImportExcel.setBackground(new java.awt.Color(46, 125, 50));
-        btnImportExcel.setForeground(new java.awt.Color(255, 255, 255));
-        btnImportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Microsoft Excel.png"))); // NOI18N
-        btnImportExcel.setText("Nhập Excel");
-        btnImportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImportExcel.addActionListener(this::btnImportExcelActionPerformed);
 
         btnExportExcel.setBackground(new java.awt.Color(46, 125, 50));
         btnExportExcel.setForeground(new java.awt.Color(255, 255, 255));
@@ -106,30 +76,23 @@ public class StaffQuarter extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel2))
                 .addContainerGap(12, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtFromDate1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtFromDate, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnReset, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFromDate1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                    .addComponent(txtFromDate, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnImportExcel)
+                        .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnExportExcel)))
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addGap(7, 7, 7)
                 .addComponent(txtFromDate1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -139,10 +102,8 @@ public class StaffQuarter extends javax.swing.JPanel {
                 .addComponent(txtFromDate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnImportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -187,39 +148,6 @@ public class StaffQuarter extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        filterTableByStaffName();
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void filterTableByStaffName() {
-        String searchText = jTextField1.getText().trim().toLowerCase();
-        
-        // Ignore placeholder text
-        if (searchText.equals("tìm kiếm theo tên")) {
-            searchText = "";
-        }
-        
-        DefaultTableModel model = (DefaultTableModel) StaffTable.getModel();
-        TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>(model);
-        StaffTable.setRowSorter(rowSorter);
-        
-        if (searchText.isEmpty()) {
-            rowSorter.setRowFilter(null);
-            return;
-        }
-        
-        // Filter by staff name (column 1)
-        String finalSearchText = searchText;
-        rowSorter.setRowFilter(new javax.swing.RowFilter<DefaultTableModel, Integer>() {
-            @Override
-            public boolean include(javax.swing.RowFilter.Entry<? extends DefaultTableModel, ? extends Integer> entry) {
-                String staffName = entry.getValue(1) != null ? 
-                    entry.getValue(1).toString().toLowerCase() : "";
-                return staffName.contains(finalSearchText);
-            }
-        });
-    }
-
     private boolean validateDateRange() {
         java.util.Date fromDate = txtFromDate1.getDate();
         java.util.Date toDate = txtFromDate.getDate();
@@ -247,16 +175,6 @@ public class StaffQuarter extends javax.swing.JPanel {
         }
     }
 
-    private void btnImportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportExcelActionPerformed
-        if (!validateDateRange()) {
-            return;
-        }
-        // TODO: Implement staff statistics import functionality
-        JOptionPane.showMessageDialog(this,
-            "Chức năng nhập Excel cho thống kê nhân viên chưa được triển khai.",
-            "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_btnImportExcelActionPerformed
-
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
         if (!validateDateRange()) {
             return;
@@ -268,9 +186,7 @@ public class StaffQuarter extends javax.swing.JPanel {
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        // Reset search field and filters
-        jTextField1.setText("Tìm kiếm theo tên");
-        jTextField1.setForeground(new java.awt.Color(169, 169, 169));
+        // Reset filters
         txtFromDate.setDate(null);
         txtFromDate1.setDate(null);
         // TODO: Reload staff statistics data
@@ -280,14 +196,11 @@ public class StaffQuarter extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable StaffTable;
     private javax.swing.JButton btnExportExcel;
-    private javax.swing.JButton btnImportExcel;
     private javax.swing.JButton btnReset;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private com.toedter.calendar.JDateChooser txtFromDate;
     private com.toedter.calendar.JDateChooser txtFromDate1;
     // End of variables declaration//GEN-END:variables

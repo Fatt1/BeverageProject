@@ -229,7 +229,44 @@ public class StatisticDAO implements IStatisticDAO {
 
     @Override
     public List<StaffStatisticDTO> getStaffStatistic(LocalDate fromDate, LocalDate toDate) {
-        return List.of();
+        LocalDateTime start = fromDate.atStartOfDay();
+        LocalDateTime end = toDate.atTime(23, 59, 59);
+
+        String sql = """
+            SELECT 
+                s.id AS staffId,
+                s.name AS staffName,
+                ISNULL(COUNT(r.id), 0) AS totalReceipts,
+                ISNULL(SUM(r.TotalAmount), 0) AS totalAmount
+            FROM Staff s
+            LEFT JOIN Receipt r ON s.id = r.staffId 
+                AND r.CreatedAt BETWEEN ? AND ?
+            GROUP BY s.id, s.name
+            ORDER BY totalAmount DESC
+        """;
+
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setObject(1, start);
+            ps.setObject(2, end);
+            var rs = ps.executeQuery();
+            List<StaffStatisticDTO> staffStatistics = new ArrayList<>();
+            while(rs.next()){
+                StaffStatisticDTO dto = new StaffStatisticDTO(
+                        rs.getInt("staffId"),
+                        rs.getString("staffName"),
+                        rs.getInt("totalReceipts"),
+                        rs.getBigDecimal("totalAmount")
+                );
+                staffStatistics.add(dto);
+            }
+            return staffStatistics;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return null;
+        }
     }
 
     @Override

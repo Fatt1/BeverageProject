@@ -147,7 +147,7 @@ public class StaffDayToDay extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    //
     private boolean validateDateRange() {
         java.util.Date fromDate = txtFromDate1.getDate();
         java.util.Date toDate = txtFromDate.getDate();

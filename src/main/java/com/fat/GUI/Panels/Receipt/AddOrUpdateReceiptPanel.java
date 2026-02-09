@@ -991,7 +991,7 @@ public class AddOrUpdateReceiptPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnReset1;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<String> cboCategory1;
+    private javax.swing.JComboBox<CategoryDTO> cboCategory1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel10;

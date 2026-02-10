@@ -611,11 +611,11 @@ public class AddOrUpdateReceiptPanel extends javax.swing.JPanel {
     private void showProductInfo(ProductDTO product) {
         txtProductId.setText(String.valueOf(product.getId()));
         txtProductName.setText(product.getName());
-        // Hiển thị giá bán
-        txtImportPrice.setText(product.getPrice() != null ? product.getPrice().toString() : "0");
-        // Tính và hiển thị giảm giá
+        // Hiển thị giá bán (txtImportPrice1 nằm dưới label "Giá bán" trong layout)
+        txtImportPrice1.setText(product.getPrice() != null ? product.getPrice().toString() : "0");
+        // Tính và hiển thị giảm giá (txtImportPrice nằm dưới label "Giảm giá" trong layout)
         BigDecimal discountAmount = promotionService.calculateDiscountPrice(product.getId(), product.getPrice());
-        txtImportPrice1.setText(discountAmount.toString());
+        txtImportPrice.setText(discountAmount.toString());
         txtQuantity.setText("");
         txtQuantity.requestFocus();
     }
@@ -625,9 +625,11 @@ public class AddOrUpdateReceiptPanel extends javax.swing.JPanel {
         if (product != null) {
             txtProductId.setText(String.valueOf(product.getId()));
             txtProductName.setText(product.getName());
-            txtImportPrice.setText(detail.getPrice().toString());
+            // txtImportPrice1 nằm dưới label "Giá bán" trong layout
+            txtImportPrice1.setText(detail.getPrice().toString());
         }
-        txtImportPrice1.setText(detail.getDiscountAmount() != null ? detail.getDiscountAmount().toString() : "0");
+        // txtImportPrice nằm dưới label "Giảm giá" trong layout
+        txtImportPrice.setText(detail.getDiscountAmount() != null ? detail.getDiscountAmount().toString() : "0");
         txtQuantity.setText(String.valueOf(detail.getQuantity()));
     }
     
@@ -955,30 +957,23 @@ public class AddOrUpdateReceiptPanel extends javax.swing.JPanel {
         if (parent != null && parent.getLayout() instanceof CardLayout) {
             CardLayout cardLayout = (CardLayout) parent.getLayout();
             
-            // Remove current panel FIRST (trước khi show)
-            parent.remove(this);
-            
-            // Find ReceiptPanel and refresh data
+            // Find ReceiptPanel and refresh
             Component[] components = parent.getComponents();
-            ReceiptPanel receiptPanel = null;
             for (Component comp : components) {
                 if (comp instanceof ReceiptPanel) {
-                    receiptPanel = (ReceiptPanel) comp;
+                    ((ReceiptPanel) comp).loadData();
                     break;
                 }
             }
             
-            if (receiptPanel != null) {
-                // Reload data to show the new receipt
-                receiptPanel.loadData();
-                // Show ReceiptPanel using its card name
+            // Remove current panel
+            parent.remove(this);
+            
+            // Show ReceiptPanel
+            try {
                 cardLayout.show(parent, "RECEIPT");
-            } else {
-                // Fallback: create a new ReceiptPanel if not found
-                receiptPanel = new ReceiptPanel();
-                receiptPanel.setName("ReceiptPanel");
-                parent.add(receiptPanel, "RECEIPT");
-                cardLayout.show(parent, "RECEIPT");
+            } catch (Exception e) {
+                cardLayout.first(parent);
             }
             
             parent.revalidate();
@@ -991,7 +986,7 @@ public class AddOrUpdateReceiptPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnReset1;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<CategoryDTO> cboCategory1;
+    private javax.swing.JComboBox<String> cboCategory1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel10;

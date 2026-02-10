@@ -18,5 +18,6 @@ public interface IImportService {
                                             ); // Filter từ ArrayList
     ImportDTO getImportById(Integer id);
     void confirmImport(Integer id);
+    void cancelImport(Integer id);
 }
 

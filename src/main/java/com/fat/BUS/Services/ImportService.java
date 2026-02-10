@@ -134,5 +134,28 @@ public class ImportService implements IImportService {
 
     }
 
+    @Override
+    public void cancelImport(Integer id) {
+        ImportDTO existingImport = importDAO.getById(id);
+        if(existingImport == null){
+            throw new ValidationException("Phieu nhap khong ton tai");
+        }
+        if(existingImport.getStatus() == ImportStatus.COMPLETED){
+            throw new ValidationException("Khong the HUY phieu nhap da HOAN THANH");
+        }
+        if(existingImport.getStatus() == ImportStatus.CANCELLED){
+            throw new ValidationException("Phieu nhap da duoc HUY truoc do");
+        }
+        
+        // Update status to CANCELLED in database
+        existingImport.setStatus(ImportStatus.CANCELLED);
+        existingImport.setUpdatedAt(LocalDateTime.now());
+        importDAO.update(existingImport);
+        
+        // Update cache
+        importsCache.removeIf(importDTO -> importDTO.getId().equals(id));
+        importsCache.addFirst(existingImport);
+    }
+
 }
 

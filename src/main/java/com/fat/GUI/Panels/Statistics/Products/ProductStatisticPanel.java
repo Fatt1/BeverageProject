@@ -37,18 +37,6 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
         jTabbedPane1.addTab("Năm", productStatisticByYear1);
         jTabbedPane1.addTab("Tháng", productStatisticByMonth2);
         jTabbedPane1.addTab("Ngày", productStatisticByDateToDate1);
-
-        javax.swing.GroupLayout productStatisticByQuarter1Layout = new javax.swing.GroupLayout(productStatisticByQuarter1);
-        productStatisticByQuarter1.setLayout(productStatisticByQuarter1Layout);
-        productStatisticByQuarter1Layout.setHorizontalGroup(
-            productStatisticByQuarter1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 744, Short.MAX_VALUE)
-        );
-        productStatisticByQuarter1Layout.setVerticalGroup(
-            productStatisticByQuarter1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 439, Short.MAX_VALUE)
-        );
-
         jTabbedPane1.addTab("Quý", productStatisticByQuarter1);
 
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);

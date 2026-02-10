@@ -1,9 +1,6 @@
 package com.fat.BUS.Abstractions.Services;
 
-import com.fat.DTO.Statistics.ProductStatisticDTO;
-import com.fat.DTO.Statistics.RevenueDTO;
-import com.fat.DTO.Statistics.StaffStatisticDTO;
-import com.fat.DTO.Statistics.StockStatisticDTO;
+import com.fat.DTO.Statistics.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,5 +13,6 @@ public interface IStatisticService {
     List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter);
     List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate);
     List<StaffStatisticDTO> getStaffStatistics(LocalDate fromDate, LocalDate toDate);
+    List<ProductQuarterStatisticDTO> getProductQuarterStatistic(int year);
 
 }

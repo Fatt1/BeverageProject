@@ -166,7 +166,7 @@ public class ProductStatisticByYear extends javax.swing.JPanel {
     }//GEN-LAST:event_btnStatisticActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        ExcelHelper.exportToExcel(tblProduct, "Báo cáo tồn kho", "Báo cáo tồn kho");
+        ExcelHelper.exportToExcel(tblProduct, "bao-cao-thong-ke-theo-nam.xlsx", "Báo cáo thống kê sản phẩm theo năm");
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void initTable(List<ProductStatisticDTO> list) {

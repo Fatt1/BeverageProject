@@ -187,9 +187,6 @@ public class ReceiptDAO implements IReceiptDAO {
             }
             
             // Bước 2-4: Với từng sản phẩm -> INSERT Detail, UPDATE Stock, INSERT History
-            // Bật IDENTITY_INSERT cho ReceiptDetail vì bảng có cột IDENTITY
-            conn.createStatement().execute("SET IDENTITY_INSERT ReceiptDetail ON");
-            
             PreparedStatement psDetail = conn.prepareStatement(sqlDetail);
             PreparedStatement psUpdateStock = conn.prepareStatement(sqlUpdateStock);
             PreparedStatement psGetStock = conn.prepareStatement(sqlGetStock);
@@ -225,9 +222,6 @@ public class ReceiptDAO implements IReceiptDAO {
                 psHistory.executeUpdate();
             }
             
-            // Tắt IDENTITY_INSERT sau khi insert xong
-            conn.createStatement().execute("SET IDENTITY_INSERT ReceiptDetail OFF");
-            
             conn.commit(); // Lưu tất cả thay đổi
             return receiptId;
             
@@ -240,7 +234,7 @@ public class ReceiptDAO implements IReceiptDAO {
                 }
             }
             e.printStackTrace();
-            throw new RuntimeException("Lỗi khi lưu hóa đơn vào DB: " + e.getMessage(), e);
+            return null;
         } finally {
             if(conn != null){
                 try {

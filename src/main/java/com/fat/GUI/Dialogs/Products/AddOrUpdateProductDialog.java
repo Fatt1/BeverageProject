@@ -281,11 +281,13 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 newProduct.setUpdatedAt(LocalDateTime.now());
                 newProduct.setStock(0);
                 newProduct.setUnit(unit);
+
                 productService.createProduct(newProduct);
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
             // Cho trường hợp cập nhật
            else{
+
                 ProductDTO updatedProduct = new ProductDTO();
                 updatedProduct.setName(name);
                 updatedProduct.setImage(imageName);
@@ -293,7 +295,9 @@ public class AddOrUpdateProductDialog extends javax.swing.JDialog {
                 updatedProduct.setCategoryId(categoryId);
                 updatedProduct.setPrice(price);
                 updatedProduct.setUnit(unit);
+                updatedProduct.setStock(selectedProduct.getStock());
                 updatedProduct.setUpdatedAt(LocalDateTime.now());
+                updatedProduct.setId(selectedProduct.getId());
                 productService.updateProduct(updatedProduct);
                 JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }

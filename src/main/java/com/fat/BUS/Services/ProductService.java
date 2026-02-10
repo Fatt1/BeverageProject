@@ -55,7 +55,8 @@ public class ProductService implements IProductService {
             throw new DuplicateProductNameException("Tên sản phầm đã tồn tại: " + dto.getName());
         }
         var productOld = getProductById(dto.getId());
-        if (!productOld.getImagePath().equals(dto.getImagePath())) {
+
+        if (!productOld.getImage().equals(dto.getImage())) {
             UploadImageService.uploadImage(dto.getImage(), dto.getImagePath());
         }
         productDAO.update(dto);

@@ -4,6 +4,19 @@
  */
 package com.fat.GUI.Panels.Statistics.Products;
 
+import com.fat.BUS.Abstractions.Services.IStatisticService;
+import com.fat.BUS.Services.StatisticService;
+import com.fat.BUS.Utils.ExcelHelper;
+import com.fat.DTO.Statistics.ProductStatisticDTO;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
+
 /**
  *
  * @author User
@@ -13,8 +26,17 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
     /**
      * Creates new form ProductStatisticByDateToDate
      */
+    private final IStatisticService statisticService;
     public ProductStatisticByDateToDate() {
         initComponents();
+        statisticService = StatisticService.getInstance();
+        dateTo.setDate(new Date());
+        dateFrom.setDate(new Date());
+        if (!java.beans.Beans.isDesignTime()) {
+            LocalDate startDate =  dateFrom.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate endDate =  dateTo.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            initTable(statisticService.getProductStatistics(startDate, endDate));
+        }
     }
 
     /**
@@ -26,19 +48,152 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+        jPanel2 = new javax.swing.JPanel();
+        btnStatistic = new javax.swing.JButton();
+        btnExportExcel = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        dateTo = new com.toedter.calendar.JDateChooser();
+        dateFrom = new com.toedter.calendar.JDateChooser();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblProduct = new javax.swing.JTable();
+
+        setLayout(new java.awt.BorderLayout());
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setPreferredSize(new java.awt.Dimension(280, 286));
+
+        btnStatistic.setBackground(new java.awt.Color(51, 51, 51));
+        btnStatistic.setForeground(new java.awt.Color(255, 255, 255));
+        btnStatistic.setText("Thống kê");
+        btnStatistic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStatistic.addActionListener(this::btnStatisticActionPerformed);
+
+        btnExportExcel.setBackground(new java.awt.Color(46, 125, 50));
+        btnExportExcel.setForeground(new java.awt.Color(255, 255, 255));
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Microsoft Excel.png"))); // NOI18N
+        btnExportExcel.setText("Xuất Excel");
+        btnExportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnExportExcel.addActionListener(this::btnExportExcelActionPerformed);
+
+        jLabel3.setText("Đến ngày");
+
+        jLabel2.setText("Từ ngày");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnExportExcel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(280, Short.MAX_VALUE))
         );
+
+        add(jPanel2, java.awt.BorderLayout.WEST);
+
+        tblProduct.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "STT", "MÃ SP", "TÊN SẢN PHẨM", "SỐ LƯỢNG BÁN", "TỔNG TIỀN"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblProduct.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblProduct);
+        if (tblProduct.getColumnModel().getColumnCount() > 0) {
+            tblProduct.getColumnModel().getColumn(0).setResizable(false);
+            tblProduct.getColumnModel().getColumn(1).setResizable(false);
+            tblProduct.getColumnModel().getColumn(2).setResizable(false);
+            tblProduct.getColumnModel().getColumn(3).setResizable(false);
+            tblProduct.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatisticActionPerformed
+        LocalDate startDate =  dateFrom.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endDate =  dateTo.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (startDate.isAfter(endDate)) {
+            JOptionPane.showMessageDialog(this, "Ngày bắt đầu không được sau ngày kết thúc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        initTable(statisticService.getProductStatistics(startDate, endDate));
+    }//GEN-LAST:event_btnStatisticActionPerformed
+
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
+        ExcelHelper.exportToExcel(tblProduct, "Báo cáo tồn kho", "Báo cáo tồn kho");
+    }//GEN-LAST:event_btnExportExcelActionPerformed
+
+    private void initTable(List<ProductStatisticDTO> list) {
+        DefaultTableModel model = (DefaultTableModel) tblProduct.getModel();
+        model.setRowCount(0); // Xóa dữ liệu hiện tại trong bảng
+        int stt = 1;
+        for (ProductStatisticDTO dto : list) {
+            Object[] row = new Object[]{
+                    stt++,
+                    dto.getProductId(),
+                    dto.getProductName(),
+                    dto.getTotalQuantitySold(),
+                    dto.getTotalRevenue()
+            };
+            model.addRow(row);
+        }
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < tblProduct.getColumnCount(); i++) {
+            tblProduct.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExportExcel;
+    private javax.swing.JButton btnStatistic;
+    private com.toedter.calendar.JDateChooser dateFrom;
+    private com.toedter.calendar.JDateChooser dateTo;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblProduct;
     // End of variables declaration//GEN-END:variables
 }

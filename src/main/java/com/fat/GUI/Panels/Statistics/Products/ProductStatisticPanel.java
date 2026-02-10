@@ -28,49 +28,25 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         productStatisticByYear1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByYear();
-        productStatisticByMonth1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth();
+        productStatisticByMonth2 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth();
         productStatisticByDateToDate1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate();
         productStatisticByQuarter1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByQuarter();
 
         setLayout(new java.awt.BorderLayout());
 
         jTabbedPane1.addTab("Năm", productStatisticByYear1);
-
-        javax.swing.GroupLayout productStatisticByMonth1Layout = new javax.swing.GroupLayout(productStatisticByMonth1);
-        productStatisticByMonth1.setLayout(productStatisticByMonth1Layout);
-        productStatisticByMonth1Layout.setHorizontalGroup(
-            productStatisticByMonth1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1001, Short.MAX_VALUE)
-        );
-        productStatisticByMonth1Layout.setVerticalGroup(
-            productStatisticByMonth1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 564, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Tháng", productStatisticByMonth1);
-
-        javax.swing.GroupLayout productStatisticByDateToDate1Layout = new javax.swing.GroupLayout(productStatisticByDateToDate1);
-        productStatisticByDateToDate1.setLayout(productStatisticByDateToDate1Layout);
-        productStatisticByDateToDate1Layout.setHorizontalGroup(
-            productStatisticByDateToDate1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1001, Short.MAX_VALUE)
-        );
-        productStatisticByDateToDate1Layout.setVerticalGroup(
-            productStatisticByDateToDate1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 564, Short.MAX_VALUE)
-        );
-
+        jTabbedPane1.addTab("Tháng", productStatisticByMonth2);
         jTabbedPane1.addTab("Ngày", productStatisticByDateToDate1);
 
         javax.swing.GroupLayout productStatisticByQuarter1Layout = new javax.swing.GroupLayout(productStatisticByQuarter1);
         productStatisticByQuarter1.setLayout(productStatisticByQuarter1Layout);
         productStatisticByQuarter1Layout.setHorizontalGroup(
             productStatisticByQuarter1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1001, Short.MAX_VALUE)
+            .addGap(0, 744, Short.MAX_VALUE)
         );
         productStatisticByQuarter1Layout.setVerticalGroup(
             productStatisticByQuarter1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 564, Short.MAX_VALUE)
+            .addGap(0, 439, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Quý", productStatisticByQuarter1);
@@ -82,7 +58,7 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane jTabbedPane1;
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate productStatisticByDateToDate1;
-    private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth productStatisticByMonth1;
+    private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth productStatisticByMonth2;
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByQuarter productStatisticByQuarter1;
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByYear productStatisticByYear1;
     // End of variables declaration//GEN-END:variables

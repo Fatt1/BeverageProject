@@ -5,15 +5,21 @@
 package com.fat.GUI.Panels.Import;
 
 import com.fat.BUS.Abstractions.Services.IImportService;
+import com.fat.BUS.Abstractions.Services.IProductService;
 import com.fat.BUS.Abstractions.Services.IStaffService;
 import com.fat.BUS.Abstractions.Services.ISupplierService;
 import com.fat.BUS.Services.ImportService;
+import com.fat.BUS.Services.PdfService;
+import com.fat.BUS.Services.ProductService;
 import com.fat.BUS.Services.StaffService;
 import com.fat.BUS.Services.SupplierService;
+import com.fat.BUS.Utils.MoneyToWord;
 import com.fat.Contract.Enumerations.ImportStatus;
 import com.fat.Contract.Exceptions.ValidationException;
 import com.fat.DTO.Imports.ImportDTO;
 import com.fat.DTO.Imports.ImportDetailDTO;
+import com.fat.DTO.PdfData;
+import com.fat.DTO.Products.ProductDTO;
 import com.fat.DTO.Staffs.StaffDTO;
 import com.fat.DTO.Suppliers.SupplierDTO;
 import com.fat.GUI.Panels.Import.AddOrUpdateImportPanel;
@@ -41,6 +47,7 @@ public class ImportPanel extends javax.swing.JPanel {
     private IImportService importService;
     private ISupplierService supplierService;
     private IStaffService staffService;
+    private IProductService productService;
     
     private List<ImportDTO> currentList = new ArrayList<>();
     private ImportDTO selectedImport = null;
@@ -57,6 +64,7 @@ public class ImportPanel extends javax.swing.JPanel {
         importService = ImportService.getInstance();
         supplierService = SupplierService.getInstance();
         staffService = StaffService.getInstance();
+        productService = ProductService.getInstance();
         
         initTables();
         setCss();
@@ -96,7 +104,7 @@ public class ImportPanel extends javax.swing.JPanel {
         btnUpdate = new javax.swing.JButton();
         btnExportExcel = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
         cboStatus = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -108,6 +116,7 @@ public class ImportPanel extends javax.swing.JPanel {
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         btnReset2 = new javax.swing.JButton();
+        btnPrint = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -175,12 +184,12 @@ public class ImportPanel extends javax.swing.JPanel {
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.addActionListener(this::btnAddActionPerformed);
 
-        btnDelete.setBackground(new java.awt.Color(255, 0, 0));
-        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
-        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Close.png"))); // NOI18N
-        btnDelete.setText("Xóa");
-        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnDelete.addActionListener(this::btnDeleteActionPerformed);
+        btnCancel.setBackground(new java.awt.Color(255, 0, 0));
+        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Close.png"))); // NOI18N
+        btnCancel.setText("Hủy");
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancel.addActionListener(this::btnCancelActionPerformed);
 
         cboStatus.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         cboStatus.addActionListener(this::cboStatusActionPerformed);
@@ -206,6 +215,12 @@ public class ImportPanel extends javax.swing.JPanel {
         btnReset2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReset2.addActionListener(this::btnReset2ActionPerformed);
 
+        btnPrint.setBackground(new java.awt.Color(255, 51, 0));
+        btnPrint.setForeground(new java.awt.Color(255, 255, 255));
+        btnPrint.setText("In phiếu nhập");
+        btnPrint.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrint.addActionListener(this::btnPrintActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -224,16 +239,21 @@ public class ImportPanel extends javax.swing.JPanel {
                                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(6, 6, 6)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtToDate, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
-                        .addComponent(btnAdd)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnUpdate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnReset))
+                            .addComponent(jLabel13)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtToDate, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnAdd)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnUpdate)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnReset)
+                                .addGap(12, 12, 12)
+                                .addComponent(btnExportExcel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnPrint))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -248,45 +268,41 @@ public class ImportPanel extends javax.swing.JPanel {
                             .addComponent(cboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jLabel4)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(cboStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnReset2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                .addGap(12, 12, 12)
-                .addComponent(btnExportExcel)
-                .addContainerGap())
+                                .addComponent(btnReset2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(39, 39, 39))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtToDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtFromDate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addGap(18, 18, 18))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel14)))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnPrint, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtToDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtFromDate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel14)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -797,6 +813,14 @@ public class ImportPanel extends javax.swing.JPanel {
             return;
         }
         
+        if (selectedImport.getStatus() == ImportStatus.CANCELLED) {
+            JOptionPane.showMessageDialog(this, 
+                "Không thể sửa phiếu nhập đã bị hủy", 
+                "Không thể sửa", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         if (selectedImport.getStatus() != ImportStatus.PENDING) {
             JOptionPane.showMessageDialog(this, 
                 "Chỉ có thể sửa phiếu nhập có trạng thái Đang xử lý", 
@@ -923,7 +947,7 @@ public class ImportPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         if (selectedImport == null) {
             JOptionPane.showMessageDialog(this, 
                 "Vui lòng chọn phiếu nhập cần hủy", 
@@ -932,17 +956,38 @@ public class ImportPanel extends javax.swing.JPanel {
             return;
         }
         
+        // Kiểm tra trạng thái
+        if (selectedImport.getStatus() == ImportStatus.COMPLETED) {
+            JOptionPane.showMessageDialog(this, 
+                "Không thể hủy phiếu nhập đã hoàn thành", 
+                "Không thể hủy", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (selectedImport.getStatus() == ImportStatus.CANCELLED) {
+            JOptionPane.showMessageDialog(this, 
+                "Phiếu nhập này đã bị hủy trước đó", 
+                "Đã hủy", 
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
         int confirm = JOptionPane.showConfirmDialog(this, 
-            "Bạn có chắc muốn HỦY phiếu nhập này?\nMã phiếu: " + selectedImport.getImportCode(), 
+            "Bạn có chắc muốn HỦY phiếu nhập này?\n" +
+            "Trạng thái sẽ chuyển sang ĐÃ HỦY.\n" +
+            "Mã phiếu: " + selectedImport.getImportCode(), 
             "Xác nhận hủy", 
             JOptionPane.YES_NO_OPTION);
         
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                importService.deleteImport(selectedImport.getId());
-                JOptionPane.showMessageDialog(this, "Hủy phiếu nhập thành công");
-                loadData();
-                clearDetailView();
+                importService.cancelImport(selectedImport.getId());
+                JOptionPane.showMessageDialog(this, 
+                    "Đã chuyển trạng thái phiếu nhập sang ĐÃ HỦY",
+                    "Thành công",
+                    JOptionPane.INFORMATION_MESSAGE);
+                loadData(); // Reload to show updated status
             } catch (ValidationException e) {
                 JOptionPane.showMessageDialog(this, 
                     e.getMessage(), 
@@ -950,7 +995,7 @@ public class ImportPanel extends javax.swing.JPanel {
                     JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_btnDeleteActionPerformed
+    }//GEN-LAST:event_btnCancelActionPerformed
 
     private void cboSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSupplierActionPerformed
         loadData();
@@ -969,6 +1014,14 @@ public class ImportPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, 
                 "Vui lòng chọn phiếu nhập cần xác nhận", 
                 "Chưa chọn", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (selectedImport.getStatus() == ImportStatus.CANCELLED) {
+            JOptionPane.showMessageDialog(this, 
+                "Không thể xác nhận phiếu nhập đã bị hủy", 
+                "Không thể xác nhận", 
                 JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -1010,12 +1063,139 @@ public class ImportPanel extends javax.swing.JPanel {
         loadData();
     }//GEN-LAST:event_btnReset2ActionPerformed
 
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
+        if (selectedImport == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Vui lòng chọn phiếu nhập cần in", 
+                "Chưa chọn", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        if (selectedImport.getStatus() == ImportStatus.CANCELLED) {
+            JOptionPane.showMessageDialog(this, 
+                "Không thể in phiếu nhập đã bị hủy", 
+                "Không thể in", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu phiếu nhập PDF");
+        fileChooser.setSelectedFile(new java.io.File("phieunhap_" + selectedImport.getImportCode() + ".pdf"));
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PDF Files", "pdf"));
+
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+
+            // Thêm đuôi .pdf nếu chưa có
+            if (!filePath.toLowerCase().endsWith(".pdf")) {
+                filePath += ".pdf";
+            }
+            
+            try {
+                // Load full import with details
+                ImportDTO fullImport = importService.getImportById(selectedImport.getId());
+                if (fullImport == null || fullImport.getImportDetails() == null) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Không thể tải chi tiết phiếu nhập", 
+                        "Lỗi", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Chuẩn bị dữ liệu thông tin
+                List<String> info = new ArrayList<>();
+                info.add("Mã phiếu nhập: " + fullImport.getImportCode());
+                
+                // Nhà cung cấp
+                String supplierName = "N/A";
+                try {
+                    SupplierDTO supplier = supplierService.getSupplierById(fullImport.getSupplierId());
+                    if (supplier != null) supplierName = supplier.getName();
+                } catch (Exception e) { }
+                info.add("Nhà cung cấp: " + supplierName);
+                
+                // Nhân viên
+                String staffName = "N/A";
+                try {
+                    StaffDTO staff = staffService.getStaffById(fullImport.getStaffId());
+                    if (staff != null) staffName = staff.getLastName() + " " + staff.getFirstName();
+                } catch (Exception e) { }
+                info.add("Nhân viên nhập kho: " + staffName);
+                
+                // Ngày tạo
+                info.add("Ngày tạo: " + FormatterUtil.toDateTime(fullImport.getCreatedAt()));
+                info.add("Trạng thái: " + getStatusText(fullImport.getStatus()));
+
+                // Header bảng
+                String[] headers = {"STT", "Mã SP", "Tên hàng", "ĐVT", "SL", "Đơn giá", "Thành tiền"};
+
+                // Dữ liệu bảng
+                List<String[]> rows = new ArrayList<>();
+                int stt = 1;
+                for (ImportDetailDTO detail : fullImport.getImportDetails()) {
+                    // Lấy đơn vị tính từ Product
+                    String unit = "N/A";
+                    try {
+                        ProductDTO product = productService.getProductById(detail.getProductId());
+                        if (product != null && product.getUnit() != null) {
+                            unit = product.getUnit();
+                        }
+                    } catch (Exception e) { }
+                    
+                    rows.add(new String[]{
+                        String.valueOf(stt++),
+                        String.valueOf(detail.getProductId()),
+                        detail.getProductName() != null ? detail.getProductName() : "N/A",
+                        unit,
+                        String.valueOf(detail.getQuantity()),
+                        FormatterUtil.toVND(detail.getImportPrice()),
+                        FormatterUtil.toVND(detail.getSubTotal())
+                    });
+                }
+                long tongTien = fullImport.getTotalPrice().longValue();
+                String docTien = MoneyToWord.doc(tongTien);
+                // Tạo object data
+                PdfData importData = new PdfData(
+                    "PHIẾU NHẬP KHO",
+                    Color.BLUE,          // Phiếu nhập màu xanh
+                    info,
+                    headers,
+                    rows,
+                    FormatterUtil.toVND(fullImport.getTotalPrice()),
+                    "" + docTien,  // Không cần chữ tổng tiền
+                    "Người giao hàng",   // Chữ ký trái
+                    "Thủ kho"            // Chữ ký phải
+                );
+
+                // Gọi hàm in
+                PdfService printer = new PdfService();
+                printer.exportPdf(filePath, importData);
+                
+                JOptionPane.showMessageDialog(this, 
+                    "In phiếu nhập thành công!\nFile: " + filePath, 
+                    "Thành công", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                    
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Lỗi khi in phiếu nhập: " + e.getMessage(), 
+                    "Lỗi", 
+                    JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_btnPrintActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnConfirm;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportExcel;
+    private javax.swing.JButton btnPrint;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnReset2;
     private javax.swing.JButton btnUpdate;

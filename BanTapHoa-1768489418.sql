@@ -168,7 +168,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[ReceiptDetail](
-	[ReceiptId] [int] IDENTITY(1,1) NOT NULL,
+	[ReceiptId] [int] NOT NULL,
 	[ProductId] [int] NOT NULL,
 	[Quantity] [int] NOT NULL,
 	[Price] [decimal](18, 0) NOT NULL,
@@ -176,7 +176,8 @@ CREATE TABLE [dbo].[ReceiptDetail](
 	[SubTotalAmount] [decimal](18, 0) NOT NULL,
 PRIMARY KEY CLUSTERED
 (
-	[ReceiptId] ASC
+	[ReceiptId] ASC,
+	[ProductId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO

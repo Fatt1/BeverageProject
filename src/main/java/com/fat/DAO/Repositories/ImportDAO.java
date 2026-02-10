@@ -74,7 +74,7 @@ public class ImportDAO implements IImportDAO {
                     BigDecimal totalPrice = rs.getBigDecimal("TotalPrice");
                     LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
                     LocalDateTime updatedAt = rs.getTimestamp("UpdatedAt").toLocalDateTime();
-                    ImportStatus status = ImportStatus.valueOf(rs.getString("Status"));
+                    ImportStatus status = ImportStatus.fromVietnameseString(rs.getString("Status"));
                     Integer staffId = rs.getInt("StaffId");
                     ImportDTO importDTO = new ImportDTO(id,importCode,supplierId,totalPrice,createdAt,updatedAt,status,staffId, null);
                     imports.add(importDTO);
@@ -104,7 +104,7 @@ public class ImportDAO implements IImportDAO {
                 BigDecimal totalPrice = rs.getBigDecimal("TotalPrice");
                 LocalDateTime createdAt = rs.getTimestamp("CreatedAt").toLocalDateTime();
                 LocalDateTime updatedAt = rs.getTimestamp("UpdatedAt").toLocalDateTime();
-                ImportStatus status = ImportStatus.valueOf(rs.getString("Status"));
+                ImportStatus status = ImportStatus.fromVietnameseString(rs.getString("Status"));
                 Integer staffId = rs.getInt("StaffId");
                 ImportDTO importDTO = new ImportDTO(id,importCode,supplierId,totalPrice,createdAt,updatedAt,status,staffId, null);
                 importDTO.setImportDetails(getImportDetails(id));
@@ -136,7 +136,7 @@ public class ImportDAO implements IImportDAO {
                 ps.setBigDecimal(3,entity.getTotalPrice());
                 ps.setObject(4,entity.getCreatedAt());
                 ps.setObject(5,entity.getUpdatedAt());
-                ps.setString(6,entity.getStatus().name());
+                ps.setString(6,entity.getStatus().toVietnameseString());
                 ps.setInt(7,entity.getStaffId());
                 ps.executeUpdate();
                 try(ResultSet generatedKeys = ps.getGeneratedKeys()){
@@ -249,7 +249,7 @@ public class ImportDAO implements IImportDAO {
         String sql = "UPDATE [Import] SET Status = ?, UpdatedAt = ? WHERE Id = ?";
         try(Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1,"CANCELLED");
+            ps.setString(1, ImportStatus.CANCELLED.toVietnameseString());
             ps.setObject(2,LocalDateTime.now());
             ps.setInt(3,id);
             ps.executeUpdate();
@@ -269,7 +269,7 @@ public class ImportDAO implements IImportDAO {
             conn = DbContext.getConnection();
             conn.setAutoCommit(false);
             try(PreparedStatement ps = conn.prepareStatement(statusSql)){
-                ps.setString(1,"COMPLETED");
+                ps.setString(1, ImportStatus.COMPLETED.toVietnameseString());
                 ps.setObject(2,LocalDateTime.now());
                 ps.setInt(3,importId);
                 ps.executeUpdate();

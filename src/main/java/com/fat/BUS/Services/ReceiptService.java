@@ -61,7 +61,7 @@ public class ReceiptService implements IReceiptService {
             //thêm vào đầu vì cái này là cái mới nhứt
             receiptsCache.addFirst(dto);
         } else {
-            throw new RuntimeException("Không thể tạo hóa đơn. Lỗi khi lưu vào cơ sở dữ liệu.");
+            throw new RuntimeException("Không thể tạo hóa đơn. DAO trả về null.");
         }
 
     }

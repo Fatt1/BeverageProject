@@ -25,11 +25,18 @@ public class AuthService implements IAuthService {
         }
         return instance;
     }
-
+    private boolean isDetectdStaff(String username, String password) {
+        StaffDTO staff = StaffService.getInstance().getStaffByUserName(username);
+        if (staff == null) return false;
+        return BCrypt.checkpw(password, staff.getPassword());
+    }
     @Override
     public UserSessionDTO login(LoginForm lg,String username, String password) {
         StaffDTO staff = staffService.getStaffByUserName(username);
         if (staff == null) return null;
+        if (!isDetectdStaff(username, password)){
+            return null;
+        }
         UserSessionDTO.getInstance().setSession(staff.getId(), staff.getUserName(), roleService.getRoleById(staff.getRoleId()).getName(), staff.getRoleId());
         return UserSessionDTO.getInstance();
     }

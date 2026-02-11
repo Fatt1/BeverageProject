@@ -10,7 +10,7 @@ public interface IStaffService {
     void deleteStaff(Integer id) throws Exception;
     List<StaffDTO> getAllStaffs();
     List<StaffDTO> filterStaffByList(String searchKey); // Filter từ ArrayList
-    boolean isDetectdStaff(String username, String password);
+    // boolean isDetectdStaff(String username, String password);
     StaffDTO getStaffById(Integer id);
     StaffDTO getStaffByUserName(String userName);
 }

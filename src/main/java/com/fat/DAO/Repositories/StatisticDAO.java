@@ -161,7 +161,7 @@ public class StatisticDAO implements IStatisticDAO {
         return List.of();
     }
 
-    @Override
+    @Override       
     public List<CustomerStatisticDTO> getCustomerStatistic( LocalDate fromDate, LocalDate toDate) {
         return List.of();
     }
@@ -266,130 +266,6 @@ public class StatisticDAO implements IStatisticDAO {
         }
     }
 
-    public List<StaffStatisticDTO> getStaffStatisticsByMonth(int year) {
-        String sql = """
-            WITH MonthRange AS (
-                SELECT 1 AS month
-                UNION ALL
-                SELECT month + 1 FROM MonthRange WHERE month < 12
-            )
-            SELECT 
-                s.id AS staffId,
-                CONCAT(s.full_name, ' - ', DATENAME(MONTH, DATEFROMPARTS(?, mr.month, 1))) AS staffName,
-                ISNULL(COUNT(r.id), 0) AS totalReceipts,
-                ISNULL(SUM(r.TotalAmount), 0) AS totalAmount
-            FROM Staff s
-            CROSS JOIN MonthRange mr
-            LEFT JOIN Receipt r ON s.id = r.staffId 
-                AND YEAR(r.CreatedAt) = ? 
-                AND MONTH(r.CreatedAt) = mr.month
-            GROUP BY s.id, s.full_name, mr.month
-            ORDER BY mr.month, totalAmount DESC
-            """;
-        try(Connection conn = DbContext.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, year);
-            ps.setInt(2, year);
-            var rs = ps.executeQuery();
-            List<StaffStatisticDTO> staffStatistics = new ArrayList<>();
-            while(rs.next()){
-                StaffStatisticDTO dto = new StaffStatisticDTO(
-                        rs.getInt("staffId"),
-                        rs.getString("staffName"),
-                        rs.getInt("totalReceipts"),
-                        rs.getBigDecimal("totalAmount")
-                );
-                staffStatistics.add(dto);
-            }
-            return staffStatistics;
-        }
-        catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            throw new RuntimeException("Lỗi khi truy xuất thống kê nhân viên theo tháng");
-        }
-    }
-
-    public List<StaffStatisticDTO> getStaffStatisticsByYear(int startYear, int endYear) {
-        String sql = """
-            WITH YearRange AS (
-                SELECT ? AS year
-                UNION ALL
-                SELECT year + 1 FROM YearRange WHERE year < ?
-            )
-            SELECT 
-                s.id AS staffId,
-                CONCAT(s.full_name, ' - ', CAST(yr.year AS VARCHAR(4))) AS staffName,
-                ISNULL(COUNT(r.id), 0) AS totalReceipts,
-                ISNULL(SUM(r.TotalAmount), 0) AS totalAmount
-            FROM Staff s
-            CROSS JOIN YearRange yr
-            LEFT JOIN Receipt r ON s.id = r.staffId 
-                AND YEAR(r.CreatedAt) = yr.year
-            GROUP BY s.id, s.full_name, yr.year
-            ORDER BY yr.year DESC, totalAmount DESC
-            """;
-        try(Connection conn = DbContext.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, startYear);
-            ps.setInt(2, endYear);
-            var rs = ps.executeQuery();
-            List<StaffStatisticDTO> staffStatistics = new ArrayList<>();
-            while(rs.next()){
-                StaffStatisticDTO dto = new StaffStatisticDTO(
-                        rs.getInt("staffId"),
-                        rs.getString("staffName"),
-                        rs.getInt("totalReceipts"),
-                        rs.getBigDecimal("totalAmount")
-                );
-                staffStatistics.add(dto);
-            }
-            return staffStatistics;
-        }
-        catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            throw new RuntimeException("Lỗi khi truy xuất thống kê nhân viên theo năm");
-        }
-    }
-
-    public List<StaffStatisticDTO> getStaffStatisticsByQuarter(int year, int quarter) {
-        String sql = """
-            SELECT 
-                s.id AS staffId,
-                CONCAT(s.full_name, ' - Q', ?, ' ', ?) AS staffName,
-                ISNULL(COUNT(r.id), 0) AS totalReceipts,
-                ISNULL(SUM(r.TotalAmount), 0) AS totalAmount
-            FROM Staff s
-            LEFT JOIN Receipt r ON s.id = r.staffId 
-                AND YEAR(r.CreatedAt) = ?
-                AND CEILING(CAST(MONTH(r.CreatedAt) AS FLOAT) / 3) = ?
-            GROUP BY s.id, s.full_name
-            ORDER BY totalAmount DESC
-            """;
-        try(Connection conn = DbContext.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, quarter);
-            ps.setInt(2, year);
-            ps.setInt(3, year);
-            ps.setInt(4, quarter);
-            var rs = ps.executeQuery();
-            List<StaffStatisticDTO> staffStatistics = new ArrayList<>();
-            while(rs.next()){
-                StaffStatisticDTO dto = new StaffStatisticDTO(
-                        rs.getInt("staffId"),
-                        rs.getString("staffName"),
-                        rs.getInt("totalReceipts"),
-                        rs.getBigDecimal("totalAmount")
-                );
-                staffStatistics.add(dto);
-            }
-            return staffStatistics;
-        }
-        catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            throw new RuntimeException("Lỗi khi truy xuất thống kê nhân viên theo quý");
-        }
-    }
-
     @Override
     public List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter) {
         String sql = """
@@ -476,51 +352,5 @@ public class StatisticDAO implements IStatisticDAO {
             throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm");
         }
 
-    }
-
-    @Override
-    public List<ProductQuarterStatisticDTO> getProductQuarterStatistic(int year) {
-         String sql = """
-                 SELECT 
-                  p.id AS productId,
-                  p.name AS productName,
-                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 1 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q1Sales,
-                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 2 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q2Sales,
-                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 3 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q3Sales,
-                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 4 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q4Sales,
-                  ISNULL(SUM(CASE
-                     WHEN r.id IS NOT NULL THEN rd.subTotalAmount - rd.DiscountAmount
-                     ELSE 0
-                     END), 0) AS totalSalesAmount
-                 FROM Product p
-                 LEFT JOIN ReceiptDetail rd ON p.id = rd.productId
-                 LEFT JOIN Receipt r ON rd.receiptId = r.id AND YEAR(r.CreatedAt) = ?
-                 GROUP BY p.id, p.name
-                 ORDER BY totalSalesAmount DESC
-                 """;
-        try(Connection conn = DbContext.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)
-        ){
-            ps.setInt(1, year);
-            var rs = ps.executeQuery();
-            List<ProductQuarterStatisticDTO> productStatistics = new ArrayList<>();
-            while(rs.next()){
-                ProductQuarterStatisticDTO dto = new ProductQuarterStatisticDTO(
-                        rs.getInt("productId"),
-                        rs.getString("productName"),
-                        rs.getBigDecimal("Q1Sales"),
-                        rs.getBigDecimal("Q2Sales"),
-                        rs.getBigDecimal("Q3Sales"),
-                        rs.getBigDecimal("Q4Sales"),
-                        rs.getBigDecimal("totalSalesAmount")
-                );
-                productStatistics.add(dto);
-            }
-            return productStatistics;
-        }
-        catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-            throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm theo quý");
-        }
     }
 }

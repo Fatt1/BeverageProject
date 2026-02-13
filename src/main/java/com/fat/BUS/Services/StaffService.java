@@ -118,11 +118,11 @@ public class StaffService implements IStaffService {
             .orElse(null);
     }
 
-    @Override
-    public boolean isDetectdStaff(String username, String password) {
-        StaffDTO staff = getStaffByUserName(username);
-        if (staff == null) return false;
-        return BCrypt.checkpw(password, staff.getPassword());
-    }
+    // @Override
+    // public boolean isDetectdStaff(String username, String password) {
+    //     StaffDTO staff = getStaffByUserName(username);
+    //     if (staff == null) return false;
+    //     return BCrypt.checkpw(password, staff.getPassword());
+    // }
 }
 

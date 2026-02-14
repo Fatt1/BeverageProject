@@ -353,4 +353,50 @@ public class StatisticDAO implements IStatisticDAO {
         }
 
     }
+
+    @Override
+    public List<ProductQuarterStatisticDTO> getProductQuarterStatistic(int year) {
+        String sql = """
+                 SELECT 
+                  p.id AS productId,
+                  p.name AS productName,
+                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 1 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q1Sales,
+                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 2 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q2Sales,
+                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 3 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q3Sales,
+                  ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 4 THEN rd.subTotalAmount - rd.DiscountAmount ELSE 0 END), 0) AS Q4Sales,
+                  ISNULL(SUM(CASE
+                     WHEN r.id IS NOT NULL THEN rd.subTotalAmount - rd.DiscountAmount
+                     ELSE 0
+                     END), 0) AS totalSalesAmount
+                 FROM Product p
+                 LEFT JOIN ReceiptDetail rd ON p.id = rd.productId
+                 LEFT JOIN Receipt r ON rd.receiptId = r.id AND YEAR(r.CreatedAt) = ?
+                 GROUP BY p.id, p.name
+                 ORDER BY totalSalesAmount DESC
+                 """;
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setInt(1, year);
+            var rs = ps.executeQuery();
+            List<ProductQuarterStatisticDTO> productStatistics = new ArrayList<>();
+            while(rs.next()){
+                ProductQuarterStatisticDTO dto = new ProductQuarterStatisticDTO(
+                        rs.getInt("productId"),
+                        rs.getString("productName"),
+                        rs.getBigDecimal("Q1Sales"),
+                        rs.getBigDecimal("Q2Sales"),
+                        rs.getBigDecimal("Q3Sales"),
+                        rs.getBigDecimal("Q4Sales"),
+                        rs.getBigDecimal("totalSalesAmount")
+                );
+                productStatistics.add(dto);
+            }
+            return productStatistics;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm theo quý");
+        }
+    }
 }

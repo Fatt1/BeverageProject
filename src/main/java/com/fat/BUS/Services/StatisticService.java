@@ -50,7 +50,12 @@ public class StatisticService implements IStatisticService{
 
     @Override
     public List<StaffStatisticDTO> getStaffStatistics(LocalDate fromDate, LocalDate toDate) {
-        return List.of();
+        return statisticDAO.getStaffStatistic(fromDate, toDate);
+    }
+
+    @Override
+    public List<StaffQuarterStatisticDTO> getStaffQuarterStatistic(int year) {
+        return statisticDAO.getStaffQuarterStatistic(year);
     }
 
     @Override

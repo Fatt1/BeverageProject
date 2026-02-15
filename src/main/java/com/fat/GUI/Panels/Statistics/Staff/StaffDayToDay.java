@@ -30,12 +30,19 @@ public class StaffDayToDay extends javax.swing.JPanel {
     public StaffDayToDay() {
         initComponents();
         statisticService = StatisticService.getInstance();
-        txtFromDate1.setDate(new Date());
-        txtFromDate.setDate(new Date());
+        dateTo.setDate(new Date());
+        dateFrom.setDate(new Date());
         if (!java.beans.Beans.isDesignTime()) {
-            LocalDate startDate = txtFromDate1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate endDate = txtFromDate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            initTable(statisticService.getStaffStatistics(startDate, endDate));
+            try {
+                LocalDate startDate = dateFrom.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate endDate = dateTo.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                initTable(statisticService.getStaffStatistics(startDate, endDate));
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Lỗi tải thống kê nhân viên theo ngày: " + ex.getMessage(),
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -49,22 +56,25 @@ public class StaffDayToDay extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        txtFromDate1 = new com.toedter.calendar.JDateChooser();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        txtFromDate = new com.toedter.calendar.JDateChooser();
-        btnExportExcel = new javax.swing.JButton();
         btnStatistic = new javax.swing.JButton();
+        btnExportExcel = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        dateTo = new com.toedter.calendar.JDateChooser();
+        dateFrom = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
-        StaffTable = new javax.swing.JTable();
+        tblStaff = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(209, 240, 252));
+        setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setPreferredSize(new java.awt.Dimension(280, 286));
 
-        jLabel2.setText("Từ Ngày");
-
-        jLabel3.setText("Đến Ngày");
+        btnStatistic.setBackground(new java.awt.Color(51, 51, 51));
+        btnStatistic.setForeground(new java.awt.Color(255, 255, 255));
+        btnStatistic.setText("Thống kê");
+        btnStatistic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStatistic.addActionListener(this::btnStatisticActionPerformed);
 
         btnExportExcel.setBackground(new java.awt.Color(46, 125, 50));
         btnExportExcel.setForeground(new java.awt.Color(255, 255, 255));
@@ -73,101 +83,102 @@ public class StaffDayToDay extends javax.swing.JPanel {
         btnExportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcel.addActionListener(this::btnExportExcelActionPerformed);
 
-        btnStatistic.setBackground(new java.awt.Color(51, 51, 51));
-        btnStatistic.setForeground(new java.awt.Color(255, 255, 255));
-        btnStatistic.setText("Thống kê");
-        btnStatistic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnStatistic.addActionListener(this::btnStatisticActionPerformed);
+        jLabel3.setText("Đến ngày");
+
+        jLabel2.setText("Từ ngày");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addGap(14, 14, 14)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtFromDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtFromDate1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(btnExportExcel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 17, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(btnExportExcel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(14, 14, 14)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFromDate1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFromDate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(210, Short.MAX_VALUE))
+                .addContainerGap(280, Short.MAX_VALUE))
         );
 
-        StaffTable.setModel(new javax.swing.table.DefaultTableModel(
+        add(jPanel2, java.awt.BorderLayout.WEST);
+
+        tblStaff.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "TÊN NHÂN VIÊN", "TỔNG SẢN PHẨM BÁN RA", "DOANH THU BÁN RA"
+                "STT", "MÃ NV", "TÊN NHÂN VIÊN", "TỔNG HÓA ĐƠN", "TỔNG DOANH THU"
             }
-        ));
-        jScrollPane1.setViewportView(StaffTable);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblStaff.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblStaff);
+        if (tblStaff.getColumnModel().getColumnCount() > 0) {
+            tblStaff.getColumnModel().getColumn(0).setResizable(false);
+            tblStaff.getColumnModel().getColumn(1).setResizable(false);
+            tblStaff.getColumnModel().getColumn(2).setResizable(false);
+            tblStaff.getColumnModel().getColumn(3).setResizable(false);
+            tblStaff.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        ExcelHelper.exportToExcel(StaffTable, "Thống kê nhân viên theo ngày", "Thong_ke_nhan_vien_theo_ngay");
-    }//GEN-LAST:event_btnExportExcelActionPerformed
-
     private void btnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatisticActionPerformed
-        LocalDate startDate = txtFromDate1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate endDate = txtFromDate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate startDate = dateFrom.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endDate = dateTo.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         if (startDate.isAfter(endDate)) {
             JOptionPane.showMessageDialog(this, "Ngày bắt đầu không được sau ngày kết thúc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        initTable(statisticService.getStaffStatistics(startDate, endDate));
+        try {
+            initTable(statisticService.getStaffStatistics(startDate, endDate));
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Lỗi tải thống kê nhân viên theo ngày: " + ex.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnStatisticActionPerformed
 
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
+        ExcelHelper.exportToExcel(tblStaff, "Thong_ke_nhan_vien_theo_ngay", "Thong_ke_nhan_vien_theo_ngay");
+    }//GEN-LAST:event_btnExportExcelActionPerformed
+
     private void initTable(List<StaffStatisticDTO> list) {
-        DefaultTableModel model = (DefaultTableModel) StaffTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) tblStaff.getModel();
         model.setRowCount(0);
         int stt = 1;
         for (StaffStatisticDTO dto : list) {
@@ -182,21 +193,20 @@ public class StaffDayToDay extends javax.swing.JPanel {
         }
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for (int i = 0; i < StaffTable.getColumnCount(); i++) {
-            StaffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        for (int i = 0; i < tblStaff.getColumnCount(); i++) {
+            tblStaff.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
     }
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable StaffTable;
     private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnStatistic;
+    private com.toedter.calendar.JDateChooser dateFrom;
+    private com.toedter.calendar.JDateChooser dateTo;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.toedter.calendar.JDateChooser txtFromDate;
-    private com.toedter.calendar.JDateChooser txtFromDate1;
+    private javax.swing.JTable tblStaff;
     // End of variables declaration//GEN-END:variables
 }

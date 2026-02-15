@@ -233,14 +233,14 @@ public class StatisticDAO implements IStatisticDAO {
         LocalDateTime end = toDate.atTime(23, 59, 59);
         String sql = """
                 SELECT 
-                    s.id AS staffId,
-                    s.full_name AS staffName,
-                    COUNT(r.id) AS totalReceipts,
+                    s.Id AS staffId,
+                    CONCAT(s.FirstName, ' ', s.LastName) AS staffName,
+                    COUNT(r.Id) AS totalReceipts,
                     ISNULL(SUM(r.TotalAmount), 0) AS totalAmount
                 FROM Staff s
-                LEFT JOIN Receipt r ON s.id = r.staffId 
+                LEFT JOIN Receipt r ON s.Id = r.StaffId 
                     AND r.CreatedAt BETWEEN ? AND ?
-                GROUP BY s.id, s.full_name
+                GROUP BY s.Id, s.FirstName, s.LastName
                 ORDER BY totalAmount DESC
                 """;
         try(Connection conn = DbContext.getConnection();
@@ -263,6 +263,47 @@ public class StatisticDAO implements IStatisticDAO {
         catch (SQLException sqlException) {
             sqlException.printStackTrace();
             throw new RuntimeException("Lỗi khi truy xuất thống kê nhân viên");
+        }
+    }
+
+    @Override
+    public List<StaffQuarterStatisticDTO> getStaffQuarterStatistic(int year) {
+        String sql = """
+            SELECT 
+                s.Id AS staffId,
+                CONCAT(s.FirstName, ' ', s.LastName) AS staffName,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 1 THEN r.TotalAmount ELSE 0 END), 0) AS Q1Amount,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 2 THEN r.TotalAmount ELSE 0 END), 0) AS Q2Amount,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 3 THEN r.TotalAmount ELSE 0 END), 0) AS Q3Amount,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 4 THEN r.TotalAmount ELSE 0 END), 0) AS Q4Amount,
+                ISNULL(SUM(CASE WHEN r.Id IS NOT NULL THEN r.TotalAmount ELSE 0 END), 0) AS totalAmount
+            FROM Staff s
+            LEFT JOIN Receipt r ON s.Id = r.StaffId AND YEAR(r.CreatedAt) = ?
+            GROUP BY s.Id, s.FirstName, s.LastName
+            ORDER BY totalAmount DESC
+            """;
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, year);
+            var rs = ps.executeQuery();
+            List<StaffQuarterStatisticDTO> staffStatistics = new ArrayList<>();
+            while(rs.next()){
+                StaffQuarterStatisticDTO dto = new StaffQuarterStatisticDTO(
+                        rs.getInt("staffId"),
+                        rs.getString("staffName"),
+                        rs.getBigDecimal("Q1Amount"),
+                        rs.getBigDecimal("Q2Amount"),
+                        rs.getBigDecimal("Q3Amount"),
+                        rs.getBigDecimal("Q4Amount"),
+                        rs.getBigDecimal("totalAmount")
+                );
+                staffStatistics.add(dto);
+            }
+            return staffStatistics;
+        }
+        catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê nhân viên theo quý");
         }
     }
 

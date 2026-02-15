@@ -7,14 +7,13 @@ package com.fat.GUI.Panels.Statistics.Staff;
 import com.fat.BUS.Abstractions.Services.IStatisticService;
 import com.fat.BUS.Services.StatisticService;
 import com.fat.BUS.Utils.ExcelHelper;
-import com.fat.DTO.Statistics.StaffStatisticDTO;
+import com.fat.DTO.Statistics.StaffQuarterStatisticDTO;
+import com.fat.GUI.Utils.FormatterUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.Year;
 import java.util.List;
 
 /**
@@ -28,14 +27,24 @@ public class StaffQuarter extends javax.swing.JPanel {
      * Creates new form StaffQuarter
      */
     public StaffQuarter() {
-        initComponents();
         statisticService = StatisticService.getInstance();
-        txtFromDate1.setDate(new Date());
-        txtFromDate.setDate(new Date());
+        initComponents();
+        tblStaff.getColumnModel().getColumn(0).setMaxWidth(70);
+        tblStaff.getColumnModel().getColumn(1).setMaxWidth(70);
         if (!java.beans.Beans.isDesignTime()) {
-            LocalDate startDate = txtFromDate1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate endDate = txtFromDate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            initTable(statisticService.getStaffStatistics(startDate, endDate));
+            jYear.setValue(Year.now().getValue());
+            if (statisticService != null) {
+                try {
+                    initTable(statisticService.getStaffQuarterStatistic(
+                            jYear.getYear()
+                    ));
+                } catch (RuntimeException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "Lỗi tải thống kê nhân viên theo quý: " + ex.getMessage(),
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
 
@@ -49,22 +58,24 @@ public class StaffQuarter extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        txtFromDate1 = new com.toedter.calendar.JDateChooser();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        txtFromDate = new com.toedter.calendar.JDateChooser();
-        btnExportExcel = new javax.swing.JButton();
         btnStatistic = new javax.swing.JButton();
+        btnExportExcel = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jYear = new com.toedter.calendar.JYearChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
-        StaffTable = new javax.swing.JTable();
+        tblStaff = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(200, 238, 249));
+        setBackground(new java.awt.Color(255, 255, 255));
+        setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setPreferredSize(new java.awt.Dimension(280, 286));
 
-        jLabel2.setText("Từ Ngày");
-
-        jLabel3.setText("Đến Ngày");
+        btnStatistic.setBackground(new java.awt.Color(51, 51, 51));
+        btnStatistic.setForeground(new java.awt.Color(255, 255, 255));
+        btnStatistic.setText("Thống kê");
+        btnStatistic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStatistic.addActionListener(this::btnStatisticActionPerformed);
 
         btnExportExcel.setBackground(new java.awt.Color(46, 125, 50));
         btnExportExcel.setForeground(new java.awt.Color(255, 255, 255));
@@ -73,130 +84,113 @@ public class StaffQuarter extends javax.swing.JPanel {
         btnExportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExportExcel.addActionListener(this::btnExportExcelActionPerformed);
 
-        btnStatistic.setBackground(new java.awt.Color(51, 51, 51));
-        btnStatistic.setForeground(new java.awt.Color(255, 255, 255));
-        btnStatistic.setText("Thống kê");
-        btnStatistic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnStatistic.addActionListener(this::btnStatisticActionPerformed);
+        jLabel2.setText("Năm");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtFromDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtFromDate1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jYear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(btnExportExcel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 17, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnExportExcel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(14, 14, 14)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFromDate1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFromDate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jYear, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(419, Short.MAX_VALUE))
         );
 
-        StaffTable.setModel(new javax.swing.table.DefaultTableModel(
+        add(jPanel2, java.awt.BorderLayout.WEST);
+
+        tblStaff.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "TÊN NHÂN VIÊN", "TỔNG SẢN PHẨM BÁN RA", "DOANH THU BÁN RA"
+                "STT", "MÃ NV", "TÊN NHÂN VIÊN", "QUÝ 1 (Q1)", "QUÝ 2 (Q2)", "QUÝ 3 (Q3)", "QUÝ 4 (Q4)", "TỔNG CỘNG"
             }
-        ));
-        jScrollPane1.setViewportView(StaffTable);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, true
+            };
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblStaff.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblStaff);
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        ExcelHelper.exportToExcel(StaffTable, "Thống kê nhân viên theo quý", "Thong_ke_nhan_vien_theo_quy");
-    }//GEN-LAST:event_btnExportExcelActionPerformed
-
     private void btnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatisticActionPerformed
-        LocalDate startDate = txtFromDate1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate endDate = txtFromDate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        if (startDate.isAfter(endDate)) {
-            JOptionPane.showMessageDialog(this, "Ngày bắt đầu không được sau ngày kết thúc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
+        int yearStart = jYear.getYear();
+        try {
+            initTable(statisticService.getStaffQuarterStatistic(yearStart));
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Lỗi tải thống kê nhân viên theo quý: " + ex.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        initTable(statisticService.getStaffStatistics(startDate, endDate));
     }//GEN-LAST:event_btnStatisticActionPerformed
 
-    private void initTable(List<StaffStatisticDTO> list) {
-        DefaultTableModel model = (DefaultTableModel) StaffTable.getModel();
+    private void initTable(List<StaffQuarterStatisticDTO> list) {
+        DefaultTableModel model = (DefaultTableModel) tblStaff.getModel();
         model.setRowCount(0);
         int stt = 1;
-        for (StaffStatisticDTO dto : list) {
+        for (StaffQuarterStatisticDTO dto : list) {
             Object[] row = new Object[]{
                     stt++,
                     dto.getStaffId(),
                     dto.getStaffName(),
-                    dto.getTotalReceipts(),
-                    dto.getTotalAmount()
+                    FormatterUtil.toVND(dto.getQ1Amount()),
+                    FormatterUtil.toVND(dto.getQ2Amount()),
+                    FormatterUtil.toVND(dto.getQ3Amount()),
+                    FormatterUtil.toVND(dto.getQ4Amount()),
+                    FormatterUtil.toVND(dto.getTotalAmount())
             };
             model.addRow(row);
         }
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for (int i = 0; i < StaffTable.getColumnCount(); i++) {
-            StaffTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        for (int i = 0; i < tblStaff.getColumnCount(); i++) {
+            tblStaff.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
     }
 
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
+        ExcelHelper.exportToExcel(tblStaff, "Thong_ke_nhan_vien_theo_quy", "Thong_ke_nhan_vien_theo_quy");
+    }//GEN-LAST:event_btnExportExcelActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable StaffTable;
     private javax.swing.JButton btnExportExcel;
     private javax.swing.JButton btnStatistic;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private com.toedter.calendar.JDateChooser txtFromDate;
-    private com.toedter.calendar.JDateChooser txtFromDate1;
+    private com.toedter.calendar.JYearChooser jYear;
+    private javax.swing.JTable tblStaff;
     // End of variables declaration//GEN-END:variables
 }

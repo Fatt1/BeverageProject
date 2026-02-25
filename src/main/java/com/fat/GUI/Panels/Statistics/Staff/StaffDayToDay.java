@@ -8,6 +8,7 @@ import com.fat.BUS.Abstractions.Services.IStatisticService;
 import com.fat.BUS.Services.StatisticService;
 import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.DTO.Statistics.StaffStatisticDTO;
+import com.fat.GUI.Utils.FormatterUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -187,7 +188,7 @@ public class StaffDayToDay extends javax.swing.JPanel {
                     dto.getStaffId(),
                     dto.getStaffName(),
                     dto.getTotalReceipts(),
-                    dto.getTotalAmount()
+                    FormatterUtil.toVND(dto.getTotalAmount())
             };
             model.addRow(row);
         }

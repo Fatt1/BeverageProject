@@ -28,15 +28,15 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         productStatisticByYear1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByYear();
-        productStatisticByMonth2 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth();
-        productStatisticByDateToDate1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate();
+        productStatisticByMonth1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth();
+        productStatisticByDateToDate2 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate();
         productStatisticByQuarter1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByQuarter();
 
         setLayout(new java.awt.BorderLayout());
 
         jTabbedPane1.addTab("Năm", productStatisticByYear1);
-        jTabbedPane1.addTab("Tháng", productStatisticByMonth2);
-        jTabbedPane1.addTab("Ngày", productStatisticByDateToDate1);
+        jTabbedPane1.addTab("Tháng", productStatisticByMonth1);
+        jTabbedPane1.addTab("Ngày", productStatisticByDateToDate2);
         jTabbedPane1.addTab("Quý", productStatisticByQuarter1);
 
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
@@ -45,8 +45,8 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane jTabbedPane1;
-    private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate productStatisticByDateToDate1;
-    private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth productStatisticByMonth2;
+    private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate productStatisticByDateToDate2;
+    private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth productStatisticByMonth1;
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByQuarter productStatisticByQuarter1;
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByYear productStatisticByYear1;
     // End of variables declaration//GEN-END:variables

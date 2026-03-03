@@ -44,8 +44,8 @@ public class StatisticService implements IStatisticService{
     }
 
     @Override
-    public List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate) {
-        return statisticDAO.getProductStatistic(fromDate, toDate);
+    public List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate, String searchKey) {
+        return statisticDAO.getProductStatistic(fromDate, toDate, searchKey);
     }
 
     @Override

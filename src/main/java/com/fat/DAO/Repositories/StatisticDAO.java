@@ -168,13 +168,13 @@ public class StatisticDAO implements IStatisticDAO {
         String sql = """
                 SELECT 
                     c.Id AS customerId,
-                    c.Name AS customerName,
+                    (c.FirstName + ' ' + c.LastName) AS customerName,
                     COUNT(r.Id) AS totalReceipts,
                     ISNULL(SUM(r.TotalAmount), 0) AS totalAmount
                 FROM Customer c
                 LEFT JOIN Receipt r ON c.Id = r.CustomerId 
                     AND r.CreatedAt BETWEEN ? AND ?
-                GROUP BY c.Id, c.Name
+                GROUP BY c.Id, c.FirstName, c.LastName
                 ORDER BY totalAmount DESC
                 """;
         try (Connection conn = DbContext.getConnection();
@@ -204,7 +204,7 @@ public class StatisticDAO implements IStatisticDAO {
         String sql = """
             SELECT 
                 c.Id AS customerId,
-                c.Name AS customerName,
+                (c.FirstName + ' ' + c.LastName) AS customerName,
                 ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 1 THEN r.TotalAmount ELSE 0 END), 0) AS Q1Amount,
                 ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 2 THEN r.TotalAmount ELSE 0 END), 0) AS Q2Amount,
                 ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 3 THEN r.TotalAmount ELSE 0 END), 0) AS Q3Amount,
@@ -212,7 +212,7 @@ public class StatisticDAO implements IStatisticDAO {
                 ISNULL(SUM(CASE WHEN r.Id IS NOT NULL THEN r.TotalAmount ELSE 0 END), 0) AS totalAmount
             FROM Customer c
             LEFT JOIN Receipt r ON c.Id = r.CustomerId AND YEAR(r.CreatedAt) = ?
-            GROUP BY c.Id, c.Name
+            GROUP BY c.Id, c.FirstName, c.LastName
             ORDER BY totalAmount DESC
             """;
         try (Connection conn = DbContext.getConnection();

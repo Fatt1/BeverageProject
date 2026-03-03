@@ -19,7 +19,6 @@ public class CustomerDayToDay extends javax.swing.JPanel {
 
     private final IStatisticService statisticService;
     private JTable tblCustomer;
-    private JTextField txtSearch;
     private com.toedter.calendar.JDateChooser dateFrom;
     private com.toedter.calendar.JDateChooser dateTo;
 
@@ -39,9 +38,6 @@ public class CustomerDayToDay extends javax.swing.JPanel {
         filterPanel.setBackground(Color.WHITE);
         filterPanel.setPreferredSize(new Dimension(280, 286));
 
-        JLabel lblSearch = new JLabel("Tìm kiếm khách hàng");
-        txtSearch = new JTextField();
-
         JLabel lblFromDate = new JLabel("Từ ngày");
         dateFrom = new com.toedter.calendar.JDateChooser();
 
@@ -55,29 +51,11 @@ public class CustomerDayToDay extends javax.swing.JPanel {
         btnExportExcel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnExportExcel.addActionListener(e -> ExcelHelper.exportToExcel(tblCustomer, "Thong_ke_khach_hang_theo_ngay", "Thong_ke_khach_hang_theo_ngay"));
 
-        JButton btnReset = new JButton("Làm mới");
-        btnReset.setBackground(new Color(239, 83, 80));
-        btnReset.setForeground(Color.WHITE);
-        btnReset.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnReset.addActionListener(e -> {
-            txtSearch.setText("");
-            dateFrom.setDate(new Date());
-            dateTo.setDate(new Date());
-            btnStatisticAction();
-        });
-
         JButton btnStatistic = new JButton("Thống kê");
         btnStatistic.setBackground(new Color(51, 51, 51));
         btnStatistic.setForeground(Color.WHITE);
         btnStatistic.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnStatistic.addActionListener(e -> btnStatisticAction());
-
-        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                btnStatisticAction();
-            }
-        });
 
         GroupLayout filterLayout = new GroupLayout(filterPanel);
         filterPanel.setLayout(filterLayout);
@@ -86,16 +64,11 @@ public class CustomerDayToDay extends javax.swing.JPanel {
             .addGroup(filterLayout.createSequentialGroup()
                 .addGap(12)
                 .addGroup(filterLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSearch)
-                    .addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblFromDate)
                     .addComponent(dateFrom, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblToDate)
                     .addComponent(dateTo, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
-                    .addGroup(filterLayout.createSequentialGroup()
-                        .addComponent(btnExportExcel)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnReset))
+                    .addComponent(btnExportExcel, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStatistic, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
@@ -103,10 +76,6 @@ public class CustomerDayToDay extends javax.swing.JPanel {
             filterLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(filterLayout.createSequentialGroup()
                 .addGap(14)
-                .addComponent(lblSearch)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-                .addGap(12)
                 .addComponent(lblFromDate)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dateFrom, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
@@ -115,9 +84,7 @@ public class CustomerDayToDay extends javax.swing.JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dateTo, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
                 .addGap(12)
-                .addGroup(filterLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnExportExcel, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnExportExcel, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
                 .addGap(8)
                 .addComponent(btnStatistic, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -156,12 +123,6 @@ public class CustomerDayToDay extends javax.swing.JPanel {
         }
         try {
             List<CustomerStatisticDTO> list = statisticService.getCustomerStatistic(startDate, endDate);
-            String keyword = txtSearch.getText().trim().toLowerCase();
-            if (!keyword.isEmpty()) {
-                list = list.stream()
-                    .filter(dto -> dto.getCustomerName().toLowerCase().contains(keyword))
-                    .collect(java.util.stream.Collectors.toList());
-            }
             initTable(list);
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this,

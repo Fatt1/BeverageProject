@@ -538,51 +538,51 @@ GO
 -- ===== INSERT IMPORT (Nhập hàng) =====
 SET IDENTITY_INSERT [dbo].[Import] ON
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (1, N'PH001-2023', 2, CAST(50000 AS Decimal(18, 0)), CAST(N'2023-01-10T08:00:00' AS DateTime), CAST(N'2023-01-10T08:00:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (1, N'PH001-2023', 2, CAST(50000 AS Decimal(18, 0)), CAST(N'2023-01-10T08:00:00' AS DateTime), CAST(N'2023-01-10T08:00:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (2, N'PH002-2023', 2, CAST(75000 AS Decimal(18, 0)), CAST(N'2023-02-15T09:30:00' AS DateTime), CAST(N'2023-02-15T09:30:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (2, N'PH002-2023', 2, CAST(75000 AS Decimal(18, 0)), CAST(N'2023-02-15T09:30:00' AS DateTime), CAST(N'2023-02-15T09:30:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (3, N'PH003-2023', 2, CAST(100000 AS Decimal(18, 0)), CAST(N'2023-03-05T10:00:00' AS DateTime), CAST(N'2023-03-05T10:00:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (3, N'PH003-2023', 2, CAST(100000 AS Decimal(18, 0)), CAST(N'2023-03-05T10:00:00' AS DateTime), CAST(N'2023-03-05T10:00:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (4, N'PH004-2023', 2, CAST(120000 AS Decimal(18, 0)), CAST(N'2023-06-20T11:15:00' AS DateTime), CAST(N'2023-06-20T11:15:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (4, N'PH004-2023', 2, CAST(120000 AS Decimal(18, 0)), CAST(N'2023-06-20T11:15:00' AS DateTime), CAST(N'2023-06-20T11:15:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (5, N'PH005-2023', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2023-09-08T14:45:00' AS DateTime), CAST(N'2023-09-08T14:45:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (5, N'PH005-2023', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2023-09-08T14:45:00' AS DateTime), CAST(N'2023-09-08T14:45:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (6, N'PH006-2023', 2, CAST(150000 AS Decimal(18, 0)), CAST(N'2023-12-25T16:00:00' AS DateTime), CAST(N'2023-12-25T16:00:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (6, N'PH006-2023', 2, CAST(150000 AS Decimal(18, 0)), CAST(N'2023-12-25T16:00:00' AS DateTime), CAST(N'2023-12-25T16:00:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (7, N'PH007-2024', 2, CAST(60000 AS Decimal(18, 0)), CAST(N'2024-01-08T08:30:00' AS DateTime), CAST(N'2024-01-08T08:30:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (7, N'PH007-2024', 2, CAST(60000 AS Decimal(18, 0)), CAST(N'2024-01-08T08:30:00' AS DateTime), CAST(N'2024-01-08T08:30:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (8, N'PH008-2024', 2, CAST(85000 AS Decimal(18, 0)), CAST(N'2024-04-10T13:00:00' AS DateTime), CAST(N'2024-04-10T13:00:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (8, N'PH008-2024', 2, CAST(85000 AS Decimal(18, 0)), CAST(N'2024-04-10T13:00:00' AS DateTime), CAST(N'2024-04-10T13:00:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (9, N'PH009-2024', 2, CAST(110000 AS Decimal(18, 0)), CAST(N'2024-07-15T10:00:00' AS DateTime), CAST(N'2024-07-15T10:00:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (9, N'PH009-2024', 2, CAST(110000 AS Decimal(18, 0)), CAST(N'2024-07-15T10:00:00' AS DateTime), CAST(N'2024-07-15T10:00:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (10, N'PH010-2024', 2, CAST(140000 AS Decimal(18, 0)), CAST(N'2024-10-01T14:30:00' AS DateTime), CAST(N'2024-10-01T14:30:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (10, N'PH010-2024', 2, CAST(140000 AS Decimal(18, 0)), CAST(N'2024-10-01T14:30:00' AS DateTime), CAST(N'2024-10-01T14:30:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (11, N'PH011-2025', 2, CAST(75000 AS Decimal(18, 0)), CAST(N'2025-01-03T09:00:00' AS DateTime), CAST(N'2025-01-03T09:00:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (11, N'PH011-2025', 2, CAST(75000 AS Decimal(18, 0)), CAST(N'2025-01-03T09:00:00' AS DateTime), CAST(N'2025-01-03T09:00:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (12, N'PH012-2025', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2025-01-12T10:30:00' AS DateTime), CAST(N'2025-01-12T10:30:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (12, N'PH012-2025', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2025-01-12T10:30:00' AS DateTime), CAST(N'2025-01-12T10:30:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (13, N'PH013-2025', 2, CAST(100000 AS Decimal(18, 0)), CAST(N'2025-02-08T11:45:00' AS DateTime), CAST(N'2025-02-08T11:45:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (13, N'PH013-2025', 2, CAST(100000 AS Decimal(18, 0)), CAST(N'2025-02-08T11:45:00' AS DateTime), CAST(N'2025-02-08T11:45:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (14, N'PH014-2025', 2, CAST(110000 AS Decimal(18, 0)), CAST(N'2025-03-18T13:20:00' AS DateTime), CAST(N'2025-03-18T13:20:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (14, N'PH014-2025', 2, CAST(110000 AS Decimal(18, 0)), CAST(N'2025-03-18T13:20:00' AS DateTime), CAST(N'2025-03-18T13:20:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (15, N'PH015-2025', 2, CAST(95000 AS Decimal(18, 0)), CAST(N'2025-04-10T14:00:00' AS DateTime), CAST(N'2025-04-10T14:00:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (15, N'PH015-2025', 2, CAST(95000 AS Decimal(18, 0)), CAST(N'2025-04-10T14:00:00' AS DateTime), CAST(N'2025-04-10T14:00:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (16, N'PH016-2025', 2, CAST(120000 AS Decimal(18, 0)), CAST(N'2025-05-05T09:30:00' AS DateTime), CAST(N'2025-05-05T09:30:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (16, N'PH016-2025', 2, CAST(120000 AS Decimal(18, 0)), CAST(N'2025-05-05T09:30:00' AS DateTime), CAST(N'2025-05-05T09:30:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (17, N'PH017-2025', 2, CAST(105000 AS Decimal(18, 0)), CAST(N'2025-06-15T15:45:00' AS DateTime), CAST(N'2025-06-15T15:45:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (17, N'PH017-2025', 2, CAST(105000 AS Decimal(18, 0)), CAST(N'2025-06-15T15:45:00' AS DateTime), CAST(N'2025-06-15T15:45:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (18, N'PH018-2025', 2, CAST(135000 AS Decimal(18, 0)), CAST(N'2025-07-22T10:00:00' AS DateTime), CAST(N'2025-07-22T10:00:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (18, N'PH018-2025', 2, CAST(135000 AS Decimal(18, 0)), CAST(N'2025-07-22T10:00:00' AS DateTime), CAST(N'2025-07-22T10:00:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (19, N'PH019-2025', 2, CAST(125000 AS Decimal(18, 0)), CAST(N'2025-08-28T12:15:00' AS DateTime), CAST(N'2025-08-28T12:15:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (19, N'PH019-2025', 2, CAST(125000 AS Decimal(18, 0)), CAST(N'2025-08-28T12:15:00' AS DateTime), CAST(N'2025-08-28T12:15:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (20, N'PH020-2025', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2025-09-10T13:30:00' AS DateTime), CAST(N'2025-09-10T13:30:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (20, N'PH020-2025', 2, CAST(90000 AS Decimal(18, 0)), CAST(N'2025-09-10T13:30:00' AS DateTime), CAST(N'2025-09-10T13:30:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (21, N'PH021-2025', 2, CAST(145000 AS Decimal(18, 0)), CAST(N'2025-10-20T11:00:00' AS DateTime), CAST(N'2025-10-20T11:00:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (21, N'PH021-2025', 2, CAST(145000 AS Decimal(18, 0)), CAST(N'2025-10-20T11:00:00' AS DateTime), CAST(N'2025-10-20T11:00:00' AS DateTime), N'COMPLETED', 1)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (22, N'PH022-2025', 2, CAST(115000 AS Decimal(18, 0)), CAST(N'2025-11-08T16:20:00' AS DateTime), CAST(N'2025-11-08T16:20:00' AS DateTime), N'Hoàn thành', 2)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (22, N'PH022-2025', 2, CAST(115000 AS Decimal(18, 0)), CAST(N'2025-11-08T16:20:00' AS DateTime), CAST(N'2025-11-08T16:20:00' AS DateTime), N'COMPLETED', 2)
 GO
-INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (23, N'PH023-2025', 2, CAST(160000 AS Decimal(18, 0)), CAST(N'2025-12-26T17:45:00' AS DateTime), CAST(N'2025-12-26T17:45:00' AS DateTime), N'Hoàn thành', 1)
+INSERT [dbo].[Import] ([Id], [ImportCode], [SupplierId], [TotalPrice], [CreatedAt], [UpdatedAt], [Status], [StaffId]) VALUES (23, N'PH023-2025', 2, CAST(160000 AS Decimal(18, 0)), CAST(N'2025-12-26T17:45:00' AS DateTime), CAST(N'2025-12-26T17:45:00' AS DateTime), N'COMPLETED', 1)
 GO
 SET IDENTITY_INSERT [dbo].[Import] OFF
 GO

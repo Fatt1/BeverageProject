@@ -13,7 +13,7 @@ import com.fat.BUS.Services.PdfService;
 import com.fat.BUS.Services.ProductService;
 import com.fat.BUS.Services.StaffService;
 import com.fat.BUS.Services.SupplierService;
-import com.fat.BUS.Utils.MoneyToWord;
+import com.fat.BUS.Utils.MoneyToVietnameseWords;
 import com.fat.Contract.Enumerations.ImportStatus;
 import com.fat.Contract.Exceptions.ValidationException;
 import com.fat.DTO.Imports.ImportDTO;
@@ -22,7 +22,6 @@ import com.fat.DTO.PdfData;
 import com.fat.DTO.Products.ProductDTO;
 import com.fat.DTO.Staffs.StaffDTO;
 import com.fat.DTO.Suppliers.SupplierDTO;
-import com.fat.GUI.Panels.Import.AddOrUpdateImportPanel;
 import com.fat.GUI.Utils.FormatterUtil;
 import com.fat.BUS.Utils.ExcelHelper;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -33,6 +32,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -1155,8 +1155,8 @@ public class ImportPanel extends javax.swing.JPanel {
                         FormatterUtil.toVND(detail.getSubTotal())
                     });
                 }
-                long tongTien = fullImport.getTotalPrice().longValue();
-                String docTien = MoneyToWord.doc(tongTien);
+                BigDecimal tongTien = fullImport.getTotalPrice();
+                String docTien = MoneyToVietnameseWords.convert(tongTien);
                 // Tạo object data
                 PdfData importData = new PdfData(
                     "PHIẾU NHẬP KHO",

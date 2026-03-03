@@ -9,6 +9,7 @@ import com.fat.BUS.Services.StatisticService;
 import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.DTO.Statistics.ProductStatisticDTO;
 import com.fat.DTO.Statistics.StockStatisticDTO;
+import com.fat.GUI.Utils.FormatterUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -191,7 +192,7 @@ public class ProductStatisticByYear extends javax.swing.JPanel {
                     dto.getProductId(),
                     dto.getProductName(),
                     dto.getTotalQuantitySold(),
-                    dto.getTotalRevenue()
+                    FormatterUtil.toVND(dto.getTotalRevenue())
             };
             model.addRow(row);
         }

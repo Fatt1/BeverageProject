@@ -162,8 +162,81 @@ public class StatisticDAO implements IStatisticDAO {
     }
 
     @Override       
-    public List<CustomerStatisticDTO> getCustomerStatistic( LocalDate fromDate, LocalDate toDate) {
-        return List.of();
+    public List<CustomerStatisticDTO> getCustomerStatistic(LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime start = fromDate.atStartOfDay();
+        LocalDateTime end = toDate.atTime(23, 59, 59);
+        String sql = """
+                SELECT 
+                    c.Id AS customerId,
+                    (c.FirstName + ' ' + c.LastName) AS customerName,
+                    COUNT(r.Id) AS totalReceipts,
+                    ISNULL(SUM(r.TotalAmount), 0) AS totalAmount
+                FROM Customer c
+                LEFT JOIN Receipt r ON c.Id = r.CustomerId 
+                    AND r.CreatedAt BETWEEN ? AND ?
+                GROUP BY c.Id, c.FirstName, c.LastName
+                ORDER BY totalAmount DESC
+                """;
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, start);
+            ps.setObject(2, end);
+            var rs = ps.executeQuery();
+            List<CustomerStatisticDTO> customerStatistics = new ArrayList<>();
+            while (rs.next()) {
+                CustomerStatisticDTO dto = new CustomerStatisticDTO(
+                        rs.getInt("customerId"),
+                        rs.getString("customerName"),
+                        rs.getInt("totalReceipts"),
+                        rs.getDouble("totalAmount")
+                );
+                customerStatistics.add(dto);
+            }
+            return customerStatistics;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê khách hàng");
+        }
+    }
+
+    @Override
+    public List<CustomerQuarterStatisticDTO> getCustomerQuarterStatistic(int year) {
+        String sql = """
+            SELECT 
+                c.Id AS customerId,
+                (c.FirstName + ' ' + c.LastName) AS customerName,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 1 THEN r.TotalAmount ELSE 0 END), 0) AS Q1Amount,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 2 THEN r.TotalAmount ELSE 0 END), 0) AS Q2Amount,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 3 THEN r.TotalAmount ELSE 0 END), 0) AS Q3Amount,
+                ISNULL(SUM(CASE WHEN DATEPART(QUARTER, r.CreatedAt) = 4 THEN r.TotalAmount ELSE 0 END), 0) AS Q4Amount,
+                ISNULL(SUM(CASE WHEN r.Id IS NOT NULL THEN r.TotalAmount ELSE 0 END), 0) AS totalAmount
+            FROM Customer c
+            LEFT JOIN Receipt r ON c.Id = r.CustomerId AND YEAR(r.CreatedAt) = ?
+            GROUP BY c.Id, c.FirstName, c.LastName
+            ORDER BY totalAmount DESC
+            """;
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, year);
+            var rs = ps.executeQuery();
+            List<CustomerQuarterStatisticDTO> customerStatistics = new ArrayList<>();
+            while (rs.next()) {
+                CustomerQuarterStatisticDTO dto = new CustomerQuarterStatisticDTO(
+                        rs.getInt("customerId"),
+                        rs.getString("customerName"),
+                        rs.getBigDecimal("Q1Amount"),
+                        rs.getBigDecimal("Q2Amount"),
+                        rs.getBigDecimal("Q3Amount"),
+                        rs.getBigDecimal("Q4Amount"),
+                        rs.getBigDecimal("totalAmount")
+                );
+                customerStatistics.add(dto);
+            }
+            return customerStatistics;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê khách hàng theo quý");
+        }
     }
 
     @Override

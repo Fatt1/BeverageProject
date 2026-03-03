@@ -78,6 +78,7 @@ public class RoleService implements IRoleService {
 
     @Override
     public void deleteRole(Integer id) {
+
         var roleOptional = rolesCache.stream().filter(r -> r.getId().equals(id)).findFirst();
         if(roleOptional.isPresent()) {
             var role = roleOptional.get();

@@ -6,7 +6,10 @@ package com.fat.GUI.Panels.Roles;
 
 import com.fat.BUS.Abstractions.Services.IRoleService;
 import com.fat.BUS.Services.RoleService;
+import com.fat.Contract.Constants.Action;
+import com.fat.Contract.Constants.Function;
 import com.fat.DAO.Repositories.RoleDAO;
+import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Roles.RoleDTO;
 import com.fat.GUI.Dialogs.Roles.AddOrUpdateRole;
 import com.fat.GUI.Dialogs.Roles.PermissionRoleDialog;
@@ -211,6 +214,13 @@ public class RolesPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.ROLE, Action.CREATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền thêm quyền mới", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+
         Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
         AddOrUpdateRole roleDialog = new AddOrUpdateRole(parentFrame, true, null);
         roleDialog.setLocationRelativeTo(parentFrame);
@@ -221,6 +231,11 @@ public class RolesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.ROLE, Action.DELETE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền xóa", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         int selectedRow = tblRole.getSelectedRow();
         if(selectedRow == -1 ) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhóm quyền để xóa", "Chưa chọn nhóm quyền", JOptionPane.WARNING_MESSAGE);
@@ -239,6 +254,11 @@ public class RolesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.ROLE, Action.UPDATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền cập nhật", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         int selectedRow = tblRole.getSelectedRow();
         if(selectedRow  == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhóm quyền để chỉnh sửa", "Chưa chọn nhóm quyền", JOptionPane.WARNING_MESSAGE);

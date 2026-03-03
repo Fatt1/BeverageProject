@@ -13,6 +13,7 @@ public interface IStatisticDAO {
     List<RevenueDTO> getRevenueStatisticsByDateInMonth(int month, int year);
 
     List<CustomerStatisticDTO> getCustomerStatistic( LocalDate fromDate, LocalDate toDate);
+    List<CustomerQuarterStatisticDTO> getCustomerQuarterStatistic(int year);
 
     List<StockStatisticDTO> getStockStatistic(LocalDate fromDate, LocalDate toDate);
 

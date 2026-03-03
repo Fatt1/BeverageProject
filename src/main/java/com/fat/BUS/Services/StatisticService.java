@@ -63,4 +63,14 @@ public class StatisticService implements IStatisticService{
         return statisticDAO.getProductQuarterStatistic(year);
     }
 
+    @Override
+    public List<CustomerStatisticDTO> getCustomerStatistic(LocalDate fromDate, LocalDate toDate) {
+        return statisticDAO.getCustomerStatistic(fromDate, toDate);
+    }
+
+    @Override
+    public List<CustomerQuarterStatisticDTO> getCustomerQuarterStatistic(int year) {
+        return statisticDAO.getCustomerQuarterStatistic(year);
+    }
+
 }

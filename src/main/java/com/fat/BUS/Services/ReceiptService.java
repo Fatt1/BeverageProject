@@ -112,7 +112,7 @@ public class ReceiptService implements IReceiptService {
     }
     
     if (totalAmount != null) {
-        stream = stream.filter(r -> r.getTotalAmount().compareTo(totalAmount) == 0);
+        stream = stream.filter(r -> r.getTotalAmount().compareTo(totalAmount) >= 0);
     }
     
     // 7. Sort theo yêu cầu

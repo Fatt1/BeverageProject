@@ -288,7 +288,7 @@ public class ReceiptPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("Mã phiếu nhập");
+        jLabel1.setText("Mã hóa đơn");
 
         jLabel2.setText("Sắp Xếp Theo");
 

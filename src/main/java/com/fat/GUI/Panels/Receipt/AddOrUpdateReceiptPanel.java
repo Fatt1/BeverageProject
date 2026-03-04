@@ -526,7 +526,7 @@ public class AddOrUpdateReceiptPanel extends javax.swing.JPanel {
             model.addElement(cat);
         }
         
-        cboCategory1.setModel(model);
+        ((javax.swing.JComboBox) cboCategory1).setModel(model);
         cboCategory1.setSelectedIndex(0);
         
         cboCategory1.setRenderer(new DefaultListCellRenderer() {

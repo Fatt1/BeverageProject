@@ -16,7 +16,9 @@ public class CustomerQuarter extends javax.swing.JPanel {
 
     private final IStatisticService statisticService;
     private JTable tblCustomer;
+    private JTextField txtSearch;
     private com.toedter.calendar.JYearChooser jYear;
+    private List<CustomerQuarterStatisticDTO> fullList = new java.util.ArrayList<>();
 
     public CustomerQuarter() {
         statisticService = StatisticService.getInstance();
@@ -33,6 +35,15 @@ public class CustomerQuarter extends javax.swing.JPanel {
         JPanel filterPanel = new JPanel();
         filterPanel.setBackground(Color.WHITE);
         filterPanel.setPreferredSize(new Dimension(280, 286));
+
+        JLabel lblSearch = new JLabel("Tìm kiếm khách hàng");
+        txtSearch = new JTextField();
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                filterTable();
+            }
+        });
 
         JLabel lblYear = new JLabel("Năm");
         jYear = new com.toedter.calendar.JYearChooser();
@@ -57,6 +68,8 @@ public class CustomerQuarter extends javax.swing.JPanel {
             .addGroup(filterLayout.createSequentialGroup()
                 .addGap(12)
                 .addGroup(filterLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSearch)
+                    .addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblYear)
                     .addComponent(jYear, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnExportExcel, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
@@ -67,6 +80,10 @@ public class CustomerQuarter extends javax.swing.JPanel {
             filterLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(filterLayout.createSequentialGroup()
                 .addGap(14)
+                .addComponent(lblSearch)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+                .addGap(12)
                 .addComponent(lblYear)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jYear, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
@@ -91,7 +108,6 @@ public class CustomerQuarter extends javax.swing.JPanel {
             }
         });
         tblCustomer.getTableHeader().setReorderingAllowed(false);
-        tblCustomer.setRowHeight(30);
 
         JScrollPane scrollPane = new JScrollPane(tblCustomer);
         add(scrollPane, BorderLayout.CENTER);
@@ -100,13 +116,21 @@ public class CustomerQuarter extends javax.swing.JPanel {
     private void btnStatisticAction() {
         int year = jYear.getYear();
         try {
-            List<CustomerQuarterStatisticDTO> list = statisticService.getCustomerQuarterStatistic(year);
-            initTable(list);
+            fullList = statisticService.getCustomerQuarterStatistic(year);
+            filterTable();
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this,
                     "Lỗi tải thống kê khách hàng theo quý: " + ex.getMessage(),
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void filterTable() {
+        String keyword = txtSearch.getText().trim().toLowerCase();
+        List<CustomerQuarterStatisticDTO> filtered = fullList.stream()
+            .filter(dto -> keyword.isEmpty() || dto.getCustomerName().toLowerCase().contains(keyword))
+            .collect(java.util.stream.Collectors.toList());
+        initTable(filtered);
     }
 
     private void initTable(List<CustomerQuarterStatisticDTO> list) {

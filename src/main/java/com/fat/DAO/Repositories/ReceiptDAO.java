@@ -1,5 +1,6 @@
 package com.fat.DAO.Repositories;
 
+import com.fat.Contract.Enumerations.InventoryType;
 import com.fat.DAO.Abstractions.Repositories.IReceiptDAO;
 import com.fat.DAO.Utils.DbContext;
 import com.fat.DTO.Receipts.ReceiptDTO;
@@ -158,7 +159,7 @@ public class ReceiptDAO implements IReceiptDAO {
         String sqlUpdateStock = "UPDATE Product SET Stock = Stock - ? WHERE Id = ?";
         String sqlGetStock = "SELECT Stock FROM Product WHERE Id = ?";
         String sqlHistory = "INSERT INTO InventoryHistory (Quantity, ProductId, CreatedAt, Type, StockAfter) " +
-                           "VALUES (?, ?, GETDATE(), 2, ?)";
+                           "VALUES (?, ?, GETDATE(), ?, ?)";  // Type 0=IMPORT, 1=EXPORT; quantity âm cho EXPORT
         
         Connection conn = null;
         try {
@@ -215,10 +216,11 @@ public class ReceiptDAO implements IReceiptDAO {
                     stockAfter = rsStock.getInt("Stock");
                 }
                 
-                // 2.4 INSERT InventoryHistory (Type = 2: Xuất kho bán hàng)
-                psHistory.setInt(1, item.getQuantity());
+                // 2.4 INSERT InventoryHistory (Type = 1: EXPORT - Xuất kho bán hàng, quantity âm)
+                psHistory.setInt(1, -item.getQuantity()); // Âm vì là xuất kho
                 psHistory.setInt(2, item.getProductId());
-                psHistory.setInt(3, stockAfter);
+                psHistory.setInt(3, InventoryType.EXPORT.ordinal()); // 1
+                psHistory.setInt(4, stockAfter);
                 psHistory.executeUpdate();
             }
             

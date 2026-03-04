@@ -11,7 +11,7 @@ public class ProductQuarterStatisticDTO {
     private BigDecimal q4Amount;
     private BigDecimal totalSales;
 
-    public ProductQuarterStatisticDTO(int productId, String productName, BigDecimal q2Amount, BigDecimal q1Amount, BigDecimal q3Amount, BigDecimal q4Amount, BigDecimal totalSales) {
+    public ProductQuarterStatisticDTO(int productId, String productName,BigDecimal q1Amount, BigDecimal q2Amount , BigDecimal q3Amount, BigDecimal q4Amount, BigDecimal totalSales) {
         this.productId = productId;
         this.productName = productName;
         this.q2Amount = q2Amount;

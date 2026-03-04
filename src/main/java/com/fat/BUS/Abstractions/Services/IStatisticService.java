@@ -11,7 +11,7 @@ public interface IStatisticService {
     List<RevenueDTO> getRevenueStatisticsByYear(int startYear, int endYear);
     List<RevenueDTO> getRevenueStatisticsByDay(int year, int month);
     List<RevenueDTO> getRevenueStatisticsByQuarter(int year, int quarter);
-    List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate);
+    List<ProductStatisticDTO> getProductStatistics(LocalDate fromDate, LocalDate toDate, String searchKey);
     List<StaffStatisticDTO> getStaffStatistics(LocalDate fromDate, LocalDate toDate);
     List<StaffQuarterStatisticDTO> getStaffQuarterStatistic(int year);
     List<ProductQuarterStatisticDTO> getProductQuarterStatistic(int year);

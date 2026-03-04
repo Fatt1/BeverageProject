@@ -293,28 +293,28 @@ public class CategoriesPanel extends javax.swing.JPanel {
     /**
      * Method main để test riêng CategoriesPanel
      */
-    public static void main(String[] args) {
-        // Set FlatLaf look and feel
-        try {
-            javax.swing.UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-        } catch (Exception ex) {
-            System.err.println("Failed to initialize FlatLaf");
-        }
-        
-        // Tạo frame test
-        java.awt.EventQueue.invokeLater(() -> {
-            JFrame frame = new JFrame("Test Categories Panel");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1200, 700);
-            frame.setLocationRelativeTo(null);
-            
-            // Thêm panel vào frame
-            CategoriesPanel panel = new CategoriesPanel();
-            frame.add(panel);
-            
-            frame.setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//        // Set FlatLaf look and feel
+//        try {
+//            javax.swing.UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+//        } catch (Exception ex) {
+//            System.err.println("Failed to initialize FlatLaf");
+//        }
+//        
+//        // Tạo frame test
+//        java.awt.EventQueue.invokeLater(() -> {
+//            JFrame frame = new JFrame("Test Categories Panel");
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            frame.setSize(1200, 700);
+//            frame.setLocationRelativeTo(null);
+//            
+//            // Thêm panel vào frame
+//            CategoriesPanel panel = new CategoriesPanel();
+//            frame.add(panel);
+//            
+//            frame.setVisible(true);
+//        });
+//    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;

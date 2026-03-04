@@ -170,34 +170,34 @@ public class ConfirmDialog extends javax.swing.JDialog {
         return dialog.isConfirmed();
     }
     
-    public static void main(String[] args) {
-        // 1. Kích hoạt giao diện FlatLaf
-        FlatLightLaf.setup();
-
-        // 2. Tạo một Frame cha giả (Hidden)
-        JFrame dummyFrame = new JFrame();
-        dummyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        dummyFrame.setSize(400, 400);
-        dummyFrame.setLocationRelativeTo(null);
-        // dummyFrame.setVisible(true); // Bạn có thể hiện lên hoặc ẩn đi tùy ý
-
-        // 3. Gọi thử Dialog
-        boolean result = ConfirmDialog.show(dummyFrame, 
-            "Xóa vai trò", 
-            "Bạn có chắc chắn muốn xóa \"vai trò\"? Hành động này không thể hoàn tác.", 
-            "Xóa"
-        );
-
-        // 4. Kiểm tra kết quả
-        if (result) {
-            System.out.println("Kết quả: Người dùng đã bấm XÓA");
-        } else {
-            System.out.println("Kết quả: Người dùng đã bấm HỦY hoặc tắt Dialog");
-        }
-
-        // Thoát sau khi test xong
-        System.exit(0);
-    }
+//    public static void main(String[] args) {
+//        // 1. Kích hoạt giao diện FlatLaf
+//        FlatLightLaf.setup();
+//
+//        // 2. Tạo một Frame cha giả (Hidden)
+//        JFrame dummyFrame = new JFrame();
+//        dummyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        dummyFrame.setSize(400, 400);
+//        dummyFrame.setLocationRelativeTo(null);
+//        // dummyFrame.setVisible(true); // Bạn có thể hiện lên hoặc ẩn đi tùy ý
+//
+//        // 3. Gọi thử Dialog
+//        boolean result = ConfirmDialog.show(dummyFrame, 
+//            "Xóa vai trò", 
+//            "Bạn có chắc chắn muốn xóa \"vai trò\"? Hành động này không thể hoàn tác.", 
+//            "Xóa"
+//        );
+//
+//        // 4. Kiểm tra kết quả
+//        if (result) {
+//            System.out.println("Kết quả: Người dùng đã bấm XÓA");
+//        } else {
+//            System.out.println("Kết quả: Người dùng đã bấm HỦY hoặc tắt Dialog");
+//        }
+//
+//        // Thoát sau khi test xong
+//        System.exit(0);
+//    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

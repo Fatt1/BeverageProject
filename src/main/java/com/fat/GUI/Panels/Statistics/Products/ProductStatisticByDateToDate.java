@@ -8,6 +8,7 @@ import com.fat.BUS.Abstractions.Services.IStatisticService;
 import com.fat.BUS.Services.StatisticService;
 import com.fat.BUS.Utils.ExcelHelper;
 import com.fat.DTO.Statistics.ProductStatisticDTO;
+import com.fat.GUI.Utils.FormatterUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -35,7 +36,7 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
         if (!java.beans.Beans.isDesignTime()) {
             LocalDate startDate =  dateFrom.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             LocalDate endDate =  dateTo.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            initTable(statisticService.getProductStatistics(startDate, endDate));
+            initTable(statisticService.getProductStatistics(startDate, endDate, ""));
         }
     }
 
@@ -55,6 +56,8 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         dateTo = new com.toedter.calendar.JDateChooser();
         dateFrom = new com.toedter.calendar.JDateChooser();
+        txtSearch = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProduct = new javax.swing.JTable();
 
@@ -80,27 +83,35 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
 
         jLabel2.setText("Từ ngày");
 
+        jLabel5.setText("Tên sản phẩm");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(15, 15, 15)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel5)
+                    .addComponent(txtSearch)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
-                    .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateFrom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dateTo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnExportExcel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dateFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -112,7 +123,7 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addContainerGap(212, Short.MAX_VALUE))
         );
 
         add(jPanel2, java.awt.BorderLayout.WEST);
@@ -156,7 +167,7 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Ngày bắt đầu không được sau ngày kết thúc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        initTable(statisticService.getProductStatistics(startDate, endDate));
+        initTable(statisticService.getProductStatistics(startDate, endDate, txtSearch.getText().trim()));
     }//GEN-LAST:event_btnStatisticActionPerformed
 
     private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
@@ -173,7 +184,7 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
                     dto.getProductId(),
                     dto.getProductName(),
                     dto.getTotalQuantitySold(),
-                    dto.getTotalRevenue()
+                    FormatterUtil.toVND(dto.getTotalRevenue())
             };
             model.addRow(row);
         }
@@ -192,8 +203,10 @@ public class ProductStatisticByDateToDate extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser dateTo;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblProduct;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

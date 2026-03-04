@@ -13,6 +13,13 @@ public class StatisticPanel extends javax.swing.JPanel{
     private CardLayout contentCardLayout;
     private JPanel contentPanel;
     
+    // Lazy loading - Chỉ tạo panel khi cần thiết
+    private RevenuePanel revenuePanel;
+    private InventoryStatisticPanel inventoryPanel;
+    private CustomerPanel customerPanel;
+    private StaffPanel staffPanel;
+    private ProductStatisticPanel productPanel;
+    
     public StatisticPanel(){
         initComponents();
     }
@@ -30,24 +37,10 @@ public class StatisticPanel extends javax.swing.JPanel{
         contentPanel = new JPanel(contentCardLayout);
         contentPanel.setBackground(new Color(245, 245, 245));
         
-        // Tạo các subpanel cho mỗi loại thống kê
-        RevenuePanel revenuePanel = new RevenuePanel();
-        InventoryStatisticPanel inventoryPanel = new InventoryStatisticPanel();
-        CustomerPanel customerPanel = new CustomerPanel();
-        StaffPanel staffPanel = new StaffPanel();
-        ProductStatisticPanel productPanel = new ProductStatisticPanel();
-        
-        // Add các subpanel vào CardLayout
-        contentPanel.add(revenuePanel, "DOANHTHU");
-        contentPanel.add(inventoryPanel, "TONKHO");
-        contentPanel.add(customerPanel, "KHACHHANG");
-        contentPanel.add(staffPanel, "NHANVIEN");
-        contentPanel.add(productPanel, "SANPHAM");
-        
         this.add(contentPanel, BorderLayout.CENTER);
         
-        // Mặc định hiển thị panel "Doanh thu"
-        contentCardLayout.show(contentPanel, "DOANHTHU");
+        // Mặc định hiển thị panel "Doanh thu" - sẽ được tạo lazy loading  
+        showSubPanel("DOANHTHU", null);
     }
     
     private JPanel createTopPanel(){
@@ -85,10 +78,47 @@ public class StatisticPanel extends javax.swing.JPanel{
     
     /**
      * Hiển thị subpanel tương ứng và set active button
+     * Sử dụng lazy loading - chỉ tạo panel khi cần thiết
      */
     private void showSubPanel(String panelName, JButton button){
+        // Lazy loading - tạo panel nếu chưa tồn tại
+        switch(panelName) {
+            case "DOANHTHU":
+                if (revenuePanel == null) {
+                    revenuePanel = new RevenuePanel();
+                    contentPanel.add(revenuePanel, "DOANHTHU");
+                }
+                break;
+            case "TONKHO":
+                if (inventoryPanel == null) {
+                    inventoryPanel = new InventoryStatisticPanel();
+                    contentPanel.add(inventoryPanel, "TONKHO");
+                }
+                break;
+            case "KHACHHANG":
+                if (customerPanel == null) {
+                    customerPanel = new CustomerPanel();
+                    contentPanel.add(customerPanel, "KHACHHANG");
+                }
+                break;
+            case "NHANVIEN":
+                if (staffPanel == null) {
+                    staffPanel = new StaffPanel();
+                    contentPanel.add(staffPanel, "NHANVIEN");
+                }
+                break;
+            case "SANPHAM":
+                if (productPanel == null) {
+                    productPanel = new ProductStatisticPanel();
+                    contentPanel.add(productPanel, "SANPHAM");
+                }
+                break;
+        }
+        
         contentCardLayout.show(contentPanel, panelName);
-        setActiveButton(button);
+        if (button != null) {
+            setActiveButton(button);
+        }
     }
     
     private JButton createNavButton(String text){

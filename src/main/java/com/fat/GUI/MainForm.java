@@ -68,8 +68,9 @@ public class MainForm extends javax.swing.JFrame {
             logger.warning("User session or role ID is null.");
             return;
         }
-        int roleId = UserSessionDTO.getInstance().getRoleId();
-
+        int roleId = userSession.getRoleId();
+        lblRoleName.setText(UserSessionDTO.getInstance().getRoleName());
+        lblName.setText(UserSessionDTO.getInstance().getStaffName());
         // Kiểm tra quyền và thiết lập trạng thái nút
         tbtnStaff.setVisible(roleService.checkPermission(roleId, Function.STAFF, com.fat.Contract.Constants.Action.READ));
         tbtnRole.setVisible(roleService.checkPermission(roleId, Function.ROLE, com.fat.Contract.Constants.Action.READ));
@@ -100,7 +101,8 @@ public class MainForm extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
-        jLabel1 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
+        lblRoleName = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         tbtnTrangChu = new javax.swing.JToggleButton();
         tbtnReceipt = new javax.swing.JToggleButton();
@@ -147,13 +149,18 @@ public class MainForm extends javax.swing.JFrame {
         jSeparator3.setToolTipText("");
         jPanel1.add(jSeparator3);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/User.png"))); // NOI18N
-        jLabel1.setText("Fat");
-        jLabel1.setMaximumSize(new java.awt.Dimension(32767, 60));
-        jLabel1.setPreferredSize(new java.awt.Dimension(60, 60));
-        jPanel1.add(jLabel1);
+        lblName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblName.setText("Fat");
+        lblName.setMaximumSize(new java.awt.Dimension(32767, 60));
+        lblName.setPreferredSize(new java.awt.Dimension(60, 60));
+        jPanel1.add(lblName);
+
+        lblRoleName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblRoleName.setText("Vai trò");
+        lblRoleName.setMaximumSize(new java.awt.Dimension(32767, 60));
+        lblRoleName.setPreferredSize(new java.awt.Dimension(60, 60));
+        jPanel1.add(lblRoleName);
 
         jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
@@ -557,11 +564,12 @@ public class MainForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblRoleName;
     private javax.swing.JPanel mainContentPanel;
     private javax.swing.JPanel sidebarPandel;
     private javax.swing.JToggleButton tbtnCategory;

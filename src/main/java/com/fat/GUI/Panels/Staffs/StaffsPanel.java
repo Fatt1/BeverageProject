@@ -9,6 +9,9 @@ import com.fat.BUS.Abstractions.Services.IStaffService;
 import com.fat.BUS.Services.RoleService;
 import com.fat.BUS.Services.StaffService;
 import com.fat.BUS.Utils.ExcelHelper;
+import com.fat.Contract.Constants.Action;
+import com.fat.Contract.Constants.Function;
+import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Roles.RoleDTO;
 import com.fat.DTO.Staffs.StaffDTO;
 import com.fat.GUI.Dialogs.Staffs.AddOrUpdateStaffDialog;
@@ -33,9 +36,9 @@ import java.time.format.DateTimeFormatter;
  * @author tranc
  */
 public class StaffsPanel extends javax.swing.JPanel {
-
+    //private final IRoleService roleService = RoleService.getInstance();
     private IStaffService staffService;
-    private IRoleService roleService;
+    private final IRoleService roleService;
     private Integer selectedRoleId = null;
     private String searchKey = null;
     boolean isFirstLoad = true;
@@ -45,16 +48,12 @@ public class StaffsPanel extends javax.swing.JPanel {
         initComponents();
         initTable();
         setCss();
-        
-
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
                 updateDataOnShow();
             }
         });
-        
-      
     }
 
 
@@ -213,7 +212,14 @@ public class StaffsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchKeyPressed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.CUSTOMER, Action.UPDATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền thêm nhân viên mới", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         int selectedRow = tblStaff.getSelectedRow();
+
+
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this,
                     "Vui lòng chọn nhân viên cần chỉnh sửa.",
@@ -307,6 +313,11 @@ public class StaffsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.CUSTOMER, Action.CREATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền thêm nhân viên mới", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         AddOrUpdateStaffDialog dialog = new AddOrUpdateStaffDialog(parentFrame, true, null);
         dialog.setLocationRelativeTo(parentFrame);
@@ -319,6 +330,11 @@ public class StaffsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.CUSTOMER, Action.DELETE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền thêm nhân viên mới", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         int selectedRow = tblStaff.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this,

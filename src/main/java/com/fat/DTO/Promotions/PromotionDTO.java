@@ -10,24 +10,24 @@ public class PromotionDTO extends BaseDTO {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
-    private List<PromotionDTO> promotionDetails;
+    private List<PromotionDetailDTO> promotionDetails;
 
     public PromotionDTO() {
     }
 
-    public PromotionDTO(Integer id, String name, LocalDate startDate, LocalDate endDate, List<PromotionDTO> promotionDetails) {
+    public PromotionDTO(Integer id, String name, LocalDate startDate, LocalDate endDate, List<PromotionDetailDTO> promotionDetails) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
-
+        this.promotionDetails = promotionDetails;
     }
 
-    public List<PromotionDTO> getPromotionDetails() {
+    public List<PromotionDetailDTO> getPromotionDetails() {
         return promotionDetails;
     }
 
-    public void setPromotionDetails(List<PromotionDTO> promotionDetails) {
+    public void setPromotionDetails(List<PromotionDetailDTO> promotionDetails) {
         this.promotionDetails = promotionDetails;
     }
 

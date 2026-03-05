@@ -263,9 +263,9 @@ public class StatisticDAO implements IStatisticDAO {
             p.id As productId,
             p.name AS productName,
             ISNULL(os.stockAfter, 0) AS initialStock,
-            ISNULL(ps.totalImport, 0) AS importedQuantity, -- Đã thêm ,0
-            ISNULL(ps.totalExport, 0) AS exportedQuantity, -- Đã thêm ,0
-            ISNULL(os.stockAfter, 0) + ISNULL(ps.totalImport, 0) + ISNULL(ps.totalExport, 0) AS finalStock
+            ISNULL(ps.totalImport, 0) AS importedQuantity,
+            ABS(ISNULL(ps.totalExport, 0)) AS exportedQuantity, -- ABS vì EXPORT lưu quantity âm
+            ISNULL(os.stockAfter, 0) + ISNULL(ps.totalImport, 0) + ISNULL(ps.totalExport, 0) AS finalStock -- totalExport âm nên cộng = trừ
         FROM OpeningStock os 
         FULL OUTER JOIN PeriodSum ps ON os.productId = ps.productId AND os.rn = 1
         RIGHT JOIN Product p ON p.id = COALESCE(os.productId, ps.productId)

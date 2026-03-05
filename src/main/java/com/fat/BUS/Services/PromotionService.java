@@ -38,6 +38,8 @@ public class PromotionService implements IPromotionService {
         if (newId != null){
             dto.setId(newId);
             promotionsCache.addFirst(dto);
+        } else {
+            throw new RuntimeException("Không thể thêm khuyến mãi vào cơ sở dữ liệu!");
         }
     }
 
@@ -87,6 +89,11 @@ public class PromotionService implements IPromotionService {
             .filter(p -> p.getId().equals(id))
             .findFirst()
             .orElse(null);
+    }
+
+    @Override
+    public List<PromotionDetailDTO> getPromotionDetails(Integer promotionId) {
+        return ((PromotionDAO) promotionDAO).getPromotionDetails(promotionId);
     }
 
     @Override

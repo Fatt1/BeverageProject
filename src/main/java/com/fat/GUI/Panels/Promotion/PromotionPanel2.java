@@ -10,15 +10,17 @@ import com.fat.DTO.Promotions.PromotionDetailDTO;
 import com.fat.GUI.Dialogs.Promotions.SelectProductDialog;
 import com.fat.GUI.MainForm;
 
+import com.toedter.calendar.JDateChooser;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,6 @@ public class PromotionPanel2 extends javax.swing.JPanel {
     private final IPromotionService promotionService;
     private final IProductService productService;
     private Integer promotionId = null;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private boolean isUpdating = false;
 
     // Display data for each product row
@@ -40,8 +41,8 @@ public class PromotionPanel2 extends javax.swing.JPanel {
 
     // UI components
     private JTextField txtName;
-    private JTextField txtStartDate;
-    private JTextField txtEndDate;
+    private JDateChooser txtStartDate;
+    private JDateChooser txtEndDate;
     private JTable tblProducts;
     private JTextField txtBatchDiscount;
     private JLabel lblSelectedCount;
@@ -131,18 +132,22 @@ public class PromotionPanel2 extends javax.swing.JPanel {
         txtName.setPreferredSize(new Dimension(400, 35));
 
         // Start date field
-        JLabel lblStart = new JLabel("Ngày áp dụng (dd/MM/yyyy):");
+        JLabel lblStart = new JLabel("Ngày áp dụng:");
         lblStart.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtStartDate = new JTextField();
+        txtStartDate = new JDateChooser();
+        txtStartDate.setDateFormatString("dd/MM/yyyy");
         txtStartDate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtStartDate.setPreferredSize(new Dimension(180, 35));
+        txtStartDate.setPreferredSize(new Dimension(220, 35));
+        txtStartDate.setDate(new Date());
 
         // End date field
-        JLabel lblEnd = new JLabel("Ngày hết hạn (dd/MM/yyyy):");
+        JLabel lblEnd = new JLabel("Ngày hết hạn:");
         lblEnd.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtEndDate = new JTextField();
+        txtEndDate = new JDateChooser();
+        txtEndDate.setDateFormatString("dd/MM/yyyy");
         txtEndDate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtEndDate.setPreferredSize(new Dimension(180, 35));
+        txtEndDate.setPreferredSize(new Dimension(220, 35));
+        txtEndDate.setDate(new Date());
 
         // Layout using GroupLayout
         GroupLayout layout = new GroupLayout(panel);
@@ -177,9 +182,9 @@ public class PromotionPanel2 extends javax.swing.JPanel {
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 .addComponent(lblStart)
                 .addComponent(lblEnd))
-            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                .addComponent(txtStartDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(txtEndDate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(txtStartDate, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtEndDate, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
         );
 
         return panel;
@@ -360,8 +365,8 @@ public class PromotionPanel2 extends javax.swing.JPanel {
             }
 
             txtName.setText(promotion.getName());
-            txtStartDate.setText(promotion.getStartDate().format(dateFormatter));
-            txtEndDate.setText(promotion.getEndDate().format(dateFormatter));
+            txtStartDate.setDate(Date.from(promotion.getStartDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            txtEndDate.setDate(Date.from(promotion.getEndDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
             // Load product details
             List<PromotionDetailDTO> details = promotionService.getPromotionDetails(promotionId);
@@ -532,8 +537,8 @@ public class PromotionPanel2 extends javax.swing.JPanel {
 
         try {
             String name = txtName.getText().trim();
-            LocalDate startDate = LocalDate.parse(txtStartDate.getText().trim(), dateFormatter);
-            LocalDate endDate = LocalDate.parse(txtEndDate.getText().trim(), dateFormatter);
+            LocalDate startDate = txtStartDate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate endDate = txtEndDate.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
             if (endDate.isBefore(startDate)) {
                 JOptionPane.showMessageDialog(this, "Ngày hết hạn phải sau ngày áp dụng!", "Lỗi", JOptionPane.WARNING_MESSAGE);
@@ -569,8 +574,6 @@ public class PromotionPanel2 extends javax.swing.JPanel {
             }
 
             navigateBack();
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(this, "Định dạng ngày không hợp lệ! (dd/MM/yyyy)", "Lỗi", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
@@ -594,27 +597,13 @@ public class PromotionPanel2 extends javax.swing.JPanel {
             txtName.requestFocus();
             return false;
         }
-        if (txtStartDate.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập ngày áp dụng!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+        if (txtStartDate.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày áp dụng!", "Lỗi", JOptionPane.WARNING_MESSAGE);
             txtStartDate.requestFocus();
             return false;
         }
-        if (txtEndDate.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập ngày hết hạn!", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            txtEndDate.requestFocus();
-            return false;
-        }
-        try {
-            LocalDate.parse(txtStartDate.getText().trim(), dateFormatter);
-        } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "Ngày áp dụng không hợp lệ! (dd/MM/yyyy)", "Lỗi", JOptionPane.WARNING_MESSAGE);
-            txtStartDate.requestFocus();
-            return false;
-        }
-        try {
-            LocalDate.parse(txtEndDate.getText().trim(), dateFormatter);
-        } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "Ngày hết hạn không hợp lệ! (dd/MM/yyyy)", "Lỗi", JOptionPane.WARNING_MESSAGE);
+        if (txtEndDate.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày hết hạn!", "Lỗi", JOptionPane.WARNING_MESSAGE);
             txtEndDate.requestFocus();
             return false;
         }

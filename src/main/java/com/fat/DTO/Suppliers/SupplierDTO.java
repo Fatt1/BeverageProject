@@ -23,11 +23,11 @@ public class SupplierDTO extends BaseDTO {
     public SupplierDTO() {
     }
 
-    public SupplierDTO(Integer id, String email, String phoneNumber, String name, String address) {
+    public SupplierDTO(Integer id, String name, String email, String phoneNumber, String address) {
         this.id = id;
+        this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.name = name;
         this.address = address;
     }
 

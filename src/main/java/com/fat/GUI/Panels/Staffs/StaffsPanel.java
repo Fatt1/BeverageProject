@@ -455,19 +455,19 @@ public class StaffsPanel extends javax.swing.JPanel {
         col.getColumn(0).setMaxWidth(60);
 
         // Họ và Tên (quan trọng: KHÔNG set MaxWidth)
-        col.getColumn(1).setPreferredWidth(180);
+        col.getColumn(1).setPreferredWidth(120);
 
         // Số Điện Thoại
         col.getColumn(2).setPreferredWidth(120);
-        col.getColumn(2).setMaxWidth(150);
+        col.getColumn(2).setMaxWidth(200);
 
         // Tên Đăng Nhập
         col.getColumn(3).setPreferredWidth(120);
-        col.getColumn(3).setMaxWidth(150);
+        col.getColumn(3).setMaxWidth(200);
 
         // Ngày Sinh
         col.getColumn(4).setPreferredWidth(100);
-        col.getColumn(4).setMaxWidth(120);
+        col.getColumn(4).setMaxWidth(150);
 
         // Mức Lương
         col.getColumn(5).setPreferredWidth(120);

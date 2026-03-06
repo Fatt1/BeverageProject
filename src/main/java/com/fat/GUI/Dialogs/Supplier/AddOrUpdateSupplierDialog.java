@@ -210,9 +210,9 @@ public class AddOrUpdateSupplierDialog extends javax.swing.JDialog {
 
             SupplierDTO dto = new SupplierDTO(
                 supplierId,  // ID = null nếu thêm mới, có giá trị nếu chỉnh sửa
+                name,        // Tên nhà cung cấp
                 emailText,   // Email
                 phone,       // Số điện thoại
-                name,        // Tên nhà cung cấp
                 addr         // Địa chỉ
             );
 

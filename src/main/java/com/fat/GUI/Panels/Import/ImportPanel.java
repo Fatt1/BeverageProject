@@ -584,7 +584,7 @@ public class ImportPanel extends javax.swing.JPanel {
     private void loadFilters() {
         // ===== Load Suppliers =====
         DefaultComboBoxModel<SupplierDTO> supplierModel = new DefaultComboBoxModel<>();
-        supplierModel.addElement(new SupplierDTO(0, "", "", "Tất cả", ""));
+        supplierModel.addElement(new SupplierDTO(0, "Tất cả", "", "", ""));
         
         List<SupplierDTO> suppliers = supplierService.getAllSuppliers();
         for (SupplierDTO s : suppliers) {

@@ -15,7 +15,8 @@ import com.fat.GUI.Panels.Customers.CustomersPanel;
 import com.fat.GUI.Panels.Dashboard.DashBoardPanel;
 import com.fat.GUI.Panels.Import.ImportPanel;
 import com.fat.GUI.Panels.Products.ProductsPanel;
-import com.fat.GUI.Panels.Promotion.PromotionsPanel;
+import com.fat.GUI.Panels.Promotion.PromotionPanel2;
+import com.fat.GUI.Panels.Promotion.PromotionPanelChanges;
 // import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Roles.RolesPanel;
 import com.fat.GUI.Panels.Staffs.StaffsPanel;
@@ -69,7 +70,7 @@ public class MainForm extends javax.swing.JFrame {
             return;
         }
         int roleId = userSession.getRoleId();
-
+        lblRoleName.setText(UserSessionDTO.getInstance().getRoleName());
         lblName.setText(UserSessionDTO.getInstance().getStaffName());
         // Kiểm tra quyền và thiết lập trạng thái nút
         tbtnStaff.setVisible(roleService.checkPermission(roleId, Function.STAFF, com.fat.Contract.Constants.Action.READ));
@@ -102,6 +103,7 @@ public class MainForm extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
         lblName = new javax.swing.JLabel();
+        lblRoleName = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         tbtnTrangChu = new javax.swing.JToggleButton();
         tbtnReceipt = new javax.swing.JToggleButton();
@@ -150,11 +152,16 @@ public class MainForm extends javax.swing.JFrame {
 
         lblName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblName.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/User.png"))); // NOI18N
         lblName.setText("Fat");
         lblName.setMaximumSize(new java.awt.Dimension(32767, 60));
         lblName.setPreferredSize(new java.awt.Dimension(60, 60));
         jPanel1.add(lblName);
+
+        lblRoleName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblRoleName.setText("Vai trò");
+        lblRoleName.setMaximumSize(new java.awt.Dimension(32767, 60));
+        lblRoleName.setPreferredSize(new java.awt.Dimension(60, 60));
+        jPanel1.add(lblRoleName);
 
         jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
         jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
@@ -385,7 +392,7 @@ public class MainForm extends javax.swing.JFrame {
         mainContentPanel.add(new CategoriesPanel(), "CATEGORIES");
         mainContentPanel.add(new StaffsPanel(), "STAFFS");
         mainContentPanel.add(new RolesPanel(), "ROLES");
-        mainContentPanel.add(new PromotionsPanel(), "PROMOTIONS");
+        mainContentPanel.add(new PromotionPanelChanges(), "PROMOTIONS");
         mainContentPanel.add(new StatisticPanel(), "STATISTICS");
         mainContentPanel.add(new ImportPanel(),"IMPORT");
         mainContentPanel.add(new ReceiptPanel(), "RECEIPT");
@@ -401,8 +408,8 @@ public class MainForm extends javax.swing.JFrame {
         // Nếu quay về PROMOTIONS thì refresh dữ liệu
         if ("PROMOTIONS".equals(panelName)) {
             for (java.awt.Component comp : mainContentPanel.getComponents()) {
-                if (comp instanceof PromotionsPanel) {
-                    ((PromotionsPanel) comp).refreshData();
+                if (comp instanceof PromotionPanelChanges) {
+                    ((PromotionPanelChanges) comp).refreshData();
                     break;
                 }
             }
@@ -415,22 +422,22 @@ public class MainForm extends javax.swing.JFrame {
      * @param promotionId null = Add mode, có giá trị = Edit mode
      */
     public void showPromotionForm(Integer promotionId) {
-//        // Xóa panel cũ nếu có
-//        for (java.awt.Component comp : mainContentPanel.getComponents()) {
-//            if (comp instanceof PromotionPanel2) {
-//                mainContentPanel.remove(comp);
-//                break;
-//            }
-//        }
-//
-//        // Thêm panel mới
-//        if (promotionId == null) {
-//            mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
-//        } else {
-//            mainContentPanel.add(new PromotionPanel2(promotionId), "ADD_PROMOTION");
-//        }
-//
-//        cardLayout.show(mainContentPanel, "ADD_PROMOTION");
+        // Xóa panel cũ nếu có
+        for (java.awt.Component comp : mainContentPanel.getComponents()) {
+            if (comp instanceof PromotionPanel2) {
+                mainContentPanel.remove(comp);
+                break;
+            }
+        }
+
+        // Thêm panel mới
+        if (promotionId == null) {
+            mainContentPanel.add(new PromotionPanel2(), "ADD_PROMOTION");
+        } else {
+            mainContentPanel.add(new PromotionPanel2(promotionId), "ADD_PROMOTION");
+        }
+
+        cardLayout.show(mainContentPanel, "ADD_PROMOTION");
     }
 
     private void tbtnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbtnTrangChuActionPerformed
@@ -563,6 +570,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblRoleName;
     private javax.swing.JPanel mainContentPanel;
     private javax.swing.JPanel sidebarPandel;
     private javax.swing.JToggleButton tbtnCategory;

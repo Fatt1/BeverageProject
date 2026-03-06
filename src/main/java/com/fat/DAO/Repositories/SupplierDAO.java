@@ -40,9 +40,9 @@ public class SupplierDAO implements ISupplierDAO {
                     String email = rs.getString("Email");
                     String address = rs.getString("Address");
                     String phoneNumber = rs.getString("PhoneNumber");
-                    // Constructor order: (id, name, email, address, phoneNumber)
+                    // Constructor order: (id, name, email, phoneNumber, address)
    
-                    SupplierDTO supplier = new SupplierDTO(id, email, phoneNumber, name, address);
+                    SupplierDTO supplier = new SupplierDTO(id, name, email, phoneNumber, address);
                     suppliers.add(supplier);
                 }return suppliers;
             }return null;
@@ -66,9 +66,9 @@ public class SupplierDAO implements ISupplierDAO {
                 String email = rs.getString("Email");
                 String address = rs.getString("Address");
                 String phoneNumber = rs.getString("PhoneNumber");
-                // Constructor order: (id, name, email, address, phoneNumber)
+                // Constructor order: (id, name, email, phoneNumber, address)
        
-                SupplierDTO supplier = new SupplierDTO(id, email, phoneNumber, name, address);
+                SupplierDTO supplier = new SupplierDTO(id, name, email, phoneNumber, address);
                 return supplier;
             }return null;
         } catch (SQLException e) {

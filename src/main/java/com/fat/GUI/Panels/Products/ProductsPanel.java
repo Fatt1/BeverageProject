@@ -6,11 +6,16 @@ package com.fat.GUI.Panels.Products;
 
 import com.fat.BUS.Abstractions.Services.ICategoryService;
 import com.fat.BUS.Abstractions.Services.IProductService;
+import com.fat.BUS.Abstractions.Services.IRoleService;
 import com.fat.BUS.Abstractions.Services.IUploadImageService;
 import com.fat.BUS.Services.CategoryService;
 import com.fat.BUS.Services.ProductService;
+import com.fat.BUS.Services.RoleService;
 import com.fat.BUS.Services.UploadImageService;
+import com.fat.Contract.Constants.Action;
+import com.fat.Contract.Constants.Function;
 import com.fat.Contract.Shared.PagedResult;
+import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Categories.CategoryDTO;
 import com.fat.DTO.Products.ProductDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
@@ -45,6 +50,7 @@ public class ProductsPanel extends javax.swing.JPanel {
      */
     private IProductService productService;
     private ICategoryService categoryService;
+    private IRoleService roleService;
     private Integer selectedCategoryId = null;
     private String searchKey = null;
 
@@ -52,6 +58,7 @@ public class ProductsPanel extends javax.swing.JPanel {
     public ProductsPanel() {
         this.categoryService = CategoryService.getInstance();
         this.productService = ProductService.getInstance();
+        this.roleService = RoleService.getInstance();
         initComponents();
         initalTable();
         setCss();
@@ -376,6 +383,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.PRODUCT, Action.UPDATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền cập nhật sản phẩm", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         int selectedRow = tblProduct.getSelectedRow();
         if(selectedRow == -1) {
             JOptionPane.showMessageDialog(this,
@@ -402,8 +414,10 @@ public class ProductsPanel extends javax.swing.JPanel {
         String[] columns = {"STT","ID", "Tên Sản Phẩm", "Giá Bán", "Đơn Vị Tính", "Tồn Kho", "Danh Mục"};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setColumnIdentifiers(columns);
+        int stt = 1;
         for (ProductDTO p : allProducts) {
             Object[] row = new Object[]{
+                    stt++,
                     p.getId(),
                     p.getName(),
                     FormatterUtil.toVND(p.getPrice()),
@@ -473,6 +487,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.PRODUCT, Action.CREATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền thêm sản phẩm", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         AddOrUpdateProductDialog addOrUpdateProductDialog = new AddOrUpdateProductDialog(parentFrame, true, null);
         addOrUpdateProductDialog.setLocationRelativeTo(parentFrame);
@@ -484,7 +503,11 @@ public class ProductsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.PRODUCT, Action.DELETE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền xóa sản phẩm", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
        int selectedRow = tblProduct.getSelectedRow();
        if(selectedRow == -1) {

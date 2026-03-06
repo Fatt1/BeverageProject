@@ -263,9 +263,9 @@ public class StatisticDAO implements IStatisticDAO {
             p.id As productId,
             p.name AS productName,
             ISNULL(os.stockAfter, 0) AS initialStock,
-            ISNULL(ps.totalImport, 0) AS importedQuantity, -- Đã thêm ,0
-            ISNULL(ps.totalExport, 0) AS exportedQuantity, -- Đã thêm ,0
-            ISNULL(os.stockAfter, 0) + ISNULL(ps.totalImport, 0) + ISNULL(ps.totalExport, 0) AS finalStock
+            ISNULL(ps.totalImport, 0) AS importedQuantity,
+            ABS(ISNULL(ps.totalExport, 0)) AS exportedQuantity, -- ABS vì EXPORT lưu quantity âm
+            ISNULL(os.stockAfter, 0) + ISNULL(ps.totalImport, 0) + ISNULL(ps.totalExport, 0) AS finalStock -- totalExport âm nên cộng = trừ
         FROM OpeningStock os 
         FULL OUTER JOIN PeriodSum ps ON os.productId = ps.productId AND os.rn = 1
         RIGHT JOIN Product p ON p.id = COALESCE(os.productId, ps.productId)
@@ -428,9 +428,10 @@ public class StatisticDAO implements IStatisticDAO {
 
 
     @Override
-    public List<ProductStatisticDTO> getProductStatistic(LocalDate fromDate, LocalDate toDate) {
+    public List<ProductStatisticDTO> getProductStatistic(LocalDate fromDate, LocalDate toDate, String searchKey) {
         LocalDateTime start = fromDate.atStartOfDay();
         LocalDateTime end = toDate.atTime(23, 59, 59);
+        String searchPattern = "%" + searchKey + "%";
         String sql = """
                 SELECT  
                 p.id As productId,
@@ -438,9 +439,11 @@ public class StatisticDAO implements IStatisticDAO {
                 ISNULL(SUM(rd.quantity), 0) AS totalSoldQuantity,
                 ISNULL(SUM(rd.subTotalAmount - rd.DiscountAmount), 0) AS totalSalesAmount
                 FROM Product p
-                LEFT JOIN ReceiptDetail rd ON p.id = rd.productId
-                LEFT JOIN Receipt r ON rd.receiptId = r.id
-                AND r.CreatedAt BETWEEN ? AND ?
+               LEFT JOIN (
+               ReceiptDetail rd
+               INNER JOIN Receipt r ON rd.receiptId = r.id AND r.CreatedAt BETWEEN ? AND ?
+               ) ON p.id = rd.productId
+                WHERE p.name LIKE ?
                 GROUP BY p.id, p.name
                 ORDER BY totalSalesAmount DESC
             """;
@@ -448,6 +451,7 @@ public class StatisticDAO implements IStatisticDAO {
         PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setObject(1, start);
             ps.setObject(2, end);
+            ps.setString(3, searchPattern);
             var rs = ps.executeQuery();
             List<ProductStatisticDTO> productStatistics = new ArrayList<>();
             while(rs.next()){

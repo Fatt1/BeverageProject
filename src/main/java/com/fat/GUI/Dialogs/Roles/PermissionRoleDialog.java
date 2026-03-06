@@ -9,6 +9,7 @@ import com.fat.BUS.Services.RoleService;
 import com.fat.Contract.Constants.Action;
 import com.fat.Contract.Constants.Function;
 import com.fat.Contract.Constants.Permission;
+import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Roles.RoleClaimDTO;
 import com.fat.DTO.Roles.RoleDTO;
 import com.fat.GUI.Utils.CheckboxRenderer;
@@ -201,6 +202,11 @@ public class PermissionRoleDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        boolean isPermission = roleService.checkPermission(UserSessionDTO.getInstance().getRoleId(), Function.ROLE, Action.UPDATE);
+        if(!isPermission) {
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền cập nhật vai trò!", "Không có quyền", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         DefaultTableModel model = (DefaultTableModel) tblPermission.getModel();
         List<RoleClaimDTO> permissions = new ArrayList<>();
         for (int row = 0; row < model.getRowCount(); row++) {

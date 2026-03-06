@@ -34,7 +34,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth" name="productStatisticByMonth2">
+        <Component class="com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth" name="productStatisticByMonth1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Th&#xe1;ng">
@@ -43,7 +43,7 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate" name="productStatisticByDateToDate1">
+        <Component class="com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate" name="productStatisticByDateToDate2">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Ng&#xe0;y">

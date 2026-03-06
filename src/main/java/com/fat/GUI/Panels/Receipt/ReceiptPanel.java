@@ -387,12 +387,12 @@ public class ReceiptPanel extends javax.swing.JPanel {
                                 .addGap(37, 37, 37)
                                 .addComponent(btnExportExcel))))
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(629, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(304, 304, 304)
                     .addComponent(cboSupplier1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(1189, Short.MAX_VALUE)))
+                    .addContainerGap(669, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -750,25 +750,106 @@ public class ReceiptPanel extends javax.swing.JPanel {
         selectedReceipt = null;
     }
 
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        txtSearch.setText("");
-        txtSearch1.setText("");
-        cboSupplier1.setSelectedIndex(0);
-        cboSupplier2.setSelectedIndex(0);
-        txtFromDate.setDate(null);
-        txtToDate.setDate(null);
-        loadData();
-    }//GEN-LAST:event_btnResetActionPerformed
-
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+    private void txtImportIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtImportIDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtSearchActionPerformed
+    }//GEN-LAST:event_txtImportIDActionPerformed
 
-    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
+    private void txtTotal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotal1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTotal1ActionPerformed
+
+    private void btnReset2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReset2ActionPerformed
+        // Xác nhận tất cả các bộ lọc và tìm kiếm
+        loadData();
+    }//GEN-LAST:event_btnReset2ActionPerformed
+
+    private void txtSearch1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearch1KeyPressed
         if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
             loadData();
         }
-    }//GEN-LAST:event_txtSearchKeyPressed
+    }//GEN-LAST:event_txtSearch1KeyPressed
+
+    private void txtSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearch1ActionPerformed
+        loadData();
+    }//GEN-LAST:event_txtSearch1ActionPerformed
+
+    private void cboSupplier2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSupplier2ActionPerformed
+        loadData();
+    }//GEN-LAST:event_cboSupplier2ActionPerformed
+
+    private void cboSupplier1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSupplier1ActionPerformed
+        loadData();
+    }//GEN-LAST:event_cboSupplier1ActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // Navigate to AddOrUpdateReceiptPanel
+        Container parent = this.getParent();
+        while (parent != null && !(parent.getLayout() instanceof CardLayout)) {
+            parent = parent.getParent();
+        }
+
+        if (parent != null && parent.getLayout() instanceof CardLayout) {
+            CardLayout cardLayout = (CardLayout) parent.getLayout();
+
+            // Remove old panel if exists
+            Component[] components = parent.getComponents();
+            for (Component comp : components) {
+                if (comp.getName() != null && comp.getName().equals("AddReceiptPanel")) {
+                    parent.remove(comp);
+                }
+            }
+
+            AddOrUpdateReceiptPanel panel = new AddOrUpdateReceiptPanel();
+            panel.setName("AddReceiptPanel");
+            parent.add(panel, "AddReceiptPanel");
+            cardLayout.show(parent, "AddReceiptPanel");
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
+        try {
+            JTable exportTable = new JTable();
+            DefaultTableModel model = (DefaultTableModel) exportTable.getModel();
+
+            String[] columns = {"STT", "MÃ HÓA ĐƠN", "KHÁCH HÀNG", "TỔNG THANH TOÁN", "NGÀY TẠO", "NHÂN VIÊN"};
+            model.setColumnIdentifiers(columns);
+
+            List<ReceiptDTO> exportsData = currentList.isEmpty() ?
+            receiptService.getAllReceipts() : currentList;
+
+            int stt = 1;
+            for (ReceiptDTO r : exportsData) {
+                String customerName = "Khách lẻ";
+                if (r.getCustomerId() != null) {
+                    try {
+                        CustomerDTO c = customerService.getCustomerById(r.getCustomerId());
+                        if (c != null) customerName = c.getFullName();
+                    } catch (Exception e) { /* keep default */ }
+                }
+
+                String staffName = "N/A";
+                try {
+                    StaffDTO staff = staffService.getStaffById(r.getStaffId());
+                    if (staff != null) staffName = staff.getFirstName() + " " + staff.getLastName();
+                } catch (Exception e) { /* keep default */ }
+
+                model.addRow(new Object[]{
+                    stt++,
+                    r.getCode(),
+                    customerName,
+                    FormatterUtil.toVND(r.getTotalAmount()),
+                    FormatterUtil.toDateTime(r.getCreatedAt()),
+                    staffName
+                });
+            }
+
+            ExcelHelper.exportToExcel(exportTable, "Danh_sach_hoa_don", "Danh sách hóa đơn");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi xuất Excel: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // Kiểm tra đã chọn hóa đơn chưa
@@ -886,106 +967,25 @@ public class ReceiptPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
-    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportExcelActionPerformed
-        try {
-            JTable exportTable = new JTable();
-            DefaultTableModel model = (DefaultTableModel) exportTable.getModel();
-            
-            String[] columns = {"STT", "MÃ HÓA ĐƠN", "KHÁCH HÀNG", "TỔNG THANH TOÁN", "NGÀY TẠO", "NHÂN VIÊN"};
-            model.setColumnIdentifiers(columns);
-            
-            List<ReceiptDTO> exportsData = currentList.isEmpty() ?
-                receiptService.getAllReceipts() : currentList;
-            
-            int stt = 1;
-            for (ReceiptDTO r : exportsData) {
-                String customerName = "Khách lẻ";
-                if (r.getCustomerId() != null) {
-                    try {
-                        CustomerDTO c = customerService.getCustomerById(r.getCustomerId());
-                        if (c != null) customerName = c.getFullName();
-                    } catch (Exception e) { /* keep default */ }
-                }
-                
-                String staffName = "N/A";
-                try {
-                    StaffDTO staff = staffService.getStaffById(r.getStaffId());
-                    if (staff != null) staffName = staff.getFirstName() + " " + staff.getLastName();
-                } catch (Exception e) { /* keep default */ }
-                
-                model.addRow(new Object[]{
-                    stt++,
-                    r.getCode(),
-                    customerName,
-                    FormatterUtil.toVND(r.getTotalAmount()),
-                    FormatterUtil.toDateTime(r.getCreatedAt()),
-                    staffName
-                });
-            }
-            
-            ExcelHelper.exportToExcel(exportTable, "Danh_sach_hoa_don", "Danh sách hóa đơn");
-            
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi xuất Excel: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_btnExportExcelActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        // Navigate to AddOrUpdateReceiptPanel
-        Container parent = this.getParent();
-        while (parent != null && !(parent.getLayout() instanceof CardLayout)) {
-            parent = parent.getParent();
-        }
-        
-        if (parent != null && parent.getLayout() instanceof CardLayout) {
-            CardLayout cardLayout = (CardLayout) parent.getLayout();
-            
-            // Remove old panel if exists
-            Component[] components = parent.getComponents();
-            for (Component comp : components) {
-                if (comp.getName() != null && comp.getName().equals("AddReceiptPanel")) {
-                    parent.remove(comp);
-                }
-            }
-            
-            AddOrUpdateReceiptPanel panel = new AddOrUpdateReceiptPanel();
-            panel.setName("AddReceiptPanel");
-            parent.add(panel, "AddReceiptPanel");
-            cardLayout.show(parent, "AddReceiptPanel");
-        }
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void txtImportIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtImportIDActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtImportIDActionPerformed
-
-    private void txtTotal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotal1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTotal1ActionPerformed
-
-    private void cboSupplier1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSupplier1ActionPerformed
-        loadData();
-    }//GEN-LAST:event_cboSupplier1ActionPerformed
-
-    private void cboSupplier2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSupplier2ActionPerformed
-        loadData();
-    }//GEN-LAST:event_cboSupplier2ActionPerformed
-
-    private void txtSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearch1ActionPerformed
-        loadData();
-    }//GEN-LAST:event_txtSearch1ActionPerformed
-
-    private void txtSearch1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearch1KeyPressed
+    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
         if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
             loadData();
         }
-    }//GEN-LAST:event_txtSearch1KeyPressed
+    }//GEN-LAST:event_txtSearchKeyPressed
 
-    private void btnReset2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReset2ActionPerformed
-        // Xác nhận tất cả các bộ lọc và tìm kiếm
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        txtSearch.setText("");
+        txtSearch1.setText("");
+        cboSupplier1.setSelectedIndex(0);
+        cboSupplier2.setSelectedIndex(0);
+        txtFromDate.setDate(null);
+        txtToDate.setDate(null);
         loadData();
-    }//GEN-LAST:event_btnReset2ActionPerformed
+    }//GEN-LAST:event_btnResetActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

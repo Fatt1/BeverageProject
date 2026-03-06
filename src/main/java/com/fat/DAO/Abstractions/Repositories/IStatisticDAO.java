@@ -21,6 +21,8 @@ public interface IStatisticDAO {
     List<ProductStatisticDTO> getProductStatistic(LocalDate fromDate, LocalDate toDate, String searchKey);
     List<StaffQuarterStatisticDTO> getStaffQuarterStatistic(int year);
     List<ProductQuarterStatisticDTO> getProductQuarterStatistic(int year);
+    List<StaffProductStatisticDTO> getStaffProductStatistic(int year);
+
 
     List<RevenueDTO> getRevenueStatisticsByMonth(int year);
     List<RevenueDTO> getRevenueStatisticsByYear(int startYear, int endYear);

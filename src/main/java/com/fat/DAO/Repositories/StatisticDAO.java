@@ -517,4 +517,30 @@ public class StatisticDAO implements IStatisticDAO {
             throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm theo quý");
         }
     }
+
+    @Override
+    public List<StaffProductStatisticDTO> getStaffProductStatistic(int year) {
+        String sql = """
+                SELECT
+                    s.Id AS staffId,
+                    CONCAT (s.FirstName,' ',s.LastName) AS staffName,
+                    p.Id AS productId,
+                    p.Name AS productName,
+                    SUM(rd.Quantity) AS quantity,
+                    SUM(rd.SubTotalAmount) AS totalAmount
+                FROM Staff s
+                INNER JOIN Receipt r ON s.Id = r.StaffId AND YEAR(r.CreatedAt) = ?
+                INNER JOIN ReceiptDetail rd ON r.Id = rd.ReceiptId
+                INNER JOIN Product p ON rd.ProductId = p.Id
+                GROUP BY s.Id, s.FirstName, s.LastName, p.Id, p.Name
+                ORDER BY s.Id, totalAmount DESC""";
+        try(Connection conn = DbContext.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1,year);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return List.of();
+    }
 }

@@ -31,6 +31,7 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
         productStatisticByMonth1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth();
         productStatisticByDateToDate2 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByDateToDate();
         productStatisticByQuarter1 = new com.fat.GUI.Panels.Statistics.Products.ProductStatisticByQuarter();
+        staffProductStatistic4 = new com.fat.GUI.Panels.Statistics.Products.StaffProductStatistic();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -38,6 +39,9 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
         jTabbedPane1.addTab("Tháng", productStatisticByMonth1);
         jTabbedPane1.addTab("Ngày", productStatisticByDateToDate2);
         jTabbedPane1.addTab("Quý", productStatisticByQuarter1);
+
+        staffProductStatistic4.setBackground(new java.awt.Color(255, 255, 255));
+        jTabbedPane1.addTab("Nhân viên", staffProductStatistic4);
 
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -49,5 +53,6 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByMonth productStatisticByMonth1;
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByQuarter productStatisticByQuarter1;
     private com.fat.GUI.Panels.Statistics.Products.ProductStatisticByYear productStatisticByYear1;
+    private com.fat.GUI.Panels.Statistics.Products.StaffProductStatistic staffProductStatistic4;
     // End of variables declaration//GEN-END:variables
 }

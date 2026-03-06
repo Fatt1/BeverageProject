@@ -73,4 +73,9 @@ public class StatisticService implements IStatisticService{
         return statisticDAO.getCustomerQuarterStatistic(year);
     }
 
+    @Override
+    public List<StaffProductStatisticDTO> getStaffProductStatistic(int year) {
+        return statisticDAO.getStaffProductStatistic(year);
+    }
+
 }

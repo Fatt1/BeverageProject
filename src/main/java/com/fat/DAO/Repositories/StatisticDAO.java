@@ -537,10 +537,25 @@ public class StatisticDAO implements IStatisticDAO {
         try(Connection conn = DbContext.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setInt(1,year);
+            ResultSet rs = ps.executeQuery();
+            List<StaffProductStatisticDTO> staffProduct = new ArrayList<>();
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            while(rs.next()){
+                StaffProductStatisticDTO dto = new StaffProductStatisticDTO(
+                        rs.getInt("staffId"),
+                        rs.getString("staffName"),
+                        rs.getInt("productId"),
+                        rs.getString("productName"),
+                        rs.getInt("quantity"),
+                        rs.getBigDecimal("totalAmount")
+                );
+                staffProduct.add(dto);
+            }
+            return staffProduct;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm theo nhân viên");
         }
-        return List.of();
+
     }
 }

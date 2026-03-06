@@ -17,5 +17,5 @@ public interface IStatisticService {
     List<ProductQuarterStatisticDTO> getProductQuarterStatistic(int year);
     List<CustomerStatisticDTO> getCustomerStatistic(LocalDate fromDate, LocalDate toDate);
     List<CustomerQuarterStatisticDTO> getCustomerQuarterStatistic(int year);
-
+    List<StaffProductStatisticDTO> getStaffProductStatistic(int year);
 }

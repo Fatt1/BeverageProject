@@ -15,6 +15,7 @@ public class ProductStatisticPanel extends javax.swing.JPanel {
      */
     public ProductStatisticPanel() {
         initComponents();
+        jTabbedPane1.addTab("Khách hàng", new CustomerProductPanel());
     }
 
     /**

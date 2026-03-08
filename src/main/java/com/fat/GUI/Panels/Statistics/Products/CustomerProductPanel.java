@@ -1,0 +1,139 @@
+package com.fat.GUI.Panels.Statistics.Products;
+
+import com.fat.BUS.Utils.ExcelHelper;
+
+import javax.swing.*;
+
+public class CustomerProductPanel extends javax.swing.JPanel {
+    private com.fat.BUS.Abstractions.Services.IStatisticService statisticService;
+
+    public CustomerProductPanel() {
+        statisticService = com.fat.BUS.Services.StatisticService.getInstance();
+        initComponents();
+
+        if (!java.beans.Beans.isDesignTime()) {
+            yearFrom.setValue(java.time.Year.now().getValue());
+            if (statisticService != null) {
+                initTable(statisticService.getCustomerProductStatistic(java.time.Year.now().getValue()));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        yearFrom = new com.toedter.calendar.JYearChooser();
+        jLabel2 = new javax.swing.JLabel();
+        btnExportExcel = new javax.swing.JButton();
+        btnStatistic = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+
+        setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel2.setText("Năm");
+
+        btnExportExcel.setBackground(new java.awt.Color(46, 125, 50));
+        btnExportExcel.setForeground(new java.awt.Color(255, 255, 255));
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Microsoft Excel.png")));
+        btnExportExcel.setText("Xuất Excel");
+        btnExportExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnExportExcel.addActionListener(this::btnExportExcelActionPerformed);
+
+        btnStatistic.setBackground(new java.awt.Color(51, 51, 51));
+        btnStatistic.setForeground(new java.awt.Color(255, 255, 255));
+        btnStatistic.setText("Thống kê");
+        btnStatistic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStatistic.addActionListener(this::btnStatisticActionPerformed);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(yearFrom, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(btnExportExcel)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(yearFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnExportExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(177, Short.MAX_VALUE))
+        );
+
+        add(jPanel1, java.awt.BorderLayout.LINE_START);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "MÃ KH", "TÊN KHÁCH HÀNG", "MÃ SP", "TÊN SẢN PHẨM", "SỐ LƯỢNG", "TỔNG TIỀN"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnExportExcelActionPerformed(java.awt.event.ActionEvent evt) {
+        ExcelHelper.exportToExcel(jTable1, "bao-cao-thong-ke-san-pham-theo-khach-hang.xlsx", "Bao cao thong ke san pham theo khach hang");
+    }
+
+    private void btnStatisticActionPerformed(java.awt.event.ActionEvent evt) {
+        initTable(statisticService.getCustomerProductStatistic(yearFrom.getYear()));
+    }
+
+    private void initTable(java.util.List<com.fat.DTO.Statistics.CustomerProductStatisticDTO> list) {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        for (com.fat.DTO.Statistics.CustomerProductStatisticDTO dto : list) {
+            model.addRow(new Object[]{
+                    dto.getCustomerId(),
+                    dto.getCustomerName(),
+                    dto.getProductId(),
+                    dto.getProductName(),
+                    dto.getTotalQuantity(),
+                    com.fat.GUI.Utils.FormatterUtil.toVND(dto.getTotalAmount())
+            });
+        }
+        javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < jTable1.getColumnCount(); i++) {
+            jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExportExcel;
+    private javax.swing.JButton btnStatistic;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private com.toedter.calendar.JYearChooser yearFrom;
+    // End of variables declaration//GEN-END:variables
+}

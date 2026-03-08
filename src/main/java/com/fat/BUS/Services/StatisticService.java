@@ -74,6 +74,11 @@ public class StatisticService implements IStatisticService{
     }
 
     @Override
+    public List<CustomerProductStatisticDTO> getCustomerProductStatistic(int year) {
+        return statisticDAO.getCustomerProductStatistic(year);
+    }
+
+    @Override
     public List<StaffProductStatisticDTO> getStaffProductStatistic(int year) {
         return statisticDAO.getStaffProductStatistic(year);
     }

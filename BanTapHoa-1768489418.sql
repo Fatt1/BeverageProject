@@ -287,7 +287,7 @@ INSERT [dbo].[InventoryHistory] ([Id], [Quantity], [ProductId], [CreatedAt], [Ty
 GO
 INSERT [dbo].[InventoryHistory] ([Id], [Quantity], [ProductId], [CreatedAt], [Type], [StockAfter]) VALUES (4, 12, 2, CAST(N'2025-11-01T08:30:00.123' AS DateTime), 0, 12)
 GO
-INSERT [dbo].[InventoryHistory] ([Id], [Quantity], [ProductId], [CreatedAt], [Type], [StockAfter]) VALUES (7, -5, 2, CAST(N'2025-12-03T08:30:00.123' AS DateTime), 1, 7)
+INSERT [dbo].[InventoryHistory] ([Id], [Quantity], [ProductId], [CreatedAt], [Type], [StockAfter]) VALUES (7, 5, 2, CAST(N'2025-12-03T08:30:00.123' AS DateTime), 1, 7)
 GO
 SET IDENTITY_INSERT [dbo].[InventoryHistory] OFF
 GO
@@ -385,7 +385,7 @@ SET IDENTITY_INSERT [dbo].[Staff] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Supplier] ON
 GO
-INSERT [dbo].[Supplier] ([Id], [Email], [PhoneNumber], [Name], [Address]) VALUES (2, N'Fatt2', N'123@gmai.com', N'1233456780', N'123123')
+INSERT [dbo].[Supplier] ([Id], [Email], [PhoneNumber], [Name], [Address]) VALUES (2,  N'123@gmai.com', N'1233456780',N'Fatt2', N'120 Yen Lang')
 GO
 SET IDENTITY_INSERT [dbo].[Supplier] OFF
 GO

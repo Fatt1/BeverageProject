@@ -129,18 +129,16 @@ public class RevenuePanel extends javax.swing.JPanel {
         panel.setBackground(Color.WHITE);
         
         panel.add(new JLabel("Từ năm:"));
-        JComboBox<Integer> cbFrom = new JComboBox<>();
-        initYearComboBox(cbFrom, 2018, 2025);
-        cbFrom.setSelectedItem(2018);
-        cbFrom.setPreferredSize(new Dimension(100, 30));
-        panel.add(cbFrom);
+        com.toedter.calendar.JYearChooser yearFrom = new com.toedter.calendar.JYearChooser();
+        yearFrom.setYear(2018);
+        yearFrom.setPreferredSize(new Dimension(100, 30));
+        panel.add(yearFrom);
         
         panel.add(new JLabel("Đến năm:"));
-        JComboBox<Integer> cbTo = new JComboBox<>();
-        initYearComboBox(cbTo, 2018, 2025);
-        cbTo.setSelectedItem(2025);
-        cbTo.setPreferredSize(new Dimension(100, 30));
-        panel.add(cbTo);
+        com.toedter.calendar.JYearChooser yearTo = new com.toedter.calendar.JYearChooser();
+        yearTo.setYear(2025);
+        yearTo.setPreferredSize(new Dimension(100, 30));
+        panel.add(yearTo);
         
         panel.add(Box.createHorizontalGlue());
         
@@ -150,9 +148,29 @@ public class RevenuePanel extends javax.swing.JPanel {
         btnStat.setForeground(Color.WHITE);
         btnStat.setBorderPainted(false);
         btnStat.addActionListener(e -> {
-            int startYear = (Integer) cbFrom.getSelectedItem();
-            int endYear = (Integer) cbTo.getSelectedItem();
-            loadAndDisplayRevenueByYear(startYear, endYear);
+            try {
+                int startYear = yearFrom.getYear();
+                int endYear = yearTo.getYear();
+                
+                if (startYear > endYear) {
+                    JOptionPane.showMessageDialog(
+                        panel,
+                        "Lỗi: Năm bắt đầu không thể lớn hơn năm kết thúc!\nVui lòng chọn lại.",
+                        "Thông báo lỗi",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                    return;
+                }
+                
+                loadAndDisplayRevenueByYear(startYear, endYear);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                    panel,
+                    "Đã xảy ra lỗi: " + ex.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
         });
         panel.add(btnStat);
         

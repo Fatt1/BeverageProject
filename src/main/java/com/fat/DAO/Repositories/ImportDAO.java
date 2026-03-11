@@ -323,5 +323,22 @@ public class ImportDAO implements IImportDAO {
             }
         }
     }
+
+    @Override
+    public boolean isSupplierUsedInImports(Integer supplierId) {
+        String sql = "SELECT COUNT(*) as count FROM Import WHERE SupplierId = ?";
+        try(Connection conn = DbContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, supplierId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getInt("count") > 0;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 

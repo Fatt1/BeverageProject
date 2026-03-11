@@ -414,8 +414,10 @@ public class ProductsPanel extends javax.swing.JPanel {
         String[] columns = {"STT","ID", "Tên Sản Phẩm", "Giá Bán", "Đơn Vị Tính", "Tồn Kho", "Danh Mục"};
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setColumnIdentifiers(columns);
+        int stt = 1;
         for (ProductDTO p : allProducts) {
             Object[] row = new Object[]{
+                    stt++,
                     p.getId(),
                     p.getName(),
                     FormatterUtil.toVND(p.getPrice()),

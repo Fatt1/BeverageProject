@@ -5,10 +5,15 @@
 package com.fat.GUI.Panels.Supplier;
 
 import com.fat.BUS.Abstractions.Services.ICategoryService;
+import com.fat.BUS.Abstractions.Services.IRoleService;
 import com.fat.BUS.Abstractions.Services.ISupplierService;
+import com.fat.BUS.Services.RoleService;
 import com.fat.BUS.Services.SupplierService;
 import com.fat.BUS.Utils.ExcelHelper;
+import com.fat.Contract.Constants.Action;
+import com.fat.Contract.Constants.Function;
 import com.fat.Contract.Shared.PagedResult;
+import com.fat.DTO.Auths.UserSessionDTO;
 import com.fat.DTO.Products.ProductDTO;
 import com.fat.DTO.Suppliers.SupplierDTO;
 import com.fat.GUI.Dialogs.Products.AddOrUpdateProductDialog;
@@ -37,6 +42,7 @@ public class SupplierPanel extends javax.swing.JPanel {
     private Integer selectedCategoryId = null;
     private String searchKey = null;
     private final ISupplierService supplierService = SupplierService.getInstance();
+    private final IRoleService roleService = RoleService.getInstance();
 
     public SupplierPanel() {
         initComponents();
@@ -208,6 +214,18 @@ public class SupplierPanel extends javax.swing.JPanel {
     }
     
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        Integer roleId = UserSessionDTO.getInstance().getRoleId();
+        if(roleId == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng đăng nhập lại", "Lỗi phiên làm việc", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        boolean isPermission = roleService.checkPermission(roleId, Function.SUPPLIER, Action.CREATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền thêm nhà cung cấp", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         AddOrUpdateSupplierDialog addOrUpdateSupplierDialog = new AddOrUpdateSupplierDialog(parentFrame, true);
         addOrUpdateSupplierDialog.setLocationRelativeTo(parentFrame);
@@ -239,6 +257,18 @@ public class SupplierPanel extends javax.swing.JPanel {
     }
     
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        Integer roleId = UserSessionDTO.getInstance().getRoleId();
+        if(roleId == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng đăng nhập lại", "Lỗi phiên làm việc", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        boolean isPermission = roleService.checkPermission(roleId, Function.SUPPLIER, Action.UPDATE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền sửa nhà cung cấp", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         int selectedRow = tblSupplier.getSelectedRow();
         if(selectedRow == -1) {
             JOptionPane.showMessageDialog(this, 
@@ -334,6 +364,18 @@ public class SupplierPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnExportExcelActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        Integer roleId = UserSessionDTO.getInstance().getRoleId();
+        if(roleId == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng đăng nhập lại", "Lỗi phiên làm việc", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        boolean isPermission = roleService.checkPermission(roleId, Function.SUPPLIER, Action.DELETE);
+        if(!isPermission){
+            JOptionPane.showMessageDialog(this, "Bạn không có quyền xóa nhà cung cấp", "Không có quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         int selectedRow = tblSupplier.getSelectedRow();
         if(selectedRow == -1) {
             JOptionPane.showMessageDialog(this, 

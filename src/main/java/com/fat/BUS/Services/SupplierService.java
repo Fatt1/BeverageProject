@@ -1,7 +1,10 @@
 package com.fat.BUS.Services;
 
 import com.fat.BUS.Abstractions.Services.ISupplierService;
+import com.fat.Contract.Exceptions.ValidationException;
+import com.fat.DAO.Abstractions.Repositories.IImportDAO;
 import com.fat.DAO.Abstractions.Repositories.ISupplierDAO;
+import com.fat.DAO.Repositories.ImportDAO;
 import com.fat.DAO.Repositories.SupplierDAO;
 import com.fat.DTO.Suppliers.SupplierDTO;
 
@@ -12,6 +15,7 @@ import java.util.stream.Collectors;
 public class SupplierService implements ISupplierService {
     private static SupplierService instance;
     private final ISupplierDAO supplierDAO = SupplierDAO.getInstance();
+    private final IImportDAO importDAO = ImportDAO.getInstance();
     private static List<SupplierDTO> suppliersCache = new ArrayList<>();
 
 
@@ -46,6 +50,9 @@ public class SupplierService implements ISupplierService {
 
     @Override
     public void deleteSupplier(Integer id) {
+        if (importDAO.isSupplierUsedInImports(id)) {
+            throw new ValidationException("Không thể xóa nhà cung cấp vì đã có trong phiếu nhập");
+        }
         supplierDAO.delete(id);
         suppliersCache.removeIf(s -> s.getId().equals(id));
     }

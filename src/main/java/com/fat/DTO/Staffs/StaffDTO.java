@@ -28,7 +28,7 @@ public class StaffDTO extends BaseDTO {
     @NotBlank(message = "Tên đăng nhập không được để trống")
     @Size(min = 3, max = 50, message = "Tên đăng nhập phải từ 3 đến 50 ký tự")
     private String userName;
-    @NotBlank(message = "Mật khẩu không được để trống")
+    // Password: bắt buộc khi CREATE, optional khi UPDATE (null = giữ nguyên)
     @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
     private String password;
 

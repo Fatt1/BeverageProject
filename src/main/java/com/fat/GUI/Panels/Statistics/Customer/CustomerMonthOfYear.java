@@ -18,9 +18,11 @@ public class CustomerMonthOfYear extends javax.swing.JPanel {
 
     private final IStatisticService statisticService;
     private JTable tblCustomer;
+    private JTextField txtSearch;
     private com.toedter.calendar.JYearChooser jYear;
     private com.toedter.calendar.JMonthChooser monthFrom;
     private com.toedter.calendar.JMonthChooser monthTo;
+    private List<CustomerStatisticDTO> fullList = new java.util.ArrayList<>();
 
     public CustomerMonthOfYear() {
         statisticService = StatisticService.getInstance();
@@ -35,6 +37,15 @@ public class CustomerMonthOfYear extends javax.swing.JPanel {
         JPanel filterPanel = new JPanel();
         filterPanel.setBackground(Color.WHITE);
         filterPanel.setPreferredSize(new Dimension(280, 286));
+
+        JLabel lblSearch = new JLabel("Tìm kiếm khách hàng");
+        txtSearch = new JTextField();
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                filterTable();
+            }
+        });
 
         JLabel lblYear = new JLabel("Năm");
         jYear = new com.toedter.calendar.JYearChooser();
@@ -67,6 +78,8 @@ public class CustomerMonthOfYear extends javax.swing.JPanel {
             .addGroup(filterLayout.createSequentialGroup()
                 .addGap(12)
                 .addGroup(filterLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSearch)
+                    .addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblYear)
                     .addComponent(jYear, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblFromMonth)
@@ -81,6 +94,10 @@ public class CustomerMonthOfYear extends javax.swing.JPanel {
             filterLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(filterLayout.createSequentialGroup()
                 .addGap(14)
+                .addComponent(lblSearch)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+                .addGap(12)
                 .addComponent(lblYear)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jYear, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
@@ -113,7 +130,6 @@ public class CustomerMonthOfYear extends javax.swing.JPanel {
             }
         });
         tblCustomer.getTableHeader().setReorderingAllowed(false);
-        tblCustomer.setRowHeight(30);
 
         JScrollPane scrollPane = new JScrollPane(tblCustomer);
         add(scrollPane, BorderLayout.CENTER);
@@ -131,13 +147,21 @@ public class CustomerMonthOfYear extends javax.swing.JPanel {
             return;
         }
         try {
-            List<CustomerStatisticDTO> list = statisticService.getCustomerStatistic(fromDate, toDate);
-            initTable(list);
+            fullList = statisticService.getCustomerStatistic(fromDate, toDate);
+            filterTable();
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this,
                     "Lỗi tải thống kê khách hàng theo tháng: " + ex.getMessage(),
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void filterTable() {
+        String keyword = txtSearch.getText().trim().toLowerCase();
+        List<CustomerStatisticDTO> filtered = fullList.stream()
+            .filter(dto -> keyword.isEmpty() || dto.getCustomerName().toLowerCase().contains(keyword))
+            .collect(java.util.stream.Collectors.toList());
+        initTable(filtered);
     }
 
     private void initTable(List<CustomerStatisticDTO> list) {

@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.sl.usermodel.ConnectorShape;
+
 public class StatisticDAO implements IStatisticDAO {
     private static StatisticDAO instance;
 
@@ -200,6 +202,46 @@ public class StatisticDAO implements IStatisticDAO {
     }
 
     @Override
+    public List<CustomerProductStatisticDTO> getCustomerProductStatistic(int year) {
+        String sql = """
+                SELECT
+                    c.Id          AS customerId,
+                    (c.FirstName + ' ' + c.LastName) AS customerName,
+                    p.Id          AS productId,
+                    p.Name        AS productName,
+                    SUM(rd.Quantity)        AS totalQuantity,
+                    SUM(rd.SubTotalAmount)  AS totalAmount
+                FROM Customer c
+                INNER JOIN Receipt r        ON r.CustomerId  = c.Id
+                INNER JOIN ReceiptDetail rd ON rd.ReceiptId  = r.Id
+                INNER JOIN Product p        ON p.Id          = rd.ProductId
+                WHERE YEAR(r.CreatedAt) = ?
+                GROUP BY c.Id, c.FirstName, c.LastName, p.Id, p.Name
+                ORDER BY c.LastName, c.FirstName, p.Name
+                """;
+        try (Connection conn = DbContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, year);
+            var rs = ps.executeQuery();
+            List<CustomerProductStatisticDTO> result = new ArrayList<>();
+            while (rs.next()) {
+                CustomerProductStatisticDTO dto = new CustomerProductStatisticDTO(
+                        rs.getInt("customerId"),
+                        rs.getString("customerName"),
+                        rs.getInt("productId"),
+                        rs.getString("productName"),
+                        rs.getInt("totalQuantity"),
+                        rs.getBigDecimal("totalAmount")
+                );
+                result.add(dto);
+            }
+            return result;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi thống kê khách hàng theo sản phẩm: " + sqlException.getMessage());
+        }
+    }
+    @Override
     public List<CustomerQuarterStatisticDTO> getCustomerQuarterStatistic(int year) {
         String sql = """
             SELECT 
@@ -263,9 +305,9 @@ public class StatisticDAO implements IStatisticDAO {
             p.id As productId,
             p.name AS productName,
             ISNULL(os.stockAfter, 0) AS initialStock,
-            ISNULL(ps.totalImport, 0) AS importedQuantity, -- Đã thêm ,0
-            ISNULL(ps.totalExport, 0) AS exportedQuantity, -- Đã thêm ,0
-            ISNULL(os.stockAfter, 0) + ISNULL(ps.totalImport, 0) + ISNULL(ps.totalExport, 0) AS finalStock
+            ISNULL(ps.totalImport, 0) AS importedQuantity,
+            ABS(ISNULL(ps.totalExport, 0)) AS exportedQuantity, -- ABS vì EXPORT lưu quantity âm
+            ISNULL(os.stockAfter, 0) + ISNULL(ps.totalImport, 0) + ISNULL(ps.totalExport, 0) AS finalStock -- totalExport âm nên cộng = trừ
         FROM OpeningStock os 
         FULL OUTER JOIN PeriodSum ps ON os.productId = ps.productId AND os.rn = 1
         RIGHT JOIN Product p ON p.id = COALESCE(os.productId, ps.productId)
@@ -516,5 +558,46 @@ public class StatisticDAO implements IStatisticDAO {
             sqlException.printStackTrace();
             throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm theo quý");
         }
+    }
+
+    @Override
+    public List<StaffProductStatisticDTO> getStaffProductStatistic(int year) {
+        String sql = """
+                SELECT
+                    s.Id AS staffId,
+                    CONCAT (s.FirstName,' ',s.LastName) AS staffName,
+                    p.Id AS productId,
+                    p.Name AS productName,
+                    SUM(rd.Quantity) AS quantity,
+                    SUM(rd.SubTotalAmount) AS totalAmount
+                FROM Staff s
+                INNER JOIN Receipt r ON s.Id = r.StaffId AND YEAR(r.CreatedAt) = ?
+                INNER JOIN ReceiptDetail rd ON r.Id = rd.ReceiptId
+                INNER JOIN Product p ON rd.ProductId = p.Id
+                GROUP BY s.Id, s.FirstName, s.LastName, p.Id, p.Name
+                ORDER BY s.Id, totalAmount DESC""";
+        try(Connection conn = DbContext.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1,year);
+            ResultSet rs = ps.executeQuery();
+            List<StaffProductStatisticDTO> staffProduct = new ArrayList<>();
+
+            while(rs.next()){
+                StaffProductStatisticDTO dto = new StaffProductStatisticDTO(
+                        rs.getInt("staffId"),
+                        rs.getString("staffName"),
+                        rs.getInt("productId"),
+                        rs.getString("productName"),
+                        rs.getInt("quantity"),
+                        rs.getBigDecimal("totalAmount")
+                );
+                staffProduct.add(dto);
+            }
+            return staffProduct;
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            throw new RuntimeException("Lỗi khi truy xuất thống kê sản phẩm theo nhân viên");
+        }
+
     }
 }
